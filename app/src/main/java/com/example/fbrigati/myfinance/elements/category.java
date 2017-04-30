@@ -8,9 +8,28 @@ public class Category {
 
     public String name;
     public String acquirer_id;
+    public String desc_default;
+    public String desc_user;
 
     public Category(){
     }
+
+    public String getDesc_default() {
+        return desc_default;
+    }
+
+    public void setDesc_default(String desc_default) {
+        this.desc_default = desc_default;
+    }
+
+    public String getDesc_user() {
+        return desc_user;
+    }
+
+    public void setDesc_user(String desc_user) {
+        this.desc_user = desc_user;
+    }
+
 
     public String getAcquirer_id() {
         return acquirer_id;
