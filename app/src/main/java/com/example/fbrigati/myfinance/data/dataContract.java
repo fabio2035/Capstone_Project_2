@@ -36,6 +36,18 @@ public class DataContract {
         // Table name
         public static final String TABLE_NAME = "statement";
 
+        //bounded columns...
+        public static final int COL_ACCOUNT_NUMBER = 1;
+        public static final int COL_DATE = 2;
+        public static final int COL_TIME = 3;
+        public static final int COL_SEQUENCE = 4;
+        public static final int COL_DESCRIPTION_ORIGIN = 5;
+        public static final int COL_DESCRIPTION_USER = 6;
+        public static final int COL_AMOUNT = 7;
+        public static final int COL_TRANSACTION_CODE = 8;
+        public static final int COL_ACQUIRER_ID = 9;
+        public static final int COL_CATEGORY_KEY = 10;
+
         //table columns names...
         public static final String COLUMN_ACCOUNT_NUMBER = "accountNumber";
         public static final String COLUMN_DATE = "date";
@@ -46,12 +58,19 @@ public class DataContract {
         public static final String COLUMN_AMOUNT = "amount";
         public static final String COLUMN_TRANSACTION_CODE = "trxcode";
         public static final String COLUMN_ACQUIRER_ID = "acquirer_id";
-        public static final String COLUMN_CATEGORY_USER = "category";
+        public static final String COLUMN_CATEGORY_KEY = "category";
 
         public static Uri buildStatementUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
 
+        public static String getAccountFromUri(Uri uri) {
+            return uri.getPathSegments().get(1);
+        }
+
+        public static int getDateFromUri(Uri uri) {
+            return Integer.parseInt(uri.getPathSegments().get(2));
+        }
     }
 
     //Definition of categroy table *****
@@ -70,8 +89,8 @@ public class DataContract {
 
         //table columns names...
         public static final String COLUMN_ACQUIRER_ID = "acquirer_id";
-        public static final String COLUMN_DESCRIPTION_DEFAULT = "desc_default";
-        public static final String COLUMN_DESCRIPTION_USER = "desc_user";
+        public static final String COLUMN_CATEGORY_DEFAULT = "desc_default";
+        public static final String COLUMN_CATEGORY_USER_KEY = "category_id";
 
         public static Uri buildCategoryUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);

@@ -1,4 +1,15 @@
 <resources>
     <string name="app_name">MyFinance</string>
     <string name="title_item_detail">Item Detail</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- Empty Menu Items -->
+    <string name="empty_menu_list">No Information Available</string>
+    <string name="row_num">Sequence</string>
+    <string name="row_date">Date</string>
+    <string name="row_payee">Payee</string>
+    <string name="row_cat">Category</string>
+    <string name="row_amt">Amount</string>
+    <string name="row_bal">Balance</string>
+    <string name="row_description">Description</string>
 </resources>

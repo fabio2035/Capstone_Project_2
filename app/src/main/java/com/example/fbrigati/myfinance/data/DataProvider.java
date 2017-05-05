@@ -9,6 +9,9 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
+import android.util.Log;
+
+import com.example.fbrigati.myfinance.ui.StatementFragment;
 
 /**
  * Created by FBrigati on 27/04/2017.
@@ -16,6 +19,7 @@ import android.support.annotation.Nullable;
 
 public class DataProvider extends ContentProvider {
 
+    final static String LOG_TAG = DataProvider.class.getSimpleName();
 
     // The URI Matcher used by this content provider.
     private static final UriMatcher sUriMatcher = buildUriMatcher();
@@ -196,9 +200,12 @@ public class DataProvider extends ContentProvider {
         final int match = sUriMatcher.match(uri);
         Uri returnUri;
 
+        Log.v(LOG_TAG, "inside provider insert method");
+
         switch(match){
             case STATEMENT:{
                 //normalizeData();
+                Log.v(LOG_TAG, "About to execute insert os statement values..");
                 long _id = db.insert(DataContract.StatementEntry.TABLE_NAME, null, values);
                 if (_id > 0)
                     returnUri = DataContract.StatementEntry.buildStatementUri(_id);

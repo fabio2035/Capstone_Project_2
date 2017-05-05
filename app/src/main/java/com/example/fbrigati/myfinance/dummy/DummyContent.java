@@ -23,11 +23,14 @@ public class DummyContent {
      */
     public static final Map<String, DummyItem> ITEM_MAP = new HashMap<String, DummyItem>();
 
-    private static final int COUNT = 25;
+    public static final String[] menu_items = {"Statement", "Budget", "Stats", "Currencies"};
+
+
+    private static final int COUNT = 3;
 
     static {
         // Add some sample items.
-        for (int i = 1; i <= COUNT; i++) {
+        for (int i = 0; i <= COUNT; i++) {
             addItem(createDummyItem(i));
         }
     }
@@ -38,7 +41,7 @@ public class DummyContent {
     }
 
     private static DummyItem createDummyItem(int position) {
-        return new DummyItem(String.valueOf(position), "Item " + position, makeDetails(position));
+        return new DummyItem(String.valueOf(position), menu_items[position], makeDetails(position));
     }
 
     private static String makeDetails(int position) {
