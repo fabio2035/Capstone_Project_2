@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:columnCount="2">
+
+    <ImageView
+        android:id="@+id/budgeticon"
+        android:layout_width="45dp"
+        android:layout_height="35dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="8dp"
+        android:src="@drawable/loco_main"
+        app:layout_columnWeight="1"
+        android:paddingRight="70dp" />
+
+    <TextView
+        android:id="@+id/budgetchecked"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="left|center_horizontal"
+        android:text="test"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="15dp"
+        app:layout_columnWeight="6"
+        android:layout_marginEnd="10dp"
+        android:layout_marginRight="10dp"/>
+
+    <TextView
+        android:id="@+id/budget_goal_label"
+        android:text="@string/budget_goal_label"
+        android:paddingTop="10dp"
+        android:layout_marginLeft="20dp"
+        android:paddingLeft="10dp"
+        app:layout_columnWeight="1"
+        android:layout_marginTop="10dp" />
+
+    <TextView
+        android:id="@+id/budgetset"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="$1000"
+        android:paddingTop="10dp"
+        android:paddingRight="15dp"
+        app:layout_columnWeight="1"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:gravity="center" />
+
+    <TextView
+        android:id="@+id/budget_spent_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/budget_spent_label"
+        android:paddingTop="10dp"
+        app:layout_columnWeight="1"
+        android:layout_marginLeft="20dp"
+        android:gravity="fill_horizontal"
+        android:paddingLeft="10dp"
+        android:layout_marginTop="10dp" />
+
+    <TextView
+        android:id="@+id/budgetspent"
+        android:text="$500"
+        android:paddingTop="10dp"
+        app:layout_columnWeight="1"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:layout_marginRight="10dp" />
+
+
+    <ProgressBar
+        android:id="@+id/progbudget"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:max="100"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="5dp"
+        android:layout_marginLeft="10dp"
+        android:layout_centerHorizontal="true"
+        app:layout_columnSpan="2"
+        android:layout_marginTop="5dp"
+        app:layout_gravity="center_horizontal"
+        android:layout_marginEnd="80dp" />
+
+</android.support.v7.widget.GridLayout>

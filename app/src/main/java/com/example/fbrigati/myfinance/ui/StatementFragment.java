@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.fbrigati.myfinance.adapters.StatementAdapter;
@@ -21,6 +22,8 @@ import com.example.fbrigati.myfinance.data.DataContract;
 import com.example.fbrigati.myfinance.elements.Statement;
 
 import com.example.fbrigati.myfinance.R;
+
+import java.util.List;
 
 
 /**
@@ -31,7 +34,7 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
 
     final static String LOG_TAG = StatementFragment.class.getSimpleName();
 
-    public final static String ID_MESSAGE = "com.example.fbrigati.myfinance.ui.MESSAGE";
+    public final static String ID_MESSAGE = "com.example.fbrigati.myfinance.ui.StatementFragment.MESSAGE";
     private static final int STATEMENT_LOADER = 0;
 
     static final String STATEMENT_URI = "URI";
@@ -40,19 +43,15 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
 
     private Uri statement_uri;
 
-    private static final String[] STATEMENT_COLUMNS = {
-            DataContract.StatementEntry.TABLE_NAME + "." + DataContract.StatementEntry._ID,
-            DataContract.StatementEntry.COLUMN_ACCOUNT_NUMBER,
-            DataContract.StatementEntry.COLUMN_DATE,
-            DataContract.StatementEntry.COLUMN_TIME,
-            DataContract.StatementEntry.COLUMN_SEQUENCE,
-            DataContract.StatementEntry.COLUMN_DESCRIPTION_USER,
-            DataContract.StatementEntry.COLUMN_AMOUNT,
-            DataContract.StatementEntry.COLUMN_CATEGORY_KEY
-    };
+
 
     public StatementFragment(){
 
+    }
+
+    @Override
+    public void onStart(){
+        super.onStart();
     }
 
     private TextView textSequence;
@@ -62,6 +61,9 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
     private TextView textCategory;
     private TextView textAmount;
     private TextView textBalance;
+    private ListView statement_details;
+    private TextView empty_view;
+    private View header_view;
 
 
     @Override
@@ -76,7 +78,7 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
         View rootView = inflater.inflate(R.layout.fragment_statement_main, container, false);
 
         //transaction sequence
-        textSequence = (TextView) rootView.findViewById(R.id.row_num);
+       // textSequence = (TextView) rootView.findViewById(R.id.row_num);
 
         //transaction date
         textDate = (TextView) rootView.findViewById(R.id.row_date);
@@ -85,18 +87,29 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
         textDescription = (TextView) rootView.findViewById(R.id.row_description);
 
         //acquirer of transaction
-        textPayee = (TextView) rootView.findViewById(R.id.row_payee);
+        //textPayee = (TextView) rootView.findViewById(R.id.row_payee);
 
         //transaction category
-        textCategory = (TextView) rootView.findViewById(R.id.row_cat);
+        //textCategory = (TextView) rootView.findViewById(R.id.row_cat);
 
         //transaction amount
         textAmount = (TextView) rootView.findViewById(R.id.row_amt);
 
-        //account balance
-        textBalance = (TextView) rootView.findViewById(R.id.row_bal);
+        statement_details = (ListView) rootView.findViewById(R.id.item_statement_container);
 
-        addDummyData();
+        statementAdapter = new StatementAdapter(getActivity(), null, 0);
+
+        statement_details.setAdapter(statementAdapter);
+
+
+        empty_view = (TextView) rootView.findViewById(R.id.empty_statement);
+
+        header_view = (View) rootView.findViewById(R.id.header);
+
+        //account balance
+        //textBalance = (TextView) rootView.findViewById(R.id.row_bal);
+
+        //addDummyData();
 
         return rootView;
 
@@ -142,7 +155,7 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
                     return new CursorLoader(
                             getActivity(),
                             DataContract.StatementEntry.CONTENT_URI,
-                            STATEMENT_COLUMNS,
+                            DataContract.StatementEntry.STATEMENT_COLUMNS,
                             null,
                             null,
                             null);
@@ -157,17 +170,10 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
         switch (loader.getId()) {
             case STATEMENT_LOADER:
 
-                textDate.setText(data.getString(DataContract.StatementEntry.COL_DATE));
-
-                textDescription.setText(data.getString(DataContract.StatementEntry.COL_DESCRIPTION_USER));
-
-                textPayee.setText(data.getString(DataContract.StatementEntry.COL_ACQUIRER_ID));
-                //Todo: convert date integer to normal dd/mm/yyyy
-                textDate.setText(data.getInt(DataContract.StatementEntry.COL_DATE));
-
-                textCategory.setText(data.getString(DataContract.StatementEntry.COL_ACQUIRER_ID));
-
-                textAmount.setText(Float.toString(data.getFloat(DataContract.StatementEntry.COL_AMOUNT)));
+                if (data != null && data.moveToFirst() && data.getCount() > 0) {
+                    statementAdapter.swapCursor(data);
+                    updateEmptyView(1);
+                }else updateEmptyView(0);
 
                 break;
         }
@@ -180,9 +186,22 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
         Log.v(LOG_TAG, "Inside swapcursor...");
         switch (loader.getId()){
             case STATEMENT_LOADER:
+                if(statementAdapter != null)
                 statementAdapter.swapCursor(null);
                 break;
         }
 
+    }
+
+    private void updateEmptyView(int flag) {
+        if(flag == 1){
+            header_view.setVisibility(View.VISIBLE);
+            statement_details.setVisibility(View.VISIBLE);
+            empty_view.setVisibility(View.GONE);
+        }else if(flag == 0){
+            header_view.setVisibility(View.GONE);
+            statement_details.setVisibility(View.GONE);
+            empty_view.setVisibility(View.VISIBLE);
+        }
     }
 }

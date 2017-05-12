@@ -12,4 +12,13 @@
     <string name="row_amt">Amount</string>
     <string name="row_bal">Balance</string>
     <string name="row_description">Description</string>
+    <string name="title_StatementActivity_detail">Statement</string>
+
+    <string name="content_authority">com.example.fbrigati.myfinance</string>
+    <string name="empty_statement_list">Register your first transaction!</string>
+    <string name="no_items_in_list">Set your first budget!</string>
+    <string name="title_BudgetActivity_detail">Budget</string>
+    <string name="budget_goal_label">Goal</string>
+    <string name="budget_spent_label">Amount spent</string>
+    <string name="title_StatsActivity_detail">Stats</string>
 </resources>

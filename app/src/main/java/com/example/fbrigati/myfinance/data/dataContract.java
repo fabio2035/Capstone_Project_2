@@ -36,6 +36,20 @@ public class DataContract {
         // Table name
         public static final String TABLE_NAME = "statement";
 
+        public static final String[] STATEMENT_COLUMNS = {
+                StatementEntry.TABLE_NAME + "." + StatementEntry._ID,
+                StatementEntry.COLUMN_ACCOUNT_NUMBER,
+                StatementEntry.COLUMN_DATE,
+                StatementEntry.COLUMN_TIME,
+                StatementEntry.COLUMN_SEQUENCE,
+                StatementEntry.COLUMN_DESCRIPTION_ORIGIN,
+                StatementEntry.COLUMN_DESCRIPTION_USER,
+                StatementEntry.COLUMN_AMOUNT,
+                StatementEntry.COLUMN_TRANSACTION_CODE,
+                StatementEntry.COLUMN_ACQUIRER_ID,
+                StatementEntry.COLUMN_CATEGORY_KEY
+        };
+
         //bounded columns...
         public static final int COL_ACCOUNT_NUMBER = 1;
         public static final int COL_DATE = 2;

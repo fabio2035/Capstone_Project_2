@@ -19,7 +19,7 @@ public class DataDBHelper extends SQLiteOpenHelper {
 
 
     // If you change the database schema, you must increment the database version.
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     static final String DATABASE_NAME = "finance.db";
 
@@ -32,7 +32,7 @@ public class DataDBHelper extends SQLiteOpenHelper {
 
         //Creation of statements table
         final String SQL_CREATE_STATEMENT_TABLE = "CREATE TABLE " + StatementEntry.TABLE_NAME + " (" +
-                StatementEntry._ID + " INTEGER PRIMARY KEY," +
+                StatementEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                 StatementEntry.COLUMN_ACCOUNT_NUMBER + " TEXT NOT NULL, " +
                 StatementEntry.COLUMN_DATE + " INTEGER NOT NULL, " +
                 StatementEntry.COLUMN_TIME + " TEXT NOT NULL, " +
@@ -51,17 +51,17 @@ public class DataDBHelper extends SQLiteOpenHelper {
 
         //Creation of category table
         final String SQL_CREATE_CATEGORY_TABLE = "CREATE TABLE " + CategoryEntry.TABLE_NAME + " (" +
-                CategoryEntry._ID + " INTEGER PRIMARY KEY, " +
+                CategoryEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 CategoryEntry.COLUMN_CATEGORY_USER_KEY + " TEXT NOT NULL DEFAULT ' ', " +
                 CategoryEntry.COLUMN_CATEGORY_DEFAULT + " TEXT NOT NULL DEFAULT 'NA', " +
                 CategoryEntry.COLUMN_ACQUIRER_ID + " TEXT NOT NULL DEFAULT 'NA', " +
                 // to assure user does not repeat categories
-                " UNIQUE (" + CategoryEntry.COLUMN_CATEGORY_USER_KEY + ");";
+                " UNIQUE (" + CategoryEntry.COLUMN_CATEGORY_USER_KEY + "));";
 
 
         //Creation of budget table
         final String SQL_CREATE_BUDGET_TABLE = "CREATE TABLE " + BudgetEntry.TABLE_NAME + " (" +
-                BudgetEntry._ID + " INTEGER PRIMARY KEY, " +
+                BudgetEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 BudgetEntry.COLUMN_MONTH + " INTEGER NOT NULL, " +
                 BudgetEntry.COLUMN_YEAR + " INTEGER NOT NULL, " +
                 BudgetEntry.COLUMN_AMOUNT + " REAL NOT NULL, " +
@@ -69,7 +69,7 @@ public class DataDBHelper extends SQLiteOpenHelper {
 
                 // to assure user does not repeat budgets for different categories..
                 " UNIQUE (" + BudgetEntry.COLUMN_MONTH + ", " +
-                BudgetEntry.COLUMN_YEAR + ", " + BudgetEntry.COLUMN_CATEGORY + ");";
+                BudgetEntry.COLUMN_YEAR + ", " + BudgetEntry.COLUMN_CATEGORY + "));";
 
         db.execSQL(SQL_CREATE_STATEMENT_TABLE);
         db.execSQL(SQL_CREATE_CATEGORY_TABLE);

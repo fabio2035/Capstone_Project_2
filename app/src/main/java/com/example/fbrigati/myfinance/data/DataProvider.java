@@ -207,8 +207,9 @@ public class DataProvider extends ContentProvider {
                 //normalizeData();
                 Log.v(LOG_TAG, "About to execute insert os statement values..");
                 long _id = db.insert(DataContract.StatementEntry.TABLE_NAME, null, values);
-                if (_id > 0)
-                    returnUri = DataContract.StatementEntry.buildStatementUri(_id);
+                if (_id > 0){
+                    Log.v(LOG_TAG, "Inserted something, returned value: " + _id);
+                    returnUri = DataContract.StatementEntry.buildStatementUri(_id);}
                 else
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;

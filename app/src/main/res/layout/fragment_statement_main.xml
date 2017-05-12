@@ -1,18 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginStart="@dimen/activity_horizontal_margin"
+    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+    android:layout_marginTop="@dimen/activity_horizontal_margin"
+    android:layout_marginBottom="@dimen/activity_horizontal_margin"
+    android:layout_marginEnd="@dimen/activity_horizontal_margin"
+    >
 
     <!-- The table header -->
     <include layout="@layout/item_statement_header"
         android:id="@+id/header"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
+        />
+    <!-- The table details -->
+    <ListView
+        android:id="@+id/item_statement_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="#FFCC00"
+        android:dividerHeight="2px"
         />
 
-    <include layout="@layout/item_statement_details"
+    <!-- empty list -->
+    <TextView
+        android:id="@+id/empty_statement"
+        android:text="@string/empty_statement_list"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_below="@id/header"/>
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingEnd="@dimen/activity_horizontal_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingStart="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        />
+    <!--<include layout="@layout/item_statement_details"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/> -->
 
-</RelativeLayout>
+</LinearLayout>

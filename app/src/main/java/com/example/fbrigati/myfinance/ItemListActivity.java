@@ -1,5 +1,6 @@
 package com.example.fbrigati.myfinance;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,13 +10,23 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
+import com.example.fbrigati.myfinance.data.DataContract;
 import com.example.fbrigati.myfinance.dummy.DummyContent;
+import com.example.fbrigati.myfinance.elements.Budget;
+import com.example.fbrigati.myfinance.ui.BudgetActivity;
+import com.example.fbrigati.myfinance.ui.BudgetFragment;
+import com.example.fbrigati.myfinance.ui.StatementActivity;
+import com.example.fbrigati.myfinance.ui.StatementFragment;
+import com.example.fbrigati.myfinance.ui.StatsActivity;
+import com.example.fbrigati.myfinance.ui.StatsFragment;
 
 import java.util.List;
 
@@ -53,6 +64,8 @@ public class ItemListActivity extends AppCompatActivity {
             }
         });
 
+        addDummyData();
+
         View recyclerView = findViewById(R.id.item_list);
         assert recyclerView != null;
         setupRecyclerView((RecyclerView) recyclerView);
@@ -64,6 +77,26 @@ public class ItemListActivity extends AppCompatActivity {
             // activity should be in two-pane mode.
             mTwoPane = true;
         }
+    }
+
+    //temporary!!
+    private void addDummyData() {
+
+        ContentValues cv = new ContentValues();
+
+        cv.put(DataContract.StatementEntry.COLUMN_ACCOUNT_NUMBER, "229801925");
+        cv.put(DataContract.StatementEntry.COLUMN_DATE, 20170505);
+        cv.put(DataContract.StatementEntry.COLUMN_TIME, "1705");
+        cv.put(DataContract.StatementEntry.COLUMN_SEQUENCE, 2);
+        cv.put(DataContract.StatementEntry.COLUMN_DESCRIPTION_ORIGIN, "VB2 SB 100");
+        cv.put(DataContract.StatementEntry.COLUMN_DESCRIPTION_USER, "VB2 SB 100");
+        cv.put(DataContract.StatementEntry.COLUMN_AMOUNT, 100.20);
+        cv.put(DataContract.StatementEntry.COLUMN_TRANSACTION_CODE, 4);
+        cv.put(DataContract.StatementEntry.COLUMN_ACQUIRER_ID, "1044510");
+        cv.put(DataContract.StatementEntry.COLUMN_CATEGORY_KEY, "N/A");
+
+        this.getContentResolver().insert(DataContract.StatementEntry.CONTENT_URI, cv);
+
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
@@ -105,10 +138,27 @@ public class ItemListActivity extends AppCompatActivity {
                                 .commit();
                     } else {
                         Context context = v.getContext();
-                        Intent intent = new Intent(context, ItemDetailActivity.class);
-                        intent.putExtra(ItemDetailFragment.ARG_ITEM_ID, holder.mItem.id);
-
-                        context.startActivity(intent);
+                        Log.v("Choosing_Menu", "Chose menu item: " + holder.mItem.id);
+                        Intent intent;
+                        switch (holder.mItem.id){
+                            case "0":
+                                intent = new Intent(context, StatementActivity.class);
+                                intent.putExtra(StatementFragment.ID_MESSAGE, holder.mItem.id);
+                                context.startActivity(intent);
+                                break;
+                            case "1":
+                                intent = new Intent(context, BudgetActivity.class);
+                                intent.putExtra(BudgetFragment.ID_MESSAGE, holder.mItem.id);
+                                context.startActivity(intent);
+                                break;
+                            case "2":
+                                intent = new Intent(context, StatsActivity.class);
+                                intent.putExtra(StatsFragment.ID_MESSAGE, holder.mItem.id);
+                                context.startActivity(intent);
+                                break;
+                            default:
+                                Toast.makeText(getApplicationContext(),"Functionality not yet implemented!", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 }
             });

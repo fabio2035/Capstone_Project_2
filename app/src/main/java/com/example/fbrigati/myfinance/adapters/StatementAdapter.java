@@ -44,13 +44,13 @@ public class StatementAdapter extends CursorAdapter {
 
         ViewHolder viewHolder = (ViewHolder) view.getTag();
 
-        viewHolder.textSequence.setText(cursor.getString(DataContract.StatementEntry.COL_ACCOUNT_NUMBER));
+//        viewHolder.textSequence.setText(cursor.getString(DataContract.StatementEntry.COL_ACCOUNT_NUMBER));
         viewHolder.textDate.setText(cursor.getString(DataContract.StatementEntry.COL_DATE));
         viewHolder.textDescription.setText(cursor.getString(DataContract.StatementEntry.COL_DESCRIPTION_USER));
-        viewHolder.textPayee.setText(cursor.getString(DataContract.StatementEntry.COL_ACQUIRER_ID));
-        viewHolder.textCategory.setText(cursor.getString(DataContract.StatementEntry.COL_CATEGORY_KEY));
+    //    viewHolder.textPayee.setText(cursor.getString(DataContract.StatementEntry.COL_ACQUIRER_ID));
+   //     viewHolder.textCategory.setText(cursor.getString(DataContract.StatementEntry.COL_CATEGORY_KEY));
         viewHolder.textAmount.setText(cursor.getString(DataContract.StatementEntry.COL_AMOUNT));
-        viewHolder.textBalance.setText(cursor.getString(DataContract.StatementEntry.COL_AMOUNT));
+   //     viewHolder.textBalance.setText(cursor.getString(DataContract.StatementEntry.COL_AMOUNT));
     }
 
 
@@ -65,13 +65,13 @@ public class StatementAdapter extends CursorAdapter {
         int position;
 
         public ViewHolder(View view){
-            textSequence = (TextView) view.findViewById(R.id.row_num);
+            //textSequence = (TextView) view.findViewById(R.id.row_num);
             textDate = (TextView) view.findViewById(R.id.row_date);
             textDescription = (TextView) view.findViewById(R.id.row_description);
-            textPayee = (TextView) view.findViewById(R.id.row_payee);
-            textCategory = (TextView) view.findViewById(R.id.row_cat);
+            //textPayee = (TextView) view.findViewById(R.id.row_payee);
+            //textCategory = (TextView) view.findViewById(R.id.row_cat);
             textAmount = (TextView) view.findViewById(R.id.row_amt);
-            textBalance = (TextView) view.findViewById(R.id.row_bal);
+            //textBalance = (TextView) view.findViewById(R.id.row_bal);
         }
 
     }
