@@ -74,12 +74,12 @@ public class StatsFragment extends Fragment {
         for (String retVal : historyString.split("\n") ){
             Log.v(LOG_TAG, "value for i=" + i + " is: " + retVal);
             i++;
-            String[] something = retVal.split(", ");
+            String[] something = retVal.split(",");
 
             valueMap.put(i, something[0]);
 
-            float xValue = (float) i;
-            float yValue = (float) Double.parseDouble(something[1]);
+            float xValue = (int) i;
+            float yValue = (int) Double.parseDouble(something[1]);
             entries.add(new Entry(xValue,yValue));
         }
 

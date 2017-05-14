@@ -26,7 +26,7 @@ public class StatsActivity extends AppCompatActivity {
             fragment.setArguments(arguments);
 
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.activity_statement_detail, fragment)
+                    .add(R.id.activity_stats_detail, fragment)
                     .commit();
         }
     }
