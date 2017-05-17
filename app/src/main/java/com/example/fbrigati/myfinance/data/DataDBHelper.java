@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.example.fbrigati.myfinance.data.DataContract.BudgetEntry;
 import com.example.fbrigati.myfinance.data.DataContract.CategoryEntry;
 import com.example.fbrigati.myfinance.data.DataContract.StatementEntry;
+import com.example.fbrigati.myfinance.data.DataContract.CurrencyExEntry;
 import com.example.fbrigati.myfinance.elements.Budget;
 import com.example.fbrigati.myfinance.elements.Category;
 import com.example.fbrigati.myfinance.elements.Statement;
@@ -71,9 +72,19 @@ public class DataDBHelper extends SQLiteOpenHelper {
                 " UNIQUE (" + BudgetEntry.COLUMN_MONTH + ", " +
                 BudgetEntry.COLUMN_YEAR + ", " + BudgetEntry.COLUMN_CATEGORY + "));";
 
+        //Creation of currencyex table
+        final String SQL_CREATE_CUREX_TABLE = "CREATE TABLE " + CurrencyExEntry.TABLE_NAME + " (" +
+                CurrencyExEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                CurrencyExEntry.COLUMN_SYMBOL + " TEXT NOT NULL, " +
+                CurrencyExEntry.COLUMN_RATE + " REAL NOT NULL " +
+                CurrencyExEntry.COLUMN_DATE + " TEXT NOT NULL, " +
+                "UNIQUE (" + CurrencyExEntry.COLUMN_SYMBOL + ") ON CONFLICT REPLACE);";
+
+
         db.execSQL(SQL_CREATE_STATEMENT_TABLE);
         db.execSQL(SQL_CREATE_CATEGORY_TABLE);
         db.execSQL(SQL_CREATE_BUDGET_TABLE);
+        db.execSQL(SQL_CREATE_CUREX_TABLE);
 
     }
 
@@ -83,6 +94,7 @@ public class DataDBHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + StatementEntry.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + CategoryEntry.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + BudgetEntry.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + CurrencyExEntry.TABLE_NAME);
         onCreate(db);
     }
 }

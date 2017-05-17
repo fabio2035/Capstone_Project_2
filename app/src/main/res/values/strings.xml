@@ -5,6 +5,7 @@
 
     <!-- Empty Menu Items -->
     <string name="empty_menu_list">No Information Available</string>
+    <!-- Statement Items -->
     <string name="row_num">Sequence</string>
     <string name="row_date">Date</string>
     <string name="row_payee">Payee</string>
@@ -14,6 +15,7 @@
     <string name="row_description">Description</string>
     <string name="title_StatementActivity_detail">Statement</string>
 
+
     <string name="content_authority">com.example.fbrigati.myfinance</string>
     <string name="empty_statement_list">Register your first transaction!</string>
     <string name="no_items_in_list">Set your first budget!</string>
@@ -21,4 +23,5 @@
     <string name="budget_goal_label">Goal</string>
     <string name="budget_spent_label">Amount spent</string>
     <string name="title_StatsActivity_detail">Stats</string>
+    <string name="sync_account_type">myfinance.exampl.com</string>
 </resources>

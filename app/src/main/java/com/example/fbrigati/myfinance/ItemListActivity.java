@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.example.fbrigati.myfinance.data.DataContract;
 import com.example.fbrigati.myfinance.dummy.DummyContent;
 import com.example.fbrigati.myfinance.elements.Budget;
+import com.example.fbrigati.myfinance.sync.MFSyncJob;
 import com.example.fbrigati.myfinance.ui.BudgetActivity;
 import com.example.fbrigati.myfinance.ui.BudgetFragment;
 import com.example.fbrigati.myfinance.ui.StatementActivity;
@@ -82,7 +83,10 @@ public class ItemListActivity extends AppCompatActivity {
     //temporary!!
     private void addDummyData() {
 
-        ContentValues cv = new ContentValues();
+        Log.v("ItemListACtivity", "About to test csv return data..");
+        MFSyncJob.syncImmediately(this);
+
+/*        ContentValues cv = new ContentValues();
 
         cv.put(DataContract.StatementEntry.COLUMN_ACCOUNT_NUMBER, "229801925");
         cv.put(DataContract.StatementEntry.COLUMN_DATE, 20170505);
@@ -96,7 +100,7 @@ public class ItemListActivity extends AppCompatActivity {
         cv.put(DataContract.StatementEntry.COLUMN_CATEGORY_KEY, "N/A");
 
         this.getContentResolver().insert(DataContract.StatementEntry.CONTENT_URI, cv);
-
+*/
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
