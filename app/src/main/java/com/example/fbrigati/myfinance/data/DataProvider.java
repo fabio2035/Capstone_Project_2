@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -33,6 +34,7 @@ public class DataProvider extends ContentProvider {
     static final int CATEGORY_WITH_ACQUIRER = 201;
     static final int BUDGET = 300;
     static final int BUDGET_WITH_YEAR_MONTH = 301;
+    static final int CUREX = 400;
 
     private static final SQLiteQueryBuilder mStatementQueryBuilder;
 
@@ -79,6 +81,8 @@ public class DataProvider extends ContentProvider {
 
         matcher.addURI(authority, DataContract.PATH_BUDGET, BUDGET);
         matcher.addURI(authority, DataContract.PATH_BUDGET + "/#/*", BUDGET_WITH_YEAR_MONTH);
+
+        matcher.addURI(authority, DataContract.PATH_CUREX, CUREX);
 
         return matcher;
     }
@@ -146,6 +150,19 @@ public class DataProvider extends ContentProvider {
                 );
                 break;
             }
+            // "Budget"
+            case CUREX: {
+                retCursor = mOpenHelper.getReadableDatabase().query(
+                        DataContract.CurrencyExEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder
+                );
+                break;
+            }
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -188,6 +205,9 @@ public class DataProvider extends ContentProvider {
                 return DataContract.BudgetEntry.CONTENT_TYPE;
             case BUDGET_WITH_YEAR_MONTH:
                 return DataContract.BudgetEntry.CONTENT_ITEM_TYPE;
+            case CUREX:
+                return DataContract.CurrencyExEntry.CONTENT_TYPE;
+
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -230,6 +250,14 @@ public class DataProvider extends ContentProvider {
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
             }
+            case CUREX:{
+                long _id = db.insert(DataContract.CurrencyExEntry.TABLE_NAME, null, values);
+                if (_id > 0)
+                    returnUri = DataContract.CurrencyExEntry.buildCurrencyUri(_id);
+                else
+                    throw new android.database.SQLException("Failed to insert row into " + uri);
+                break;
+            }
 
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -258,6 +286,10 @@ public class DataProvider extends ContentProvider {
             case BUDGET:
                 rowsDeleted = db.delete(
                         DataContract.BudgetEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            case CUREX:
+                rowsDeleted = db.delete(
+                        DataContract.CurrencyExEntry.TABLE_NAME, selection, selectionArgs);
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -292,5 +324,34 @@ public class DataProvider extends ContentProvider {
                 getContext().getContentResolver().notifyChange(uri, null);
             }
             return rowsUpdated;
+    }
+
+    @Override
+    public int bulkInsert(@NonNull Uri uri, @NonNull ContentValues[] values) {
+
+        final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+
+        switch (sUriMatcher.match(uri)) {
+            case CUREX:
+                db.beginTransaction();
+                int returnCount = 0;
+                Log.v(LOG_TAG, "About to insert values in currencyExchange..");
+                try {
+                    for (ContentValues value : values) {
+                        db.insert(
+                                DataContract.CurrencyExEntry.TABLE_NAME,
+                                null,
+                                value
+                        );
+                    }
+                    db.setTransactionSuccessful();
+                } finally {
+                    db.endTransaction();
+                }
+                getContext().getContentResolver().notifyChange(uri, null);
+                return returnCount;
+            default:
+                return super.bulkInsert(uri, values);
+        }
     }
 }

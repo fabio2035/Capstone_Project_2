@@ -43,8 +43,6 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
 
     private Uri statement_uri;
 
-
-
     public StatementFragment(){
 
     }

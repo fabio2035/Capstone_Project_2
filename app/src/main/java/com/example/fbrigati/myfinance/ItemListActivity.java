@@ -24,6 +24,8 @@ import com.example.fbrigati.myfinance.elements.Budget;
 import com.example.fbrigati.myfinance.sync.MFSyncJob;
 import com.example.fbrigati.myfinance.ui.BudgetActivity;
 import com.example.fbrigati.myfinance.ui.BudgetFragment;
+import com.example.fbrigati.myfinance.ui.CurrenciesActivity;
+import com.example.fbrigati.myfinance.ui.CurrenciesFragment;
 import com.example.fbrigati.myfinance.ui.StatementActivity;
 import com.example.fbrigati.myfinance.ui.StatementFragment;
 import com.example.fbrigati.myfinance.ui.StatsActivity;
@@ -86,7 +88,7 @@ public class ItemListActivity extends AppCompatActivity {
         Log.v("ItemListACtivity", "About to test csv return data..");
         MFSyncJob.syncImmediately(this);
 
-/*        ContentValues cv = new ContentValues();
+        ContentValues cv = new ContentValues();
 
         cv.put(DataContract.StatementEntry.COLUMN_ACCOUNT_NUMBER, "229801925");
         cv.put(DataContract.StatementEntry.COLUMN_DATE, 20170505);
@@ -100,7 +102,7 @@ public class ItemListActivity extends AppCompatActivity {
         cv.put(DataContract.StatementEntry.COLUMN_CATEGORY_KEY, "N/A");
 
         this.getContentResolver().insert(DataContract.StatementEntry.CONTENT_URI, cv);
-*/
+
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
@@ -158,6 +160,11 @@ public class ItemListActivity extends AppCompatActivity {
                             case "2":
                                 intent = new Intent(context, StatsActivity.class);
                                 intent.putExtra(StatsFragment.ID_MESSAGE, holder.mItem.id);
+                                context.startActivity(intent);
+                                break;
+                            case "3":
+                                intent = new Intent(context, CurrenciesActivity.class);
+                                intent.putExtra(CurrenciesFragment.ID_MESSAGE, holder.mItem.id);
                                 context.startActivity(intent);
                                 break;
                             default:

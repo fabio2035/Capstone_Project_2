@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/detail_additional_pane"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:paddingBottom="@dimen/detail_bottom_padding"
+    android:paddingEnd="@dimen/detail_horizontal_padding"
+    android:paddingLeft="@dimen/detail_horizontal_padding"
+    android:paddingRight="@dimen/detail_horizontal_padding"
+    android:paddingStart="@dimen/detail_horizontal_padding"
+    android:paddingTop="@dimen/abc_list_item_padding_horizontal_material"
+    android:columnCount="2">
+
+    <TextView
+        android:id="@+id/symbol_value"
+        android:textAppearance="@style/SymbolTextStyle"
+        android:layout_columnWeight="2"
+        tools:text="MZN/USD"/>
+
+    <TextView
+        android:id="@+id/rate_value"
+        android:textAppearance="@style/RateTextStyle"
+        android:layout_columnWeight="1"
+        tools:text="70.041"/>
+
+</GridLayout>

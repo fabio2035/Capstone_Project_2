@@ -65,6 +65,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.fbrigati.myfinance.ItemListActivity" />
         </activity>
+        <activity
+            android:name=".ui.CurrenciesActivity"
+            android:label="@string/title_Currencies_detail"
+            android:parentActivityName=".ItemListActivity"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.fbrigati.myfinance.ItemListActivity" />
+        </activity>
 
         <provider
             android:authorities="@string/content_authority"

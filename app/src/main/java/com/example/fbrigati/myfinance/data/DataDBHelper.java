@@ -20,7 +20,7 @@ public class DataDBHelper extends SQLiteOpenHelper {
 
 
     // If you change the database schema, you must increment the database version.
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
     static final String DATABASE_NAME = "finance.db";
 
@@ -76,7 +76,7 @@ public class DataDBHelper extends SQLiteOpenHelper {
         final String SQL_CREATE_CUREX_TABLE = "CREATE TABLE " + CurrencyExEntry.TABLE_NAME + " (" +
                 CurrencyExEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 CurrencyExEntry.COLUMN_SYMBOL + " TEXT NOT NULL, " +
-                CurrencyExEntry.COLUMN_RATE + " REAL NOT NULL " +
+                CurrencyExEntry.COLUMN_RATE + " REAL NOT NULL, " +
                 CurrencyExEntry.COLUMN_DATE + " TEXT NOT NULL, " +
                 "UNIQUE (" + CurrencyExEntry.COLUMN_SYMBOL + ") ON CONFLICT REPLACE);";
 

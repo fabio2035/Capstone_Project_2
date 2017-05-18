@@ -24,4 +24,6 @@
     <string name="budget_spent_label">Amount spent</string>
     <string name="title_StatsActivity_detail">Stats</string>
     <string name="sync_account_type">myfinance.exampl.com</string>
+    <string name="empty_currencies_list">There are no available currencies, try again later!</string>
+    <string name="title_Currencies_detail">Currencies</string>
 </resources>

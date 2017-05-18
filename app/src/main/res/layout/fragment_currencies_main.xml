@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- The table details -->
+    <ListView
+        android:id="@+id/item_currencies_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="#FFCC00"
+        android:dividerHeight="2px"
+        />
+
+    <!-- empty currency list -->
+    <TextView
+        android:id="@+id/empty_currencies"
+        android:text="@string/empty_currencies_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingEnd="@dimen/activity_horizontal_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingStart="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        />
+
+</LinearLayout>

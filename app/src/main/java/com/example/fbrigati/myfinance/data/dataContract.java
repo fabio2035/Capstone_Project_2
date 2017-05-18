@@ -20,6 +20,7 @@ public class DataContract {
     public static final String PATH_STATEMENT = "statement";
     public static final String PATH_BUDGET = "budget";
     public static final String PATH_CATEGORY = "category";
+    public static final String PATH_CUREX = "currencyex";
 
 
     //Definition of satement table *****
@@ -139,5 +140,43 @@ public class DataContract {
 
     }
 
+
+    //Definition of currencies table *****
+    public static final class CurrencyExEntry implements BaseColumns {
+
+        public static final Uri CONTENT_URI =
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_CUREX).build();
+
+        public static final String CONTENT_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_CUREX;
+        public static final String CONTENT_ITEM_TYPE =
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_CUREX;
+
+        // Table name
+        public static final String TABLE_NAME = "currencyex";
+
+        public static final String[] CURRENCIES_COLUMNS = {
+                CurrencyExEntry.TABLE_NAME + "." + CurrencyExEntry._ID,
+                CurrencyExEntry.COLUMN_SYMBOL,
+                CurrencyExEntry.COLUMN_RATE,
+                CurrencyExEntry.COLUMN_DATE};
+
+
+        //bounded columns...
+        public static final int COL_SYMBOL = 1;
+        public static final int COL_RATE = 2;
+        public static final int COL_DATE = 3;
+
+        //table columns names...
+        public static final String COLUMN_SYMBOL = "symbol";
+        public static final String COLUMN_RATE = "rate";
+        public static final String COLUMN_DATE = "date";
+
+
+        public static Uri buildCurrencyUri(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+
+    }
 
 }

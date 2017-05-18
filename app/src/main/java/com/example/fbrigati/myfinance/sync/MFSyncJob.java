@@ -5,6 +5,7 @@ import android.accounts.AccountManager;
 import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.SyncRequest;
 import android.content.SyncResult;
@@ -14,6 +15,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.example.fbrigati.myfinance.R;
+import com.example.fbrigati.myfinance.data.DataContract;
 import com.example.fbrigati.myfinance.ui.StatementFragment;
 
 import org.json.JSONException;
@@ -32,6 +34,7 @@ import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -46,12 +49,14 @@ import au.com.bytecode.opencsv.CSVReader;
 
 public class MFSyncJob extends AbstractThreadedSyncAdapter {
 
+    final static String LOG_TAG = MFSyncJob.class.getSimpleName();
+
+    private Context context;
+
     // Interval at which to sync with the weather, in seconds.
     // 60 seconds (1 minute) * 180 = 3 hours
     public static final int SYNC_INTERVAL = 60 * 180;
     public static final int SYNC_FLEXTIME = SYNC_INTERVAL/3;
-
-    final static String LOG_TAG = MFSyncJob.class.getSimpleName();
 
 
     public MFSyncJob(Context context, boolean autoInitialize) {
@@ -74,7 +79,7 @@ public class MFSyncJob extends AbstractThreadedSyncAdapter {
         String format_2 = "c4l1";
 
         String yql_query = "select * from yahoo.finance.xchange where pair in ";
-        String defaultCur = "(\"USDEUR\",\"USDZAR\",\"USDGBP\")";
+        String defaultCur = "(\"EURMZN\",\"USDMZN\",\"ZARMZN\")";
         String source = "store://datatables.org/alltableswithkeys";
         String joint = yql_query + defaultCur;
 
@@ -161,7 +166,13 @@ public class MFSyncJob extends AbstractThreadedSyncAdapter {
 
     private void getDataFromBuffer(String buffer) {
 
+        context = getContext();
+
         try{
+            String symbol;
+            Double rate;
+            String date;
+            ArrayList<ContentValues> currCVs = new ArrayList<>();
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
         Document doc = dBuilder.parse(new InputSource(new StringReader(buffer)));
@@ -171,14 +182,29 @@ public class MFSyncJob extends AbstractThreadedSyncAdapter {
             for(int i = 0; i < nList.getLength(); i++){
                 Node nNode = nList.item(i);
                 if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+                    ContentValues currCV = new ContentValues();
+
                     Element eElement = (Element) nNode;
                     Log.v(LOG_TAG, "element id :" + eElement.getAttribute("id"));
                     Log.v(LOG_TAG, "------------");
                     Log.v(LOG_TAG, "Name: " + eElement.getElementsByTagName("Name").item(0).getTextContent());
+                    symbol = eElement.getElementsByTagName("Name").item(0).getTextContent();
+                    currCV.put(DataContract.CurrencyExEntry.COLUMN_SYMBOL, symbol);
                     Log.v(LOG_TAG, "Rate: " + eElement.getElementsByTagName("Rate").item(0).getTextContent());
+                    rate = Double.parseDouble(eElement.getElementsByTagName("Rate").item(0).getTextContent());
+                    currCV.put(DataContract.CurrencyExEntry.COLUMN_RATE, rate);
                     Log.v(LOG_TAG, "Date: " + eElement.getElementsByTagName("Date").item(0).getTextContent());
+                    date = eElement.getElementsByTagName("Date").item(0).getTextContent();
+                    currCV.put(DataContract.CurrencyExEntry.COLUMN_DATE, date);
+
+                    currCVs.add(currCV);
             }
             }
+
+            context.getContentResolver()
+                    .bulkInsert(
+                            DataContract.CurrencyExEntry.CONTENT_URI,
+                            currCVs.toArray(new ContentValues[currCVs.size()]));
     } catch (Exception e){
             Log.v(LOG_TAG, "there was an error: " + e.toString());
         }
