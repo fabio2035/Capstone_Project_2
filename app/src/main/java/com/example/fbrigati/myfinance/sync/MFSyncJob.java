@@ -78,6 +78,7 @@ public class MFSyncJob extends AbstractThreadedSyncAdapter {
         String format = ".csv";
         String format_2 = "c4l1";
 
+
         String yql_query = "select * from yahoo.finance.xchange where pair in ";
         String defaultCur = "(\"EURMZN\",\"USDMZN\",\"ZARMZN\")";
         String source = "store://datatables.org/alltableswithkeys";

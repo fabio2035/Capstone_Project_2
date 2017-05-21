@@ -1,9 +1,12 @@
 package com.example.fbrigati.myfinance.ui;
 
+import android.app.Activity;
 import android.app.FragmentManager;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -12,10 +15,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.fbrigati.myfinance.R;
+import com.example.fbrigati.myfinance.Utility;
 import com.example.fbrigati.myfinance.adapters.CurrenciesAdapter;
 import com.example.fbrigati.myfinance.data.DataContract;
 
@@ -41,6 +48,7 @@ public class CurrenciesFragment extends Fragment implements LoaderManager.Loader
     private TextView textRate;
     private ListView currencyList;
     private TextView empty_view;
+    private Spinner spinner_view;
 
     public CurrenciesFragment(){}
 
@@ -75,6 +83,15 @@ public class CurrenciesFragment extends Fragment implements LoaderManager.Loader
         currencyAdapter = new CurrenciesAdapter(getActivity(), null, 0);
 
         currencyList.setAdapter(currencyAdapter);
+
+        spinner_view = (Spinner) rootView.findViewById(R.id.symbols_spinner);
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
+                R.array.cur_symbols, android.R.layout.simple_spinner_item);
+
+        adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+
+        spinner_view.setAdapter(adapter);
 
         return rootView;
 
@@ -141,6 +158,22 @@ public class CurrenciesFragment extends Fragment implements LoaderManager.Loader
         }else if(flag == 0){
             currencyList.setVisibility(View.GONE);
             empty_view.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public class SpinnerActivity extends Activity implements AdapterView.OnItemClickListener{
+
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            parent.getItemAtPosition(position);
+
+            Log.v(LOG_TAG, "Chosen symbol: " + parent.getItemAtPosition(position).toString());
+
+            String Symbol = parent.getItemAtPosition(position).toString();
+
+            SharedPreferences base_cur_settings = getPreferences(0);
+            Utility.setPrefferecSymbol(this, Symbol);
+
         }
     }
 }
