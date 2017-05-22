@@ -67,7 +67,7 @@ public class ItemListActivity extends AppCompatActivity {
             }
         });
 
-        addDummyData();
+        //addDummyData();
 
         View recyclerView = findViewById(R.id.item_list);
         assert recyclerView != null;

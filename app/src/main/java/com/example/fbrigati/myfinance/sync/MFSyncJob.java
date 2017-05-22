@@ -7,11 +7,14 @@ import android.content.ContentProviderClient;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.SyncRequest;
 import android.content.SyncResult;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.annotation.IntDef;
 import android.util.Log;
 
 import com.example.fbrigati.myfinance.R;
@@ -31,6 +34,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
@@ -58,10 +63,23 @@ public class MFSyncJob extends AbstractThreadedSyncAdapter {
     public static final int SYNC_INTERVAL = 60 * 180;
     public static final int SYNC_FLEXTIME = SYNC_INTERVAL/3;
 
+    public static final Uri invalid_currencyFetch_uri = DataContract.CurrencyExEntry.CONTENT_URI.buildUpon().appendPath("invalid").build();
+
 
     public MFSyncJob(Context context, boolean autoInitialize) {
         super(context, autoInitialize);
+        this.context = getContext();
     }
+
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({CURRENCYFETCH_STATUS_OK, CURRENCYFETCH_STATUS_SERVER_DOWN, CURRENCYFETCH_STATUS_SERVER_INVALID,  CURRENCYFETCH_STATUS_UNKNOWN, CURRENCYFETCH_STATUS_INVALID})
+    public @interface CurrencyFetchStatus {}
+
+    public static final int CURRENCYFETCH_STATUS_OK = 0;
+    public static final int CURRENCYFETCH_STATUS_SERVER_DOWN = 1;
+    public static final int CURRENCYFETCH_STATUS_SERVER_INVALID = 2;
+    public static final int CURRENCYFETCH_STATUS_UNKNOWN = 3;
+    public static final int CURRENCYFETCH_STATUS_INVALID = 4;
 
     @Override
     public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
@@ -78,11 +96,31 @@ public class MFSyncJob extends AbstractThreadedSyncAdapter {
         String format = ".csv";
         String format_2 = "c4l1";
 
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+
+        String base_cur = sp.getString(context.getString(R.string.pref_cur_key), context.getString(R.string.pref_cur_default)).trim();
+
+        Log.v(LOG_TAG, "checking cur preference: " + base_cur);
 
         String yql_query = "select * from yahoo.finance.xchange where pair in ";
-        String defaultCur = "(\"EURMZN\",\"USDMZN\",\"ZARMZN\")";
+
+        StringBuilder currencies_group = new StringBuilder();
+
+        String[] symbolArray = context.getResources().getStringArray(R.array.cur_symbols);
+        currencies_group.append("(");
+
+        //Builds the currencies to show on listView
+        for(int i=0; i<symbolArray.length; i++){
+        if(!symbolArray[i].equals(base_cur)) {
+            currencies_group.append("\"" +symbolArray[i] + base_cur).append("\"");
+            if(i < symbolArray.length - 1) currencies_group.append(",");}
+        }
+        currencies_group.append(")");
+
+        //String defaultCur = "(\"EUR" + base_cur +"\",\"USD" + base_cur +"\",\"ZAR" + base_cur + "\")";
+        Log.v(LOG_TAG, "defaultCur: " + currencies_group);
         String source = "store://datatables.org/alltableswithkeys";
-        String joint = yql_query + defaultCur;
+        String joint = yql_query + currencies_group;
 
         Log.v(LOG_TAG, "Inside onPerformSync.. trying to fetch csv");
 
@@ -126,34 +164,10 @@ public class MFSyncJob extends AbstractThreadedSyncAdapter {
 
             Log.v(LOG_TAG, "Buffered: " + buffer.toString());
 
-
-            /*
-            //String line;
-            Map<String, String> values = null;
-
-
-            while ((line = reader.readLine()) != null) {
-                Log.v(LOG_TAG, "Current csv Line: " + line);
-                String[] RowData = line.split(",");
-                values.put(RowData[0], RowData[1]);
-                buffer.append(line + "\n");
-            }
-
-            if (buffer.length() == 0) {
-                // Stream was empty.  No point in parsing.
-                //setLocationStatus(getContext(), LOCATION_STATUS_SERVER_DOWN);
-                Log.v(LOG_TAG, "buffer is empty...");
-                return;
-            }
-
-            Log.v(LOG_TAG, "Response from server: " + buffer.toString());
-
-
-            CSVStr = buffer.toString();
- //           getDataFromCSV(CSVStr);
-            */
         } catch (IOException e) {
             Log.e(LOG_TAG, "Error ", e);
+            setCurrencyFetchStatus(context, CURRENCYFETCH_STATUS_INVALID);
+            context.getContentResolver().notifyChange(invalid_currencyFetch_uri, null, false);
             // If the code didn't successfully get the weather data, there's no point in attempting
             // to parse it.
             //setLocationStatus(getContext(), LOCATION_STATUS_SERVER_DOWN);
@@ -164,6 +178,13 @@ public class MFSyncJob extends AbstractThreadedSyncAdapter {
             return;
     }
 }
+
+    private void setCurrencyFetchStatus(Context context, @CurrencyFetchStatus int currencyfetchStatusInvalid) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor spe = sp.edit();
+        spe.putInt(context.getString(R.string.pref_cur_status_key), currencyfetchStatusInvalid);
+        spe.commit();
+    }
 
     private void getDataFromBuffer(String buffer) {
 

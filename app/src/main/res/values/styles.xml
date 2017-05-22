@@ -17,6 +17,13 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="GeneralOptionsStyle">
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">#FFF</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
+
+
     <style name="SymbolTextStyle">
         <item name="android:textSize">25sp</item>
         <item name="android:textColor">#FFF</item>
@@ -27,6 +34,12 @@
         <item name="android:textSize">25sp</item>
         <item name="android:textColor">#FFF</item>
         <item name="android:textAllCaps">true</item>
+    </style>
+
+    <style name="Divider">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">2dp</item>
+        <item name="android:background">?android:attr/listDivider</item>
     </style>
 
 </resources>

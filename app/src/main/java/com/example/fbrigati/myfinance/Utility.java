@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.example.fbrigati.myfinance.sync.MFSyncJob;
+
 /**
  * Created by FBrigati on 21/05/2017.
  */
@@ -24,4 +26,18 @@ public class Utility {
         spe.commit();
     }
 
-}
+    @SuppressWarnings("ResourceType")
+    static public @MFSyncJob.CurrencyFetchStatus
+    int getCurrencyFetchStatus(Context c){
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
+        return sp.getInt(c.getString(R.string.pref_cur_status_key), 100);
+    }
+
+    static public void resetLocationStatus(Context c){
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
+        SharedPreferences.Editor spe = sp.edit();
+        spe.putInt(c.getString(R.string.pref_cur_status_key), MFSyncJob.CURRENCYFETCH_STATUS_OK);
+        spe.apply();
+    }
+
+   }

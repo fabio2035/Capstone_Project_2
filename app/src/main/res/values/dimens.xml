@@ -12,4 +12,6 @@
     <dimen name="detail_bottom_padding">16dp</dimen>
     <dimen name="detail_horizontal_padding">16dp</dimen>
 
+
+    <dimen name="detail_vertical_margin">8dp</dimen>
 </resources>

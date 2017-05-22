@@ -26,8 +26,8 @@
     <string name="sync_account_type">myfinance.exampl.com</string>
     <string name="empty_currencies_list">There are no available currencies, try again later!</string>
     <string name="title_Currencies_detail">Currencies</string>
-    <string name="cur_base_date_label">Date:</string>
-    <string name="cur_base_symbol_label">Base Currencies:</string>
+    <string name="cur_base_date_label">Info. Date:</string>
+    <string name="cur_base_symbol_label">Base Currency:</string>
 
 
     <!-- free version currencies -->
@@ -40,5 +40,10 @@
 
     <string name="pref_cur_key" translatable="false">cur_symbol</string>
     <string name="pref_cur_default" translatable="false">USD</string>
+
+    <string name="pref_cur_status_key" translatable="false">cur-status</string>
+
+    <string name="pref_cur_status_invalid">There was an error retrieving currnecie data for selected item, please try again.</string>
+
 
 </resources>

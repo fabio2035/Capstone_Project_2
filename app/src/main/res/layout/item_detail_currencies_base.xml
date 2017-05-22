@@ -8,20 +8,27 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textAppearance="@style/GeneralOptionsStyle"
         android:text="@string/cur_base_date_label"
         android:layout_columnWeight="1"
+        android:layout_marginTop="@dimen/detail_vertical_margin"
+        android:layout_marginBottom="@dimen/detail_vertical_margin"
         />
 
     <TextView
         android:id="@+id/cur_base_date_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textAppearance="@style/GeneralOptionsStyle"
         android:layout_columnWeight="1"
+        android:layout_marginTop="@dimen/detail_vertical_margin"
+        android:layout_marginBottom="@dimen/detail_vertical_margin"
         />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textAppearance="@style/GeneralOptionsStyle"
         android:text="@string/cur_base_symbol_label"
         android:layout_columnWeight="1"
         />
@@ -30,6 +37,7 @@
         android:id="@+id/symbols_spinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textAppearance="@style/GeneralOptionsStyle"
         android:layout_columnWeight="1"/>
 
 </GridLayout>

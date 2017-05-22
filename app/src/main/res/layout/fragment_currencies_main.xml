@@ -10,6 +10,8 @@
         android:layout_height="wrap_content"
         />
 
+    <View style="@style/Divider"/>
+
     <!-- The table details -->
     <ListView
         android:id="@+id/item_currencies_container"

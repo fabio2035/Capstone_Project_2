@@ -35,8 +35,10 @@ public class DataProvider extends ContentProvider {
     static final int BUDGET = 300;
     static final int BUDGET_WITH_YEAR_MONTH = 301;
     static final int CUREX = 400;
+    static final int CUREX_WITH_BASE = 401;
 
     private static final SQLiteQueryBuilder mStatementQueryBuilder;
+    private static final SQLiteQueryBuilder mCurrencyQueryBuilder;
 
     static{
         mStatementQueryBuilder = new SQLiteQueryBuilder();
@@ -52,12 +54,38 @@ public class DataProvider extends ContentProvider {
                         "." + DataContract.CategoryEntry._ID);
     }
 
+    static{
+        mCurrencyQueryBuilder = new SQLiteQueryBuilder();
+        mCurrencyQueryBuilder.setTables(DataContract.CurrencyExEntry.TABLE_NAME);}
+
+
+
+
+        //currencyex.symbol like '%Base'
+    private static final String sBaseCurrencySelection =
+            DataContract.CurrencyExEntry.TABLE_NAME +
+                    "." + DataContract.CurrencyExEntry.COLUMN_SYMBOL + " like ?";
+
 
     //statement.account = ? AND date = ?
-    private static final String sLocationSettingAndDaySelection =
+    private static final String sAcctnumberAndDateSelection =
             DataContract.StatementEntry.TABLE_NAME +
                     "." + DataContract.StatementEntry.COLUMN_ACCOUNT_NUMBER + " = ? AND " +
                     DataContract.StatementEntry.COLUMN_DATE + " = ? ";
+
+    private Cursor getCurrenciesByBaseCurrency(
+            Uri uri, String[] projection, String sortOrder) {
+        String baseCurrency = DataContract.CurrencyExEntry.getBaseCurrenyFromUri(uri);
+        Log.v(LOG_TAG, "baseCurrency: " + baseCurrency);
+        return mCurrencyQueryBuilder.query(mOpenHelper.getReadableDatabase(),
+                projection,
+                sBaseCurrencySelection,
+                new String[]{"%" + baseCurrency},
+                null,
+                null,
+                sortOrder
+        );
+    }
 
 
     static UriMatcher buildUriMatcher() {
@@ -83,6 +111,7 @@ public class DataProvider extends ContentProvider {
         matcher.addURI(authority, DataContract.PATH_BUDGET + "/#/*", BUDGET_WITH_YEAR_MONTH);
 
         matcher.addURI(authority, DataContract.PATH_CUREX, CUREX);
+        matcher.addURI(authority, DataContract.PATH_CUREX + "/*", CUREX_WITH_BASE);
 
         return matcher;
     }
@@ -163,6 +192,12 @@ public class DataProvider extends ContentProvider {
                 );
                 break;
             }
+            // "Budget"
+            case CUREX_WITH_BASE: {
+                Log.v(LOG_TAG, "inside CUREX_WITH_BASE");
+                retCursor = getCurrenciesByBaseCurrency(uri, projection, sortOrder);
+                break;
+            }
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -177,7 +212,7 @@ public class DataProvider extends ContentProvider {
 
             return mStatementQueryBuilder.query(mOpenHelper.getReadableDatabase(),
                     projection,
-                    sLocationSettingAndDaySelection,
+                    sAcctnumberAndDateSelection,
                     new String[]{acctNumber, Integer.toString(date)},
                     null,
                     null,
@@ -253,7 +288,7 @@ public class DataProvider extends ContentProvider {
             case CUREX:{
                 long _id = db.insert(DataContract.CurrencyExEntry.TABLE_NAME, null, values);
                 if (_id > 0)
-                    returnUri = DataContract.CurrencyExEntry.buildCurrencyUri(_id);
+                    returnUri = DataContract.CurrencyExEntry.buildCurrencyExUri(_id);
                 else
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
