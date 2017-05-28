@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginStart="@dimen/activity_horizontal_margin"
+    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+    android:layout_marginTop="@dimen/activity_horizontal_margin"
+    android:layout_marginBottom="@dimen/activity_horizontal_margin"
+    android:layout_marginEnd="@dimen/activity_horizontal_margin">
+
+
+
+    <EditText
+        android:id="@+id/amount_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/trans_amt_edit_hint"
+        android:contentDescription="@string/edit_amount"
+        android:inputType="numberDecimal"
+        android:layout_marginBottom="@dimen/activity_horizontal_margin"
+        />
+
+    <EditText
+        android:id="@+id/description_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/trans_desc_edit_hint"
+        android:inputType="text"
+        android:contentDescription="@string/edit_description"
+        android:layout_below="@+id/amount_id"
+        android:layout_marginBottom="@dimen/activity_horizontal_margin"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+
+    <Button
+        android:id="@+id/date_picker_btn"
+        android:layout_width="154dp"
+        android:layout_height="wrap_content"
+        android:text="@string/date_picker"
+        android:layout_below="@+id/description_id"
+        android:layout_gravity="center_horizontal"
+        android:contentDescription="@string/accessibility_datepicker_btn"
+        android:layout_marginBottom="@dimen/activity_horizontal_margin"
+        />
+
+
+        <Button
+            android:id="@+id/time_picker_btn"
+            android:layout_width="154dp"
+            android:layout_height="wrap_content"
+            android:text="@string/time_picker"
+            android:layout_alignEnd="@+id/date_picker"
+            android:layout_alignRight="@+id/date_picker"
+            android:layout_gravity="center_horizontal"
+            android:contentDescription="@string/accessibility_timepicker_btn"
+            />
+
+    </LinearLayout>
+
+    <Spinner
+        android:id="@+id/category_spinner_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_columnWeight="1"/>
+
+</LinearLayout>

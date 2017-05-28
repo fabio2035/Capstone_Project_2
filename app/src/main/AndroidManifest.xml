@@ -48,6 +48,15 @@
                 android:value="com.example.fbrigati.myfinance.ItemListActivity" />
         </activity>
         <activity
+            android:name=".ui.StatementFragEditTrxDialog"
+            android:label="@string/title_trxEdit_detail"
+            android:parentActivityName=".ui.StatementActivity"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.fbrigati.myfinance.ui.StatementActivity" />
+        </activity>
+        <activity
             android:name=".ui.BudgetActivity"
             android:label="@string/title_BudgetActivity_detail"
             android:parentActivityName=".ItemListActivity"

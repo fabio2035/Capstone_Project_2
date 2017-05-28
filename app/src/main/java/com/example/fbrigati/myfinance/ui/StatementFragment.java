@@ -1,29 +1,28 @@
 package com.example.fbrigati.myfinance.ui;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.ContactsContract;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.fbrigati.myfinance.adapters.StatementAdapter;
 import com.example.fbrigati.myfinance.data.DataContract;
-import com.example.fbrigati.myfinance.elements.Statement;
 
 import com.example.fbrigati.myfinance.R;
-
-import java.util.List;
 
 
 /**
@@ -35,13 +34,15 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
     final static String LOG_TAG = StatementFragment.class.getSimpleName();
 
     public final static String ID_MESSAGE = "com.example.fbrigati.myfinance.ui.StatementFragment.MESSAGE";
-    private static final int STATEMENT_LOADER = 0;
+    public static final int STATEMENT_LOADER = 0;
 
     static final String STATEMENT_URI = "URI";
 
     StatementAdapter statementAdapter;
 
     private Uri statement_uri;
+
+    Intent intent;
 
     public StatementFragment(){
 
@@ -62,6 +63,7 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
     private ListView statement_details;
     private TextView empty_view;
     private View header_view;
+    private ViewGroup headerView;
 
 
     @Override
@@ -73,7 +75,7 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
             statement_uri = arguments.getParcelable(StatementFragment.STATEMENT_URI);
         }
 
-        View rootView = inflater.inflate(R.layout.fragment_statement_main, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_statement_main_bkp, container, false);
 
         //transaction sequence
        // textSequence = (TextView) rootView.findViewById(R.id.row_num);
@@ -95,22 +97,61 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
 
         statement_details = (ListView) rootView.findViewById(R.id.item_statement_container);
 
+        statement_details.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                showTransactionEditDialog(id);
+                //Snackbar.make(view, "Replace with edit transaction action", Snackbar.LENGTH_LONG)
+                //        .setAction("Action", null).show();
+            }
+        });
+
+        headerView = (ViewGroup) inflater.inflate(R.layout.item_statement_header, statement_details, false);
+
+        statement_details.addHeaderView(headerView);
+
         statementAdapter = new StatementAdapter(getActivity(), null, 0);
 
         statement_details.setAdapter(statementAdapter);
 
-
         empty_view = (TextView) rootView.findViewById(R.id.empty_statement);
 
-        header_view = (View) rootView.findViewById(R.id.header);
-
-        //account balance
-        //textBalance = (TextView) rootView.findViewById(R.id.row_bal);
-
-        //addDummyData();
+        FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showTransactionAddDialog(0L);
+               // Snackbar.make(view, "Replace with add transaction action", Snackbar.LENGTH_LONG)
+               //         .setAction("Action", null).show();
+            }
+        });
 
         return rootView;
 
+    }
+
+    private void showTransactionEditDialog(Long id) {
+        intent = new Intent(getActivity(), StatementActEditTrxDialog.class);
+        intent.putExtra(StatementActEditTrxDialog.ID_MESSAGE, 0);
+        getActivity().startActivity(intent);
+    }
+
+    private void showTransactionAddDialog(Long id) {
+
+        intent = new Intent(getActivity(), StatementActEditTrxDialog.class);
+
+        switch(id.toString()) {
+            case "0": {
+                intent.putExtra(StatementActEditTrxDialog.ID_MESSAGE, 0);
+                getActivity().startActivity(intent);
+                break;
+            }
+            default:{
+                intent.putExtra(StatementActEditTrxDialog.ID_MESSAGE, id);
+                getActivity().startActivity(intent);
+                break;
+            }
+        }
     }
 
     private void addDummyData() {
@@ -193,11 +234,11 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
 
     private void updateEmptyView(int flag) {
         if(flag == 1){
-            header_view.setVisibility(View.VISIBLE);
+//            header_view.setVisibility(View.VISIBLE);
             statement_details.setVisibility(View.VISIBLE);
             empty_view.setVisibility(View.GONE);
         }else if(flag == 0){
-            header_view.setVisibility(View.GONE);
+  //          header_view.setVisibility(View.GONE);
             statement_details.setVisibility(View.GONE);
             empty_view.setVisibility(View.VISIBLE);
         }

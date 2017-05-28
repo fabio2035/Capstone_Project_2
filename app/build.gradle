@@ -37,6 +37,8 @@ dependencies {
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.2'
     //CSV reader helper class
     compile 'net.sf.opencsv:opencsv:2.3'
+    //sublimepicker for date and time pickers..
+    compile 'com.appeaser.sublimepickerlibrary:sublimepickerlibrary:2.1.1'
 
     testCompile 'junit:junit:4.12'
 }

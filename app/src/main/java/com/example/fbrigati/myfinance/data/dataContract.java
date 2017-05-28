@@ -140,7 +140,6 @@ public class DataContract {
 
     }
 
-
     //Definition of currencies table *****
     public static final class CurrencyExEntry implements BaseColumns {
 
@@ -173,8 +172,16 @@ public class DataContract {
         public static final String COLUMN_DATE = "date";
 
 
-        public static Uri buildCurrencyUri(long id) {
+        public static Uri buildCurrencyExUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+
+        public static Uri buildCurrencyUri(String symbol) {
+            return CONTENT_URI.buildUpon().appendPath(symbol).build();
+        }
+
+        public static String getBaseCurrenyFromUri(Uri uri) {
+            return uri.getLastPathSegment();
         }
 
     }

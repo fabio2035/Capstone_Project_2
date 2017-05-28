@@ -44,6 +44,15 @@
     <string name="pref_cur_status_key" translatable="false">cur-status</string>
 
     <string name="pref_cur_status_invalid">There was an error retrieving currnecie data for selected item, please try again.</string>
+    <string name="trans_amt_edit_hint">Amount</string>
+    <string name="trans_desc_edit_hint">Description</string>
+    <string name="title_trxEdit_detail">Transaction Details</string>
+    <string name="date_picker">1/1/1979</string>
+    <string name="accessibility_datepicker_btn">Date Picker</string>
+    <string name="accessibility_timepicker_btn">Time Picker</string>
+    <string name="edit_amount">Edit Amount</string>
+    <string name="edit_description">Transaction Description</string>
+    <string name="time_picker">10:48</string>
 
 
 </resources>
