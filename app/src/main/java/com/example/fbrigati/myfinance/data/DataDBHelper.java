@@ -20,7 +20,7 @@ public class DataDBHelper extends SQLiteOpenHelper {
 
 
     // If you change the database schema, you must increment the database version.
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
 
     static final String DATABASE_NAME = "finance.db";
 
@@ -45,6 +45,10 @@ public class DataDBHelper extends SQLiteOpenHelper {
                 StatementEntry.COLUMN_ACQUIRER_ID + " TEXT NOT NULL, " +
                 StatementEntry.COLUMN_CATEGORY_KEY + " TEXT NOT NULL, " +
 
+                " UNIQUE (" + StatementEntry.COLUMN_ACCOUNT_NUMBER + "," +
+                            StatementEntry.COLUMN_DATE + "," +
+                            StatementEntry.COLUMN_TIME + "," +
+                            StatementEntry.COLUMN_SEQUENCE + ")  ON CONFLICT REPLACE ," +
                 // Set up the category column as a foreign key to location table.
                 " FOREIGN KEY (" + StatementEntry.COLUMN_CATEGORY_KEY + ") REFERENCES " +
                 CategoryEntry.TABLE_NAME + " (" + CategoryEntry._ID + ") " +
@@ -57,7 +61,7 @@ public class DataDBHelper extends SQLiteOpenHelper {
                 CategoryEntry.COLUMN_CATEGORY_DEFAULT + " TEXT NOT NULL DEFAULT 'NA', " +
                 CategoryEntry.COLUMN_ACQUIRER_ID + " TEXT NOT NULL DEFAULT 'NA', " +
                 // to assure user does not repeat categories
-                " UNIQUE (" + CategoryEntry.COLUMN_CATEGORY_USER_KEY + "));";
+                " UNIQUE (" + CategoryEntry.COLUMN_CATEGORY_USER_KEY + ") ON CONFLICT REPLACE);";
 
 
         //Creation of budget table

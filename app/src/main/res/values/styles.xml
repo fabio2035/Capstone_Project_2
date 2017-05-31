@@ -26,6 +26,11 @@
         <item name="android:textAllCaps">true</item>
     </style>
 
+    <style name="MainInputTextStyle">
+        <item name="android:textSize">25sp</item>
+        <item name="android:textColor">#FFF</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
 
     <style name="SymbolTextStyle">
         <item name="android:textSize">25sp</item>

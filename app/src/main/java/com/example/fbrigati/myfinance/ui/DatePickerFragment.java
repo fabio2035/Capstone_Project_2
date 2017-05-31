@@ -31,13 +31,13 @@ public class DatePickerFragment extends DialogFragment
     // Use this instance of the interface to deliver action events
     DateSetListenerCustom mListener;
 
-    // Override the Fragment.onAttach() method to instantiate the NoticeDialogListener
+    // Override the Fragment.onAttach() method to instantiate the DateSetListenerCustom
     @Override
     public void onAttach(Context activity) {
         super.onAttach(activity);
         // Verify that the host activity implements the callback interface
         try {
-            // Instantiate the NoticeDialogListener so we can send events to the host
+            // Instantiate the DateSetListenerCustom so we can send events to the host
             mListener = (DateSetListenerCustom) activity;
         } catch (ClassCastException e) {
             // The activity doesn't implement the interface, throw exception
@@ -60,13 +60,14 @@ public class DatePickerFragment extends DialogFragment
         return new DatePickerDialog(getActivity(), this, year, month, day);
     }
 
+    @TargetApi(24)
     public void onDateSet(DatePicker view, int year, int month, int day) {
 
         // Do something with the date chosen by the user
         mListener = (DateSetListenerCustom) getActivity();
         Log.v(LOG_TAG, "Variables: " + year + "," + month + "," + day);
 
-        mListener.showDate(year, month, day);
+        mListener.showDate(year, month+1, day);
         this.dismiss();
     }
 }

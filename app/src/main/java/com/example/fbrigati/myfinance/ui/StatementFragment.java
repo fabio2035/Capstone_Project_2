@@ -126,6 +126,8 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
             }
         });
 
+        addDummyData();
+
         return rootView;
 
     }
@@ -158,7 +160,15 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
 
         ContentValues cv = new ContentValues();
 
-        cv.put(DataContract.StatementEntry.COLUMN_ACCOUNT_NUMBER, "229801925");
+        cv.put(DataContract.CategoryEntry.COLUMN_CATEGORY_USER_KEY, "Food");
+        cv.put(DataContract.CategoryEntry.COLUMN_ACQUIRER_ID, "MacDonalds");
+        cv.put(DataContract.CategoryEntry.COLUMN_CATEGORY_DEFAULT, "Food");
+
+        getContext().getContentResolver().insert(DataContract.CategoryEntry.CONTENT_URI, cv);
+
+        Log.v(LOG_TAG, "Inserted data to category table..");
+
+        /*cv.put(DataContract.StatementEntry.COLUMN_ACCOUNT_NUMBER, "229801925");
         cv.put(DataContract.StatementEntry.COLUMN_DATE, 20170505);
         cv.put(DataContract.StatementEntry.COLUMN_TIME, "1705");
         cv.put(DataContract.StatementEntry.COLUMN_SEQUENCE, 2);
@@ -169,7 +179,7 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
         cv.put(DataContract.StatementEntry.COLUMN_ACQUIRER_ID, "1044510");
         cv.put(DataContract.StatementEntry.COLUMN_CATEGORY_KEY, "N/A");
 
-        getContext().getContentResolver().insert(DataContract.StatementEntry.CONTENT_URI, cv);
+        getContext().getContentResolver().insert(DataContract.CategoryEntry.CONTENT_URI, cv);*/
 
     }
 

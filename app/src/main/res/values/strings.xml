@@ -30,6 +30,12 @@
     <string name="cur_base_symbol_label">Base Currency:</string>
 
 
+    <!-- Available Transaction Types -->
+    <string-array name="trx_type">
+        <item>Credit</item>
+        <item>Debit</item>
+    </string-array>
+
     <!-- free version currencies -->
     <string-array name="cur_symbols">
         <item>MZN</item>
@@ -53,6 +59,14 @@
     <string name="edit_amount">Edit Amount</string>
     <string name="edit_description">Transaction Description</string>
     <string name="time_picker">10:48</string>
+
+    <string name="category_spinner_prompt">Choose Category</string>
+    <string name="accessibility_category_spinner">Choose Transaction Category</string>
+    <string name="edit_trans_save_btn">Save</string>
+    <string name="accessibility_saveTrans_btn">Save Transaction Details</string>
+    <string name="edit_trans_close_btn">Close</string>
+    <string name="trans_edit_category_label">Category :</string>
+    <string name="trans_edit_trxType_label">Transaction Type</string>
 
 
 </resources>

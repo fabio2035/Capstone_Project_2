@@ -4,10 +4,12 @@ import android.annotation.TargetApi;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.widget.DatePicker;
 import android.widget.TimePicker;
 
@@ -16,6 +18,33 @@ import android.widget.TimePicker;
  */
 
 public class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
+
+    final static String LOG_TAG = TimePickerFragment.class.getSimpleName();
+
+    public interface TimeSetListenerCustom{
+        void showTime(int hour, int minute);
+    }
+
+    public TimePickerFragment(){
+
+    }
+
+    TimeSetListenerCustom mListener;
+
+    // Override the Fragment.onAttach() method to instantiate the TimeSetListenerCustom
+    @Override
+    public void onAttach(Context activity) {
+        super.onAttach(activity);
+        // Verify that the host activity implements the callback interface
+        try {
+            // Instantiate the TimeSetListenerCustom so we can send events to the host
+            mListener = (TimePickerFragment.TimeSetListenerCustom) activity;
+        } catch (ClassCastException e) {
+            // The activity doesn't implement the interface, throw exception
+            throw new ClassCastException(activity.toString()
+                    + " must implement DateSetListener");
+        }
+    }
 
     @TargetApi(24)
     @Override
@@ -33,6 +62,11 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+// Do something with the time chosen by the user
+        mListener = (TimePickerFragment.TimeSetListenerCustom) getActivity();
+        Log.v(LOG_TAG, "Variables: " + hourOfDay + "," + minute);
 
+        mListener.showTime(hourOfDay, minute);
+        this.dismiss();
     }
 }

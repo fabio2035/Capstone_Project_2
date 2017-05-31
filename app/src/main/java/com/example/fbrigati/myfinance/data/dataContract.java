@@ -102,6 +102,20 @@ public class DataContract {
         // Table name
         public static final String TABLE_NAME = "category";
 
+        public static final String[] CATEGORY_COLUMNS = {
+                CategoryEntry.TABLE_NAME + "." + CategoryEntry._ID,
+                CategoryEntry.COLUMN_ACQUIRER_ID,
+                CategoryEntry.COLUMN_CATEGORY_DEFAULT,
+                CategoryEntry.COLUMN_CATEGORY_USER_KEY
+        };
+
+        //bounded columns...
+        public static final int COL_CATEGORY_USER_KEY = 1;
+        public static final int COL_CATEGORY_DEFAULT = 2;
+        public static final int COL_ACQUIRER_ID = 3;
+
+
+
         //table columns names...
         public static final String COLUMN_ACQUIRER_ID = "acquirer_id";
         public static final String COLUMN_CATEGORY_DEFAULT = "desc_default";

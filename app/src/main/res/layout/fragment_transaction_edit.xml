@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -18,6 +19,7 @@
         android:hint="@string/trans_amt_edit_hint"
         android:contentDescription="@string/edit_amount"
         android:inputType="numberDecimal"
+        android:layout_marginTop="@dimen/activity_horizontal_margin"
         android:layout_marginBottom="@dimen/activity_horizontal_margin"
         />
 
@@ -26,46 +28,108 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/trans_desc_edit_hint"
-        android:inputType="text"
+        android:inputType="textCapSentences"
         android:contentDescription="@string/edit_description"
         android:layout_below="@+id/amount_id"
-        android:layout_marginBottom="@dimen/activity_horizontal_margin"/>
+        android:layout_marginTop="@dimen/activity_horizontal_margin"
+        android:layout_marginBottom="@dimen/activity_horizontal_margin"
+        />
 
-    <LinearLayout
+    <android.support.v7.widget.GridLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        app:orientation="horizontal"
+        app:columnCount="2"
         >
 
     <Button
         android:id="@+id/date_picker_btn"
-        android:layout_width="154dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:layout_columnWeight="1"
         android:text="@string/date_picker"
         android:layout_below="@+id/description_id"
-        android:layout_gravity="center_horizontal"
         android:contentDescription="@string/accessibility_datepicker_btn"
-        android:layout_marginBottom="@dimen/activity_horizontal_margin"
         />
 
 
         <Button
             android:id="@+id/time_picker_btn"
-            android:layout_width="154dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/time_picker"
-            android:layout_alignEnd="@+id/date_picker"
-            android:layout_alignRight="@+id/date_picker"
-            android:layout_gravity="center_horizontal"
+            app:layout_columnWeight="1"
             android:contentDescription="@string/accessibility_timepicker_btn"
             />
 
-    </LinearLayout>
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            app:layout_columnWeight="1"
+            android:text="@string/trans_edit_trxType_label"
+            android:layout_marginTop="@dimen/activity_horizontal_margin"
+            android:layout_marginBottom="@dimen/activity_horizontal_margin"
+            />
 
-    <Spinner
-        android:id="@+id/category_spinner_id"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_columnWeight="1"/>
+
+        <Spinner
+            android:id="@+id/trxType_spinner_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_columnWeight="1"
+            android:prompt="@string/trxType_spinner_prompt"
+            android:contentDescription="@string/accessibility_category_spinner"
+            android:layout_marginTop="@dimen/activity_horizontal_margin"
+            android:layout_marginBottom="@dimen/activity_horizontal_margin"/>
+
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            app:layout_columnWeight="1"
+            android:text="@string/trans_edit_category_label"
+            android:layout_marginTop="@dimen/activity_horizontal_margin"
+            android:layout_marginBottom="@dimen/activity_horizontal_margin"
+            />
+
+
+        <Spinner
+            android:id="@+id/category_spinner_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_columnWeight="1"
+            android:prompt="@string/category_spinner_prompt"
+            android:contentDescription="@string/accessibility_category_spinner"
+            android:layout_marginTop="@dimen/activity_horizontal_margin"
+            android:layout_marginBottom="@dimen/activity_horizontal_margin"/>
+
+        <Space
+            android:layout_height="120dp"
+            android:layout_width="wrap_content"
+            app:layout_columnSpan="2"
+            />
+
+
+        <Button
+            android:id="@+id/edit_trans_save_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_columnWeight="1"
+            android:text="@string/edit_trans_save_btn"
+            android:contentDescription="@string/accessibility_saveTrans_btn"
+            />
+
+
+        <Button
+            android:id="@+id/edit_trans_close_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/edit_trans_close_btn"
+            app:layout_columnWeight="1"
+            android:contentDescription="@string/accessibility_timepicker_btn"
+            />
+
+    </android.support.v7.widget.GridLayout>
+
+
 
 </LinearLayout>

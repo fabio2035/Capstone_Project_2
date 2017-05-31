@@ -48,7 +48,7 @@
                 android:value="com.example.fbrigati.myfinance.ItemListActivity" />
         </activity>
         <activity
-            android:name=".ui.StatementFragEditTrxDialog"
+            android:name=".ui.StatementActEditTrxDialog"
             android:label="@string/title_trxEdit_detail"
             android:parentActivityName=".ui.StatementActivity"
             android:theme="@style/AppTheme">
