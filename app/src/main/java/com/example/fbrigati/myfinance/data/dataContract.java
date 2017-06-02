@@ -51,7 +51,7 @@ public class DataContract {
                 StatementEntry.COLUMN_CATEGORY_KEY
         };
 
-        //bounded columns...
+        //bounded columns for general statment...
         public static final int COL_ACCOUNT_NUMBER = 1;
         public static final int COL_DATE = 2;
         public static final int COL_TIME = 3;
@@ -86,6 +86,11 @@ public class DataContract {
         public static int getDateFromUri(Uri uri) {
             return Integer.parseInt(uri.getPathSegments().get(2));
         }
+
+        public static int getIDFromUri(Uri uri) {
+            return Integer.parseInt(uri.getLastPathSegment());
+        }
+
     }
 
     //Definition of categroy table *****

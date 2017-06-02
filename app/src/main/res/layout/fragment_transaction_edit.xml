@@ -10,7 +10,16 @@
     android:layout_marginBottom="@dimen/activity_horizontal_margin"
     android:layout_marginEnd="@dimen/activity_horizontal_margin">
 
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
+    <android.support.v7.widget.GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:orientation="horizontal"
+        app:columnCount="2"
+        >
 
     <EditText
         android:id="@+id/amount_id"
@@ -21,6 +30,7 @@
         android:inputType="numberDecimal"
         android:layout_marginTop="@dimen/activity_horizontal_margin"
         android:layout_marginBottom="@dimen/activity_horizontal_margin"
+        app:layout_columnSpan="2"
         />
 
     <EditText
@@ -33,14 +43,10 @@
         android:layout_below="@+id/amount_id"
         android:layout_marginTop="@dimen/activity_horizontal_margin"
         android:layout_marginBottom="@dimen/activity_horizontal_margin"
+        app:layout_columnSpan="2"
         />
 
-    <android.support.v7.widget.GridLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:orientation="horizontal"
-        app:columnCount="2"
-        >
+
 
     <Button
         android:id="@+id/date_picker_btn"
@@ -77,7 +83,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_columnWeight="1"
-            android:prompt="@string/trxType_spinner_prompt"
             android:contentDescription="@string/accessibility_category_spinner"
             android:layout_marginTop="@dimen/activity_horizontal_margin"
             android:layout_marginBottom="@dimen/activity_horizontal_margin"/>
@@ -130,6 +135,6 @@
 
     </android.support.v7.widget.GridLayout>
 
-
+</ScrollView>
 
 </LinearLayout>

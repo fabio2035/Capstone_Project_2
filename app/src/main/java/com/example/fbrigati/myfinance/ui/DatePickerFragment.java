@@ -4,7 +4,7 @@ import android.annotation.TargetApi;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.icu.util.Calendar;
+import java.util.Calendar;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
@@ -47,7 +47,6 @@ public class DatePickerFragment extends DialogFragment
     }
 
 
-    @TargetApi(24)
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use the current date as the default date in the picker
@@ -60,7 +59,7 @@ public class DatePickerFragment extends DialogFragment
         return new DatePickerDialog(getActivity(), this, year, month, day);
     }
 
-    @TargetApi(24)
+
     public void onDateSet(DatePicker view, int year, int month, int day) {
 
         // Do something with the date chosen by the user

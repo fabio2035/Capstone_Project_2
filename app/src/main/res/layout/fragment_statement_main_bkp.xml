@@ -12,8 +12,6 @@
     android:layout_marginEnd="@dimen/activity_horizontal_margin"
     >
 
-
-
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
@@ -22,12 +20,6 @@
         android:layout_margin="@dimen/fab_margin"
         app:srcCompat="@android:drawable/stat_notify_chat" />
 
-    <!-- The table header -->
-    <include layout="@layout/item_statement_header"
-        android:id="@+id/header"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        />
     <!-- The table details -->
     <ListView
         android:id="@+id/item_statement_container"
@@ -43,7 +35,8 @@
         android:text="@string/empty_statement_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center_horizontal"
+        android:textAppearance="@style/WarningTextStyle"
+        android:gravity="center_horizontal|center_vertical"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingEnd="@dimen/activity_horizontal_margin"
         android:paddingLeft="@dimen/activity_horizontal_margin"

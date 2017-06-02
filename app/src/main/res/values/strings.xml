@@ -32,8 +32,8 @@
 
     <!-- Available Transaction Types -->
     <string-array name="trx_type">
-        <item>Credit</item>
         <item>Debit</item>
+        <item>Credit</item>
     </string-array>
 
     <!-- free version currencies -->

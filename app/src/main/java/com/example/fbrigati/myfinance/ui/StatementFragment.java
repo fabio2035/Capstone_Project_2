@@ -101,8 +101,6 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 showTransactionEditDialog(id);
-                //Snackbar.make(view, "Replace with edit transaction action", Snackbar.LENGTH_LONG)
-                //        .setAction("Action", null).show();
             }
         });
 
@@ -121,8 +119,6 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
             @Override
             public void onClick(View view) {
                 showTransactionAddDialog(0L);
-               // Snackbar.make(view, "Replace with add transaction action", Snackbar.LENGTH_LONG)
-               //         .setAction("Action", null).show();
             }
         });
 
@@ -134,7 +130,8 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
 
     private void showTransactionEditDialog(Long id) {
         intent = new Intent(getActivity(), StatementActEditTrxDialog.class);
-        intent.putExtra(StatementActEditTrxDialog.ID_MESSAGE, 0);
+        Log.v(LOG_TAG, "Uri for editing Statement entry: " + DataContract.StatementEntry.buildStatementUri(id));
+        intent.setData(DataContract.StatementEntry.buildStatementUri(id));
         getActivity().startActivity(intent);
     }
 
@@ -160,26 +157,14 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
 
         ContentValues cv = new ContentValues();
 
-        cv.put(DataContract.CategoryEntry.COLUMN_CATEGORY_USER_KEY, "Food");
+        cv.put(DataContract.CategoryEntry.COLUMN_CATEGORY_USER_KEY, "Transport");
+        cv.put(DataContract.CategoryEntry.COLUMN_CATEGORY_DEFAULT, "Transport");
         cv.put(DataContract.CategoryEntry.COLUMN_ACQUIRER_ID, "MacDonalds");
-        cv.put(DataContract.CategoryEntry.COLUMN_CATEGORY_DEFAULT, "Food");
 
         getContext().getContentResolver().insert(DataContract.CategoryEntry.CONTENT_URI, cv);
 
         Log.v(LOG_TAG, "Inserted data to category table..");
 
-        /*cv.put(DataContract.StatementEntry.COLUMN_ACCOUNT_NUMBER, "229801925");
-        cv.put(DataContract.StatementEntry.COLUMN_DATE, 20170505);
-        cv.put(DataContract.StatementEntry.COLUMN_TIME, "1705");
-        cv.put(DataContract.StatementEntry.COLUMN_SEQUENCE, 2);
-        cv.put(DataContract.StatementEntry.COLUMN_DESCRIPTION_ORIGIN, "VB2 SB 100");
-        cv.put(DataContract.StatementEntry.COLUMN_DESCRIPTION_USER, "VB2 SB 100");
-        cv.put(DataContract.StatementEntry.COLUMN_AMOUNT, 100.20);
-        cv.put(DataContract.StatementEntry.COLUMN_TRANSACTION_CODE, 4);
-        cv.put(DataContract.StatementEntry.COLUMN_ACQUIRER_ID, "1044510");
-        cv.put(DataContract.StatementEntry.COLUMN_CATEGORY_KEY, "N/A");
-
-        getContext().getContentResolver().insert(DataContract.CategoryEntry.CONTENT_URI, cv);*/
 
     }
 
@@ -218,7 +203,6 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
 
         switch (loader.getId()) {
             case STATEMENT_LOADER:
-
                 if (data != null && data.moveToFirst() && data.getCount() > 0) {
                     statementAdapter.swapCursor(data);
                     updateEmptyView(1);
@@ -226,8 +210,6 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
 
                 break;
         }
-
-
     }
 
     @Override

@@ -27,9 +27,9 @@ public class DataProvider extends ContentProvider {
     private DataDBHelper mOpenHelper;
 
     static final int STATEMENT = 100;
-    //static final int STATEMENT_WITH_ID = 101;
-    static final int STATEMENT_WITH_ACCTNUMBER = 101;
-    static final int STATEMENT_WITH_ACCTNUMBER_DATE = 102;
+    static final int STATEMENT_WITH_ID = 101;
+    static final int STATEMENT_WITH_ACCTNUMBER = 102;
+    static final int STATEMENT_WITH_ACCTNUMBER_DATE = 103;
     static final int CATEGORY = 200;
     static final int CATEGORY_WITH_ACQUIRER = 201;
     static final int BUDGET = 300;
@@ -44,14 +44,14 @@ public class DataProvider extends ContentProvider {
         mStatementQueryBuilder = new SQLiteQueryBuilder();
 
         //This is an inner join which looks like
-        //statement INNER JOIN category ON statement.category = category._id
+        //statement LEFT JOIN category ON statement.category = category._id
         mStatementQueryBuilder.setTables(
-                DataContract.StatementEntry.TABLE_NAME + " INNER JOIN " +
+                DataContract.StatementEntry.TABLE_NAME + " LEFT JOIN " +
                         DataContract.CategoryEntry.TABLE_NAME +
                         " ON " + DataContract.StatementEntry.TABLE_NAME +
                         "." + DataContract.StatementEntry.COLUMN_CATEGORY_KEY +
                         " = " + DataContract.CategoryEntry.TABLE_NAME +
-                        "." + DataContract.CategoryEntry._ID);
+                        "." + DataContract.CategoryEntry.COLUMN_CATEGORY_USER_KEY);
     }
 
     static{
@@ -59,6 +59,11 @@ public class DataProvider extends ContentProvider {
         mCurrencyQueryBuilder.setTables(DataContract.CurrencyExEntry.TABLE_NAME);}
 
 
+
+    //statement._ID = ?
+    private static final String sStatementIDSelection =
+            DataContract.StatementEntry.TABLE_NAME +
+                    "." + DataContract.StatementEntry._ID + " = ?";
 
 
         //currencyex.symbol like '%Base'
@@ -100,7 +105,7 @@ public class DataProvider extends ContentProvider {
 
         // For each type of URI you want to add, create a corresponding code.
         matcher.addURI(authority, DataContract.PATH_STATEMENT, STATEMENT);
-        //matcher.addURI(authority, DataContract.PATH_STATEMENT + "/*", STATEMENT_WITH_ID);
+        matcher.addURI(authority, DataContract.PATH_STATEMENT + "/*", STATEMENT_WITH_ID);
         matcher.addURI(authority, DataContract.PATH_STATEMENT + "/#", STATEMENT_WITH_ACCTNUMBER);
         matcher.addURI(authority, DataContract.PATH_STATEMENT + "/#/*", STATEMENT_WITH_ACCTNUMBER_DATE);
 
@@ -129,6 +134,12 @@ public class DataProvider extends ContentProvider {
 
         Cursor retCursor;
         switch (sUriMatcher.match(uri)) {
+            // statement/*
+            case STATEMENT_WITH_ID:
+            {
+                retCursor = getStatementByID(uri, projection, sortOrder);
+                break;
+            }
             // statement/#"
             case STATEMENT_WITH_ACCTNUMBER:
             {
@@ -203,6 +214,30 @@ public class DataProvider extends ContentProvider {
         }
         retCursor.setNotificationUri(getContext().getContentResolver(), uri);
         return retCursor;
+    }
+
+    private Cursor getStatementByID(Uri uri, String[] projection, String sortOrder) {
+
+        String ID = String.valueOf(DataContract.StatementEntry.getIDFromUri(uri));
+
+        Log.v(LOG_TAG, "ID = " +ID);
+
+        return mStatementQueryBuilder.query(mOpenHelper.getReadableDatabase(),
+                new String[]{ DataContract.StatementEntry.COLUMN_TRANSACTION_CODE,
+                DataContract.StatementEntry.COLUMN_CATEGORY_KEY,
+                DataContract.StatementEntry.COLUMN_TRANSACTION_CODE,
+                DataContract.StatementEntry.COLUMN_DESCRIPTION_USER,
+                DataContract.StatementEntry.COLUMN_DATE,
+                DataContract.StatementEntry.COLUMN_TIME,
+                DataContract.StatementEntry.COLUMN_AMOUNT,
+                DataContract.CategoryEntry.COLUMN_CATEGORY_USER_KEY,
+                DataContract.StatementEntry.COLUMN_TRANSACTION_CODE},
+                sStatementIDSelection,
+                new String[]{ID},
+                null,
+                null,
+                sortOrder
+        );
     }
 
     private Cursor getStatementByAccount(Uri uri, String[] projection, String sortOrder) {
