@@ -122,7 +122,7 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
             }
         });
 
-        addDummyData();
+        //addDummyData();
 
         return rootView;
 
@@ -156,6 +156,7 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
     private void addDummyData() {
 
         ContentValues cv = new ContentValues();
+
 
         cv.put(DataContract.CategoryEntry.COLUMN_CATEGORY_USER_KEY, "Transport");
         cv.put(DataContract.CategoryEntry.COLUMN_CATEGORY_DEFAULT, "Transport");

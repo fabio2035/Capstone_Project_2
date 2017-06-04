@@ -20,7 +20,7 @@ public class DataDBHelper extends SQLiteOpenHelper {
 
 
     // If you change the database schema, you must increment the database version.
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 12;
 
     static final String DATABASE_NAME = "finance.db";
 
@@ -74,7 +74,7 @@ public class DataDBHelper extends SQLiteOpenHelper {
 
                 // to assure user does not repeat budgets for different categories..
                 " UNIQUE (" + BudgetEntry.COLUMN_MONTH + ", " +
-                BudgetEntry.COLUMN_YEAR + ", " + BudgetEntry.COLUMN_CATEGORY + "));";
+                BudgetEntry.COLUMN_YEAR + ", " + BudgetEntry.COLUMN_CATEGORY + ") ON CONFLICT REPLACE);";
 
         //Creation of currencyex table
         final String SQL_CREATE_CUREX_TABLE = "CREATE TABLE " + CurrencyExEntry.TABLE_NAME + " (" +
@@ -85,10 +85,40 @@ public class DataDBHelper extends SQLiteOpenHelper {
                 "UNIQUE (" + CurrencyExEntry.COLUMN_SYMBOL + ") ON CONFLICT REPLACE);";
 
 
+        //Creation of primary budget items
+        final String SQL_CREATE_BUDGET_ITEMS = "INSERT INTO " + BudgetEntry.TABLE_NAME +
+        " (" + BudgetEntry.COLUMN_YEAR + "," + BudgetEntry.COLUMN_MONTH + "," +
+                 BudgetEntry.COLUMN_CATEGORY + "," + BudgetEntry.COLUMN_AMOUNT + ") " +
+                "VALUES " +
+                "(strftime('%Y','now'), strftime('%m','now'),'Transportation',0)," +
+                "(strftime('%Y','now'), strftime('%m','now'),'Leisure',0)," +
+                "(strftime('%Y','now'), strftime('%m','now'),'Food',0)," +
+                "(strftime('%Y','now'), strftime('%m','now'),'Education',0)," +
+                "(strftime('%Y','now'), strftime('%m','now'),'HealthCare',0)," +
+                "(strftime('%Y','now'), strftime('%m','now'),'Groceries',0)," +
+                "(strftime('%Y','now'), strftime('%m','now'),'Rent',0);";
+
+
+        //Creation of primary budget items
+        final String SQL_CREATE_CATEGORY_ITEMS = "INSERT INTO " + CategoryEntry.TABLE_NAME +
+                " (" + CategoryEntry.COLUMN_CATEGORY_USER_KEY + "," + CategoryEntry.COLUMN_CATEGORY_DEFAULT + "," +
+                CategoryEntry.COLUMN_ACQUIRER_ID + ") " +
+                "VALUES " +
+                "('Transportation','Transportation',0)," +
+                "('Leisure','Leisure',0)," +
+                "('Food','Food',0)," +
+                "('Education','Education',0)," +
+                "('HealthCare','HealthCare',0)," +
+                "('Groceries','Groceries',0)," +
+                "('Rent','Rent',0);";
+
+
         db.execSQL(SQL_CREATE_STATEMENT_TABLE);
         db.execSQL(SQL_CREATE_CATEGORY_TABLE);
         db.execSQL(SQL_CREATE_BUDGET_TABLE);
         db.execSQL(SQL_CREATE_CUREX_TABLE);
+        db.execSQL(SQL_CREATE_BUDGET_ITEMS);
+        db.execSQL(SQL_CREATE_CATEGORY_ITEMS);
 
     }
 

@@ -67,6 +67,7 @@
     <string name="edit_trans_close_btn">Close</string>
     <string name="trans_edit_category_label">Category :</string>
     <string name="trans_edit_trxType_label">Transaction Type</string>
+    <string name="empty_budget_list">Register Spendings to set budgets!</string>
 
 
 </resources>

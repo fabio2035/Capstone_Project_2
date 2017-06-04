@@ -88,7 +88,7 @@ public class BudgetItemAdapter extends BaseAdapter {
         }
 
         Budget item = (Budget)this.getItem(position);
-        CheckedTextView checked = (CheckedTextView)convertView.findViewById(R.id.budgetchecked);
+        TextView checked = (TextView)convertView.findViewById(R.id.budgetTitle);
         TextView budgetset = (TextView)convertView.findViewById(R.id.budgetset);
         TextView budgetspent = (TextView)convertView.findViewById(R.id.budgetspent);
         ImageView img = (ImageView)convertView.findViewById(R.id.budgeticon);

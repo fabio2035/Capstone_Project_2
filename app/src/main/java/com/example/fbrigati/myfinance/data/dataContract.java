@@ -146,6 +146,13 @@ public class DataContract {
         // Table name
         public static final String TABLE_NAME = "budget";
 
+        //bounded columns...
+        public static final int COL_MONTH = 1;
+        public static final int COL_YEAR = 2;
+        public static final int COL_AMOUNT = 3;
+        public static final int COL_CATEGORY = 4;
+        public static final int COL_SPENT = 5;
+
         //table columns names...
         public static final String COLUMN_YEAR = "year";
         public static final String COLUMN_MONTH = "month";
@@ -155,6 +162,18 @@ public class DataContract {
 
         public static Uri buildBudgetUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+
+        public static String getBudgetCategory(Uri uri){
+            return uri.getPathSegments().get(1);
+        }
+
+        public static Uri buildBudgetMonth(int month) {
+            return CONTENT_URI.buildUpon().appendPath(String.valueOf(month)).build();
+        }
+
+        public static int getBudgetMonth(Uri uri){
+            return Integer.parseInt(uri.getLastPathSegment());
         }
 
     }

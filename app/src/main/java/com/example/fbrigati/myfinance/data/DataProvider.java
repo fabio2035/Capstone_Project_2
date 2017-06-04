@@ -33,12 +33,14 @@ public class DataProvider extends ContentProvider {
     static final int CATEGORY = 200;
     static final int CATEGORY_WITH_ACQUIRER = 201;
     static final int BUDGET = 300;
-    static final int BUDGET_WITH_YEAR_MONTH = 301;
+    static final int BUDGET_WITH_MONTH = 301;
     static final int CUREX = 400;
     static final int CUREX_WITH_BASE = 401;
 
     private static final SQLiteQueryBuilder mStatementQueryBuilder;
     private static final SQLiteQueryBuilder mCurrencyQueryBuilder;
+
+
 
     static{
         mStatementQueryBuilder = new SQLiteQueryBuilder();
@@ -113,7 +115,7 @@ public class DataProvider extends ContentProvider {
         matcher.addURI(authority, DataContract.PATH_CATEGORY + "/*", CATEGORY_WITH_ACQUIRER);
 
         matcher.addURI(authority, DataContract.PATH_BUDGET, BUDGET);
-        matcher.addURI(authority, DataContract.PATH_BUDGET + "/#/*", BUDGET_WITH_YEAR_MONTH);
+        matcher.addURI(authority, DataContract.PATH_BUDGET + "/#", BUDGET_WITH_MONTH);
 
         matcher.addURI(authority, DataContract.PATH_CUREX, CUREX);
         matcher.addURI(authority, DataContract.PATH_CUREX + "/*", CUREX_WITH_BASE);
@@ -178,19 +180,11 @@ public class DataProvider extends ContentProvider {
                 break;
             }
             // "Budget"
-            case BUDGET: {
-                retCursor = mOpenHelper.getReadableDatabase().query(
-                        DataContract.BudgetEntry.TABLE_NAME,
-                        projection,
-                        selection,
-                        selectionArgs,
-                        null,
-                        null,
-                        sortOrder
-                );
+            case BUDGET_WITH_MONTH: {
+                retCursor = getBudgetWithMonth(uri, projection, sortOrder);
                 break;
             }
-            // "Budget"
+            // "Currencies"
             case CUREX: {
                 retCursor = mOpenHelper.getReadableDatabase().query(
                         DataContract.CurrencyExEntry.TABLE_NAME,
@@ -203,7 +197,7 @@ public class DataProvider extends ContentProvider {
                 );
                 break;
             }
-            // "Budget"
+            // "Currencies"
             case CUREX_WITH_BASE: {
                 Log.v(LOG_TAG, "inside CUREX_WITH_BASE");
                 retCursor = getCurrenciesByBaseCurrency(uri, projection, sortOrder);
@@ -214,6 +208,20 @@ public class DataProvider extends ContentProvider {
         }
         retCursor.setNotificationUri(getContext().getContentResolver(), uri);
         return retCursor;
+    }
+
+    private Cursor getBudgetWithMonth(Uri uri, String[] projection, String sortOrder) {
+
+        //String category = DataContract.BudgetEntry.getBudgetCategory(uri);
+        int month = DataContract.BudgetEntry.getBudgetMonth(uri);
+
+        return mOpenHelper.getReadableDatabase().rawQuery(
+                "select S._ID, S.month, S.year , S.category, S.amount, T.amount From budget as S inner join " +
+                        "(select substr(a.date,5,2)*1 as Month, sum(amount) amount, category from statement as a " +
+                        "group by category, substr(a.date,5,2)*1) as T ON " +
+                        "S.month = T.month and S.category = T.category " +
+                        "where S.month = ? ",new String[] {String.valueOf(month)});
+
     }
 
     private Cursor getStatementByID(Uri uri, String[] projection, String sortOrder) {
@@ -273,7 +281,7 @@ public class DataProvider extends ContentProvider {
                 return DataContract.CategoryEntry.CONTENT_ITEM_TYPE;
             case BUDGET:
                 return DataContract.BudgetEntry.CONTENT_TYPE;
-            case BUDGET_WITH_YEAR_MONTH:
+            case BUDGET_WITH_MONTH:
                 return DataContract.BudgetEntry.CONTENT_ITEM_TYPE;
             case CUREX:
                 return DataContract.CurrencyExEntry.CONTENT_TYPE;

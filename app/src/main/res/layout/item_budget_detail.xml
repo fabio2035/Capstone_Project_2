@@ -3,88 +3,104 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     app:columnCount="2">
 
     <ImageView
         android:id="@+id/budgeticon"
         android:layout_width="45dp"
         android:layout_height="35dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/activity_horizontal_margin"
         android:src="@drawable/loco_main"
         app:layout_columnWeight="1"
         android:paddingRight="70dp" />
 
     <TextView
-        android:id="@+id/budgetchecked"
+        android:id="@+id/budgetTitle"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="35dp"
         android:gravity="left|center_horizontal"
         android:text="test"
         android:textSize="20sp"
         android:textStyle="bold"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/activity_horizontal_margin"
         app:layout_columnWeight="6"
-        android:layout_marginEnd="10dp"
-        android:layout_marginRight="10dp"/>
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"/>
 
     <TextView
         android:id="@+id/budget_goal_label"
         android:text="@string/budget_goal_label"
-        android:paddingTop="10dp"
-        android:layout_marginLeft="20dp"
+        android:paddingTop="@dimen/activity_horizontal_margin"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:paddingLeft="10dp"
         app:layout_columnWeight="1"
-        android:layout_marginTop="10dp" />
+        android:layout_marginTop="@dimen/element_top_margin" />
 
     <TextView
         android:id="@+id/budgetset"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="$1000"
-        android:paddingTop="10dp"
-        android:paddingRight="15dp"
+        android:paddingTop="@dimen/activity_horizontal_margin"
         app:layout_columnWeight="1"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginTop="@dimen/element_top_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:gravity="center" />
 
     <TextView
         android:id="@+id/budget_spent_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:text="@string/budget_spent_label"
         android:paddingTop="10dp"
         app:layout_columnWeight="1"
-        android:layout_marginLeft="20dp"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:gravity="fill_horizontal"
-        android:paddingLeft="10dp"
-        android:layout_marginTop="10dp" />
+        android:layout_marginTop="@dimen/element_top_margin" />
 
     <TextView
         android:id="@+id/budgetspent"
         android:text="$500"
-        android:paddingTop="10dp"
         app:layout_columnWeight="1"
-        android:layout_marginBottom="10dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="@dimen/element_top_margin"
         android:gravity="center"
-        android:layout_marginRight="10dp" />
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="10dp"/>
 
+<LinearLayout
+    app:layout_columnSpan="2"
+    app:layout_gravity="center_horizontal"
+    android:layout_marginRight="15dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginTop="@dimen/element_top_margin"
+    android:orientation="vertical"
+    android:paddingEnd="80dp"
+    android:paddingRight="80dp"
+    >
 
     <ProgressBar
         android:id="@+id/progbudget"
         style="?android:attr/progressBarStyleHorizontal"
         android:max="100"
-        android:layout_width="200dp"
+        android:layout_width="260dp"
         android:layout_height="wrap_content"
-        android:layout_marginRight="5dp"
-        android:layout_marginLeft="10dp"
         android:layout_centerHorizontal="true"
-        app:layout_columnSpan="2"
-        android:layout_marginTop="5dp"
-        app:layout_gravity="center_horizontal"
-        android:layout_marginEnd="80dp" />
+        app:layout_gravity="center_horizontal" />
+
+    <TextView
+        android:id="@+id/budget_percent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/SmallTextStyle"
+        tools:text="25%"
+        android:paddingRight="10dp"
+        android:paddingEnd="10dp"
+        android:layout_gravity="right"/>
+
+</LinearLayout>
+
+
+
 
 </android.support.v7.widget.GridLayout>

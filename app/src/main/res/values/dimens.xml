@@ -14,4 +14,9 @@
 
 
     <dimen name="detail_vertical_margin">8dp</dimen>
+
+    <!-- Closely grouped elements -->
+    <dimen name="element_top_margin">5dp</dimen>
+    <dimen name="element_bottom_margin">5dp</dimen>
+
 </resources>

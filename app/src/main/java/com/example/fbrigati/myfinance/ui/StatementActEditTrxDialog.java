@@ -316,7 +316,6 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
             case STATEMENT_LOADER_ID:
                 if (data != null && data.moveToFirst() && data.getCount() > 0) {
 
-
                     Log.v(LOG_TAG, "Amount: " + String.valueOf(data.getDouble(6)));
 
                     Log.v(LOG_TAG, "| description: " + data.getString(3));

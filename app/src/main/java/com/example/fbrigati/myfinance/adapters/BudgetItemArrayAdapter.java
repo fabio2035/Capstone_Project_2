@@ -42,7 +42,7 @@ public class BudgetItemArrayAdapter extends ArrayAdapter<Budget> {
 
             holder = new ViewHolder();
 
-            holder.checked = (TextView) convertView.findViewById(R.id.budgetchecked);
+            holder.checked = (TextView) convertView.findViewById(R.id.budgetTitle);
             holder.budgetset = (TextView) convertView.findViewById(R.id.budgetset);
             holder.budgetspent = (TextView) convertView.findViewById(R.id.budgetspent);
             holder.img = (ImageView) convertView.findViewById(R.id.budgeticon);
