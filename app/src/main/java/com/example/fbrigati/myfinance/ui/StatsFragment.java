@@ -305,7 +305,7 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
         String dateRaw = "";
 
         for (int i = 0; i < data.getCount(); i++) {
-            
+
             dateRaw = String.valueOf(data.getInt(1));
             Log.v(LOG_TAG, "Value for i: " + i + " , " + Integer.parseInt(dateRaw.substring(6/8)));
             float val = (float) data.getDouble(2);
