@@ -88,5 +88,20 @@
     </style>
 
 
+    <style name="widgetwarningTextStyle">
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">#FFF</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+
+    <style name="widgetTextStyle">
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">#FFF</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
 
 </resources>

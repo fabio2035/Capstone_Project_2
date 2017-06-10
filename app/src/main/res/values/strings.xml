@@ -68,6 +68,12 @@
     <string name="trans_edit_category_label">Category :</string>
     <string name="trans_edit_trxType_label">Transaction Type</string>
     <string name="empty_budget_list">Register Spendings to set budgets!</string>
+    <string name="piechartspannabletext">Spendings</string>
+    <string name="widget_todays_spendings">Total spending today:</string>
+    <string name="widget_week_spendings">Total spending this week:</string>
+    <string name="widget_month_spendings">Total for Month:</string>
+    <string name="empty_widget">Start registering your spendings!</string>
+    <string name="widget_top_label">Recently you\'ve spent:</string>
 
 
 </resources>

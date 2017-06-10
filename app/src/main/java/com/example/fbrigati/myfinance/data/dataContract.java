@@ -79,6 +79,15 @@ public class DataContract {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
 
+        public static Uri buildStatsMonthUri(int month) {
+            return CONTENT_URI.buildUpon().appendPath("stats")
+                    .appendPath(String.valueOf(month)).build();
+        }
+
+        public static int getMonthFromUri(Uri uri) {
+            return Integer.parseInt(uri.getLastPathSegment());
+        }
+
         public static String getAccountFromUri(Uri uri) {
             return uri.getPathSegments().get(1);
         }
@@ -162,6 +171,11 @@ public class DataContract {
 
         public static Uri buildBudgetUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+
+        public static Uri buildBudgetWidgetUri(int month) {
+            return CONTENT_URI.buildUpon().appendPath("widget")
+                    .appendPath(String.valueOf(month)).build();
         }
 
         public static String getBudgetCategory(Uri uri){

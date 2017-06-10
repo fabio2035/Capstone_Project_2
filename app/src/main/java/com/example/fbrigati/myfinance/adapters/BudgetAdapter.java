@@ -66,7 +66,7 @@ public class BudgetAdapter extends CursorAdapter {
         //Load icon resources
         switch (category){
             case "Transportation" : {
-                viewHolder.iconView.setImageResource(R.drawable.leisure_icon);
+                viewHolder.iconView.setImageResource(R.drawable.transportation_icon);
                 break;
             }
             case "Food" : {
@@ -101,7 +101,7 @@ public class BudgetAdapter extends CursorAdapter {
 
         viewHolder.textBudgetSpent.setText(String.valueOf(spent));
 
-        viewHolder.progressBar.setProgress(percentage.intValue()/100);
+        viewHolder.progressBar.setProgress(percentage.intValue());
 
         Log.v("BudgetApdapter_BindView", "Percentage: " + percentageFormat.format(percentage));
 

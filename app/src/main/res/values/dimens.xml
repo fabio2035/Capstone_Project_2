@@ -18,5 +18,6 @@
     <!-- Closely grouped elements -->
     <dimen name="element_top_margin">5dp</dimen>
     <dimen name="element_bottom_margin">5dp</dimen>
+    <dimen name="widget_margin">8dp</dimen>
 
 </resources>

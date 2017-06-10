@@ -29,13 +29,15 @@ public class DataProvider extends ContentProvider {
     static final int STATEMENT = 100;
     static final int STATEMENT_WITH_ID = 101;
     static final int STATEMENT_WITH_ACCTNUMBER = 102;
-    static final int STATEMENT_WITH_ACCTNUMBER_DATE = 103;
+    static final int STATEMENT_WITH_ACCTNUMBER_MONTH = 103;
     static final int CATEGORY = 200;
     static final int CATEGORY_WITH_ACQUIRER = 201;
     static final int BUDGET = 300;
     static final int BUDGET_WITH_MONTH = 301;
+    static final int BUDGET_WIDGET = 302;
     static final int CUREX = 400;
     static final int CUREX_WITH_BASE = 401;
+
 
     private static final SQLiteQueryBuilder mStatementQueryBuilder;
     private static final SQLiteQueryBuilder mCurrencyQueryBuilder;
@@ -109,13 +111,14 @@ public class DataProvider extends ContentProvider {
         matcher.addURI(authority, DataContract.PATH_STATEMENT, STATEMENT);
         matcher.addURI(authority, DataContract.PATH_STATEMENT + "/*", STATEMENT_WITH_ID);
         matcher.addURI(authority, DataContract.PATH_STATEMENT + "/#", STATEMENT_WITH_ACCTNUMBER);
-        matcher.addURI(authority, DataContract.PATH_STATEMENT + "/#/*", STATEMENT_WITH_ACCTNUMBER_DATE);
+        matcher.addURI(authority, DataContract.PATH_STATEMENT + "/*/#", STATEMENT_WITH_ACCTNUMBER_MONTH);
 
         matcher.addURI(authority, DataContract.PATH_CATEGORY, CATEGORY);
         matcher.addURI(authority, DataContract.PATH_CATEGORY + "/*", CATEGORY_WITH_ACQUIRER);
 
         matcher.addURI(authority, DataContract.PATH_BUDGET, BUDGET);
         matcher.addURI(authority, DataContract.PATH_BUDGET + "/#", BUDGET_WITH_MONTH);
+        matcher.addURI(authority, DataContract.PATH_BUDGET + "/*/#", BUDGET_WIDGET);
 
         matcher.addURI(authority, DataContract.PATH_CUREX, CUREX);
         matcher.addURI(authority, DataContract.PATH_CUREX + "/*", CUREX_WITH_BASE);
@@ -149,8 +152,8 @@ public class DataProvider extends ContentProvider {
                 break;
             }
             // "statement/#/*"
-            case STATEMENT_WITH_ACCTNUMBER_DATE: {
-                retCursor = getStatementByAccount(uri, projection, sortOrder);
+            case STATEMENT_WITH_ACCTNUMBER_MONTH: {
+                retCursor = getStatementByMOnth(uri, projection, sortOrder);
                 break;
             }
             // "statement"
@@ -184,6 +187,10 @@ public class DataProvider extends ContentProvider {
                 retCursor = getBudgetWithMonth(uri, projection, sortOrder);
                 break;
             }
+            case BUDGET_WIDGET: {
+                retCursor = getWidgetCursor(uri, projection, sortOrder);
+                break;
+            }
             // "Currencies"
             case CUREX: {
                 retCursor = mOpenHelper.getReadableDatabase().query(
@@ -203,11 +210,34 @@ public class DataProvider extends ContentProvider {
                 retCursor = getCurrenciesByBaseCurrency(uri, projection, sortOrder);
                 break;
             }
+
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
         retCursor.setNotificationUri(getContext().getContentResolver(), uri);
         return retCursor;
+    }
+
+    private Cursor getStatementByMOnth(Uri uri, String[] projection, String sortOrder) {
+        //String category = DataContract.BudgetEntry.getBudgetCategory(uri);
+        int month = DataContract.StatementEntry.getMonthFromUri(uri);
+
+        return mOpenHelper.getReadableDatabase().rawQuery(
+                "select _ID, substr(date,5,2)*1 as month, date, sum(amount) as amountsum, category from statement " +
+                        " where substr(date,5,2)*1 = ? ", new String[] {String.valueOf(month)});
+    }
+
+    private Cursor getWidgetCursor(Uri uri, String[] projection, String sortOrder) {
+
+        int month = DataContract.BudgetEntry.getBudgetMonth(uri);
+
+        return mOpenHelper.getReadableDatabase().rawQuery(
+                "select S._ID, S.month, S.year , S.category, S.amount, T.amount, T.date From budget as S inner join " +
+                        "(select substr(a.date,5,2)*1 as Month, sum(amount) amount, category, date from statement as a " +
+                        "group by category, substr(a.date,5,2)*1) as T ON " +
+                        "S.month = T.month and S.category = T.category " +
+                        "where S.month = ? ORDER BY T.date DESC LIMIT 2",new String[] {String.valueOf(month)});
+
     }
 
     private Cursor getBudgetWithMonth(Uri uri, String[] projection, String sortOrder) {
@@ -273,7 +303,7 @@ public class DataProvider extends ContentProvider {
                 return DataContract.StatementEntry.CONTENT_TYPE;
             case STATEMENT_WITH_ACCTNUMBER:
                 return DataContract.StatementEntry.CONTENT_TYPE;
-            case STATEMENT_WITH_ACCTNUMBER_DATE:
+            case STATEMENT_WITH_ACCTNUMBER_MONTH:
                 return DataContract.StatementEntry.CONTENT_TYPE;
             case CATEGORY:
                 return DataContract.CategoryEntry.CONTENT_TYPE;
@@ -282,6 +312,8 @@ public class DataProvider extends ContentProvider {
             case BUDGET:
                 return DataContract.BudgetEntry.CONTENT_TYPE;
             case BUDGET_WITH_MONTH:
+                return DataContract.BudgetEntry.CONTENT_ITEM_TYPE;
+            case BUDGET_WIDGET:
                 return DataContract.BudgetEntry.CONTENT_ITEM_TYPE;
             case CUREX:
                 return DataContract.CurrencyExEntry.CONTENT_TYPE;
@@ -393,6 +425,10 @@ public class DataProvider extends ContentProvider {
                     break;
                 case CATEGORY:
                     rowsUpdated = db.update(DataContract.CategoryEntry.TABLE_NAME, values, selection,
+                            selectionArgs);
+                    break;
+                case BUDGET:
+                    rowsUpdated = db.update(DataContract.BudgetEntry.TABLE_NAME, values, selection,
                             selectionArgs);
                     break;
                 default:

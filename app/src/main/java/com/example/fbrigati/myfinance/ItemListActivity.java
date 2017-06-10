@@ -23,7 +23,6 @@ import com.example.fbrigati.myfinance.dummy.DummyContent;
 import com.example.fbrigati.myfinance.elements.Budget;
 import com.example.fbrigati.myfinance.sync.MFSyncJob;
 import com.example.fbrigati.myfinance.ui.BudgetActivity;
-import com.example.fbrigati.myfinance.ui.BudgetFragment;
 import com.example.fbrigati.myfinance.ui.CurrenciesActivity;
 import com.example.fbrigati.myfinance.ui.CurrenciesFragment;
 import com.example.fbrigati.myfinance.ui.StatementActivity;
@@ -154,7 +153,7 @@ public class ItemListActivity extends AppCompatActivity {
                                 break;
                             case "1":
                                 intent = new Intent(context, BudgetActivity.class);
-                                intent.putExtra(BudgetFragment.ID_MESSAGE, holder.mItem.id);
+                                //intent.putExtra(BudgetFragment.ID_MESSAGE, holder.mItem.id);
                                 context.startActivity(intent);
                                 break;
                             case "2":

@@ -65,6 +65,7 @@ public class MFSyncJob extends AbstractThreadedSyncAdapter {
 
     public static final Uri invalid_currencyFetch_uri = DataContract.CurrencyExEntry.CONTENT_URI.buildUpon().appendPath("invalid").build();
 
+    public static final String ACTION_DATA_UPDATED = "com.example.fbrigati.myfinance.ACTION_DATA_UPDATED";
 
     public MFSyncJob(Context context, boolean autoInitialize) {
         super(context, autoInitialize);
