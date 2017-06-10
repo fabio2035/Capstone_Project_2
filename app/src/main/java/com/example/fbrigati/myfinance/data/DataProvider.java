@@ -29,7 +29,8 @@ public class DataProvider extends ContentProvider {
     static final int STATEMENT = 100;
     static final int STATEMENT_WITH_ID = 101;
     static final int STATEMENT_WITH_ACCTNUMBER = 102;
-    static final int STATEMENT_WITH_ACCTNUMBER_MONTH = 103;
+    static final int STATEMENT_STATS_MONTH = 103;
+    static final int STATEMENT_WIDGET_DATA = 104;
     static final int CATEGORY = 200;
     static final int CATEGORY_WITH_ACQUIRER = 201;
     static final int BUDGET = 300;
@@ -111,14 +112,15 @@ public class DataProvider extends ContentProvider {
         matcher.addURI(authority, DataContract.PATH_STATEMENT, STATEMENT);
         matcher.addURI(authority, DataContract.PATH_STATEMENT + "/*", STATEMENT_WITH_ID);
         matcher.addURI(authority, DataContract.PATH_STATEMENT + "/#", STATEMENT_WITH_ACCTNUMBER);
-        matcher.addURI(authority, DataContract.PATH_STATEMENT + "/*/#", STATEMENT_WITH_ACCTNUMBER_MONTH);
+        matcher.addURI(authority, DataContract.PATH_STATEMENT + "/*/#", STATEMENT_STATS_MONTH);
+        matcher.addURI(authority, DataContract.PATH_STATEMENT + "/widget/data", STATEMENT_WIDGET_DATA);
 
         matcher.addURI(authority, DataContract.PATH_CATEGORY, CATEGORY);
         matcher.addURI(authority, DataContract.PATH_CATEGORY + "/*", CATEGORY_WITH_ACQUIRER);
 
         matcher.addURI(authority, DataContract.PATH_BUDGET, BUDGET);
         matcher.addURI(authority, DataContract.PATH_BUDGET + "/#", BUDGET_WITH_MONTH);
-        matcher.addURI(authority, DataContract.PATH_BUDGET + "/*/#", BUDGET_WIDGET);
+        matcher.addURI(authority, DataContract.PATH_BUDGET + "/widget/#", BUDGET_WIDGET);
 
         matcher.addURI(authority, DataContract.PATH_CUREX, CUREX);
         matcher.addURI(authority, DataContract.PATH_CUREX + "/*", CUREX_WITH_BASE);
@@ -137,6 +139,8 @@ public class DataProvider extends ContentProvider {
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
 
+        Log.v(LOG_TAG, "uri received: " + uri + ". matched ID: " + sUriMatcher.match(uri));
+
         Cursor retCursor;
         switch (sUriMatcher.match(uri)) {
             // statement/*
@@ -152,8 +156,8 @@ public class DataProvider extends ContentProvider {
                 break;
             }
             // "statement/#/*"
-            case STATEMENT_WITH_ACCTNUMBER_MONTH: {
-                retCursor = getStatementByMOnth(uri, projection, sortOrder);
+            case STATEMENT_STATS_MONTH: {
+                retCursor = getStatsByMOnth(uri, projection, sortOrder);
                 break;
             }
             // "statement"
@@ -167,6 +171,10 @@ public class DataProvider extends ContentProvider {
                         null,
                         sortOrder
                 );
+                break;
+            }
+            case STATEMENT_WIDGET_DATA: {
+                retCursor = getWidgetDataCursor(uri, projection, sortOrder);
                 break;
             }
             // "Category"
@@ -188,7 +196,7 @@ public class DataProvider extends ContentProvider {
                 break;
             }
             case BUDGET_WIDGET: {
-                retCursor = getWidgetCursor(uri, projection, sortOrder);
+                retCursor = getWidgetCollectionCursor(uri, projection, sortOrder);
                 break;
             }
             // "Currencies"
@@ -218,16 +226,37 @@ public class DataProvider extends ContentProvider {
         return retCursor;
     }
 
-    private Cursor getStatementByMOnth(Uri uri, String[] projection, String sortOrder) {
+    private Cursor getStatsByMOnth(Uri uri, String[] projection, String sortOrder) {
         //String category = DataContract.BudgetEntry.getBudgetCategory(uri);
         int month = DataContract.StatementEntry.getMonthFromUri(uri);
 
+        Log.v(LOG_TAG, "Inside getStatementByMonth, retrieved month number: " + String.valueOf(month));
+
         return mOpenHelper.getReadableDatabase().rawQuery(
-                "select _ID, substr(date,5,2)*1 as month, date, sum(amount) as amountsum, category from statement " +
-                        " where substr(date,5,2)*1 = ? ", new String[] {String.valueOf(month)});
+                "select a._ID, a.date, a.amount, a.category from statement a " +
+                        " where substr(a.date,5,2)*1 = 6 ", null); // new String[] {String.valueOf(month)});
     }
 
-    private Cursor getWidgetCursor(Uri uri, String[] projection, String sortOrder) {
+
+    private Cursor getWidgetDataCursor(Uri uri, String[] projection, String sortOrder) {
+
+        return mOpenHelper.getReadableDatabase().rawQuery(
+                        "ifnull(" +
+                        "(SELECT amount FROM statement as a " +
+                        "WHERE a.date = cast(date('now', '%Y%m%d') as INT) " +
+                        "), 0) " +
+                        "UNION " +
+                        "ifnull(SELECT date, amount, 'week' as period FROM statement as b " +
+                        "WHERE b.date >= DATE('now', 'weekday 0', '-7 days') " +
+                        "), 0) " +
+                        "UNION " +
+                        "ifnull(" +
+                        "(SELECT date, amount, 'month' as period FROM statement as c " +
+                        "WHERE substr(c.date,5,2)*1 = date('now', %m)*1 " +
+                        "), 0)",null);
+    }
+
+    private Cursor getWidgetCollectionCursor(Uri uri, String[] projection, String sortOrder) {
 
         int month = DataContract.BudgetEntry.getBudgetMonth(uri);
 
@@ -239,6 +268,7 @@ public class DataProvider extends ContentProvider {
                         "where S.month = ? ORDER BY T.date DESC LIMIT 2",new String[] {String.valueOf(month)});
 
     }
+
 
     private Cursor getBudgetWithMonth(Uri uri, String[] projection, String sortOrder) {
 
@@ -303,7 +333,7 @@ public class DataProvider extends ContentProvider {
                 return DataContract.StatementEntry.CONTENT_TYPE;
             case STATEMENT_WITH_ACCTNUMBER:
                 return DataContract.StatementEntry.CONTENT_TYPE;
-            case STATEMENT_WITH_ACCTNUMBER_MONTH:
+            case STATEMENT_STATS_MONTH:
                 return DataContract.StatementEntry.CONTENT_TYPE;
             case CATEGORY:
                 return DataContract.CategoryEntry.CONTENT_TYPE;

@@ -118,7 +118,7 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
         mpieChart.setTransparentCircleColor(Color.WHITE);
         mpieChart.setTransparentCircleAlpha(110);
 
-        mpieChart.setHoleRadius(58f);
+        mpieChart.setHoleRadius(48f);
         mpieChart.setTransparentCircleRadius(61f);
 
         mpieChart.setDrawCenterText(true);
@@ -247,7 +247,7 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
         switch (id){
             case LINECHART_LOADER:
 
-                Log.v(LOG_TAG, "getting linechart info for month: " + month);
+                Log.v(LOG_TAG, "getting linechart info for month: " + month + ", " + DataContract.StatementEntry.buildStatsMonthUri(month));
                 return new CursorLoader(
                         getActivity(),
                         DataContract.StatementEntry.buildStatsMonthUri(month),
@@ -302,23 +302,30 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
 
         ArrayList<Entry> values = new ArrayList<Entry>();
 
-        for (int i = 0; i < data.getCount(); i++) {
+        String dateRaw = "";
 
-            float val = (float) data.getDouble(3);
-            values.add(new Entry(i, val));
+        for (int i = 0; i < data.getCount(); i++) {
+            
+            dateRaw = String.valueOf(data.getInt(1));
+            Log.v(LOG_TAG, "Value for i: " + i + " , " + Integer.parseInt(dateRaw.substring(6/8)));
+            float val = (float) data.getDouble(2);
+            values.add(new Entry(Integer.parseInt(dateRaw.substring(6/8)), val));
+            data.moveToNext();
         }
 
         LineDataSet set1;
 
         if (mlineChart.getData() != null &&
                 mlineChart.getData().getDataSetCount() > 0) {
+            Log.v(LOG_TAG,"mlineChart is not null and bigger than 0");
             set1 = (LineDataSet) mlineChart.getData().getDataSetByIndex(0);
             set1.setValues(values);
             mlineChart.getData().notifyDataChanged();
             mlineChart.notifyDataSetChanged();
         } else {
+            Log.v(LOG_TAG,"mlineChart is null creating dataset...");
             // create a dataset and give it a type
-            set1 = new LineDataSet(values, "DataSet 1");
+            set1 = new LineDataSet(values, "Spendings in June");
 
             // set the line to be drawn like this "- - - - - -"
             set1.enableDashedLine(10f, 5f, 0f);
@@ -335,6 +342,8 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
 
             ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
             dataSets.add(set1); // add the datasets
+
+            set1.setValues(values);
 
             // create a data object with the datasets
             LineData datav = new LineData(dataSets);

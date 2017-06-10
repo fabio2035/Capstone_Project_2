@@ -25,7 +25,8 @@ public class FMRemoteViewProvider extends RemoteViewsService {
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
         return new RemoteViewsFactory() {
-            private Cursor data = null;
+            private Cursor collectionData = null;
+            private Cursor generalData = null;
 
             @Override
             public void onCreate() {
@@ -34,48 +35,53 @@ public class FMRemoteViewProvider extends RemoteViewsService {
 
             @Override
             public void onDataSetChanged() {
-                if (data != null){
-                    data.close();
+                if (collectionData != null){
+                        collectionData.close();
+
+                    if (generalData != null){
+                        generalData.close();}
                 }
 
                 Calendar c = Calendar.getInstance();
                 int month = c.get(Calendar.MONTH)+1;
 
-                Log.v(LOG_TAG, "Inside onDataSetChanged.. getting cursor");
+                Log.v(LOG_TAG, "Inside onDataSetChanged.. getting CollectionData cursor");
                 final long identityToken = Binder.clearCallingIdentity();
-                data = getContentResolver().query(
+                collectionData = getContentResolver().query(
                         DataContract.BudgetEntry.buildBudgetWidgetUri(month),
                         null,
                         null, null, null);
+
                 Binder.restoreCallingIdentity(identityToken);
             }
 
             @Override
             public void onDestroy() {
-                if (data != null) {
-                    data.close();
-                    data = null;
+                if (collectionData != null) {
+                    collectionData.close();
+                    collectionData = null;
                 }
             }
 
             @Override
             public int getCount() {
-                return data == null ? 0 : data.getCount();
+                return collectionData == null ? 0 : collectionData.getCount();
             }
 
             @Override
             public RemoteViews getViewAt(int i) {
                 if (i == AdapterView.INVALID_POSITION ||
-                        data == null || !data.moveToPosition(i)) {
+                        collectionData == null || !collectionData.moveToPosition(i)) {
                     return null;
                 }
 
+                //fill view for collectionData
                 RemoteViews views = new RemoteViews(getPackageName(),
                         com.example.fbrigati.myfinance.R.layout.widget_item_budget);
 
-                String category = data.getString(3);
-                Double spent = data.getDouble(5);
-                Double goal = data.getDouble(4);
+                String category = collectionData.getString(3);
+                Double spent = collectionData.getDouble(5);
+                Double goal = collectionData.getDouble(4);
                 Double percentage = spent/goal*100;
 
                 StringBuilder text = new StringBuilder();
@@ -89,9 +95,11 @@ public class FMRemoteViewProvider extends RemoteViewsService {
                 //Fill intent for detail view...
                 final Intent fillIntent = new Intent();
 
-                Uri intentUri = DataContract.BudgetEntry.buildBudgetUri(data.getInt(0));
+                Uri intentUri = DataContract.BudgetEntry.buildBudgetUri(collectionData.getInt(0));
                 fillIntent.setData(intentUri);
                 views.setOnClickFillInIntent(R.id.widget_list_item, fillIntent);
+
+
                 return views;
 
             }
@@ -108,8 +116,8 @@ public class FMRemoteViewProvider extends RemoteViewsService {
 
             @Override
             public long getItemId(int i) {
-                if (data.moveToPosition(i))
-                    return data.getLong(0);
+                if (collectionData.moveToPosition(i))
+                    return collectionData.getLong(0);
                 return i;
             }
 

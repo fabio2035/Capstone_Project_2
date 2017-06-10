@@ -84,6 +84,11 @@ public class DataContract {
                     .appendPath(String.valueOf(month)).build();
         }
 
+        public static Uri buildWidgetDataUri() {
+            return CONTENT_URI.buildUpon().appendPath("widget")
+                    .appendPath("data").build();
+        }
+
         public static int getMonthFromUri(Uri uri) {
             return Integer.parseInt(uri.getLastPathSegment());
         }
