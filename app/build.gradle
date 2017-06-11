@@ -31,7 +31,6 @@ dependencies {
     //Used for graph creations
     //CSV reader helper class
     //sublimepicker for date and time pickers..
-    
 
 
     compile 'com.android.support:appcompat-v7:25.3.1'
@@ -43,6 +42,7 @@ dependencies {
     compile 'net.sf.opencsv:opencsv:2.3'
     compile 'com.appeaser.sublimepickerlibrary:sublimepickerlibrary:2.1.1'
     compile 'com.google.firebase:firebase-ads:11.0.0'
+    compile 'com.google.firebase:firebase-database:11.0.0'
     testCompile 'junit:junit:4.12'
 }
 

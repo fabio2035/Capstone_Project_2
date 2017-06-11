@@ -6,26 +6,40 @@ package com.example.fbrigati.myfinance.elements;
 
 public class Statement {
 
-    public long accountNumber;
+    public int _ID;
+    public String accountNumber;
     public int date;
     public String time;
     public int sequence;
     public String desc_origin;
     public String desc_user;
-    public float amount;
-    public String trxcode;
+    public Double amount;
+    public int trxcode;
     public String acquirer_id;
     public String category;
 
-    public Statement(){
-        //Default constructor
+    public Statement(int id, String acctNum, int date, String time,
+                     int seq, String desc_or, String desc_usr, Double amount
+                    ,int trxcd, String acquir, String cat){
+
+        this._ID = id;
+        this.accountNumber = acctNum;
+        this.date = date;
+        this.time = time;
+        this.sequence = seq;
+        this.desc_origin = desc_or;
+        this.desc_user = desc_usr;
+        this.amount = amount;
+        this.trxcode = trxcd;
+        this.acquirer_id = acquir;
+        this.category = cat;
     }
 
-    public long getAccountNumber() {
+    public String getAccountNumber() {
         return accountNumber;
     }
 
-    public void setAccountNumber(long accountNumber) {
+    public void setAccountNumber(String accountNumber) {
         this.accountNumber = accountNumber;
     }
 
@@ -69,19 +83,19 @@ public class Statement {
         this.desc_user = desc_user;
     }
 
-    public float getAmount() {
+    public Double getAmount() {
         return amount;
     }
 
-    public void setAmount(float amount) {
+    public void setAmount(Double amount) {
         this.amount = amount;
     }
 
-    public String getTransactionCode() {
+    public int getTransactionCode() {
         return trxcode;
     }
 
-    public void setTransactionCode(String transactionCode) {
+    public void setTransactionCode(int transactionCode) {
         this.trxcode = transactionCode;
     }
 

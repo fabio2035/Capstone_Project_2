@@ -27,6 +27,8 @@ import com.example.fbrigati.myfinance.R;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 
 /**
@@ -128,13 +130,14 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
             }
         });
 
-
         mAdView = (AdView) rootView.findViewById(R.id.ad_view);
         AdRequest adRequest = new AdRequest.Builder()
         .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)        // All emulators
                 .addTestDevice("53F4B94474E00A7E14FD516F7AD2ACDF")  // My Galaxy Nexus test phone
                 .build();
         mAdView.loadAd(adRequest);
+
+
 
         //addDummyData();
 
@@ -167,21 +170,6 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
         }
     }
 
-    private void addDummyData() {
-
-        ContentValues cv = new ContentValues();
-
-
-        cv.put(DataContract.CategoryEntry.COLUMN_CATEGORY_USER_KEY, "Transport");
-        cv.put(DataContract.CategoryEntry.COLUMN_CATEGORY_DEFAULT, "Transport");
-        cv.put(DataContract.CategoryEntry.COLUMN_ACQUIRER_ID, "MacDonalds");
-
-        getContext().getContentResolver().insert(DataContract.CategoryEntry.CONTENT_URI, cv);
-
-        Log.v(LOG_TAG, "Inserted data to category table..");
-
-
-    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState){

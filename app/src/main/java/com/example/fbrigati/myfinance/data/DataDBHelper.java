@@ -99,7 +99,7 @@ public class DataDBHelper extends SQLiteOpenHelper {
                 "(strftime('%Y','now'), strftime('%m','now'),'Rent',0);";
 
 
-        //Creation of primary budget items
+        //Creation of primary category items
         final String SQL_CREATE_CATEGORY_ITEMS = "INSERT INTO " + CategoryEntry.TABLE_NAME +
                 " (" + CategoryEntry.COLUMN_CATEGORY_USER_KEY + "," + CategoryEntry.COLUMN_CATEGORY_DEFAULT + "," +
                 CategoryEntry.COLUMN_ACQUIRER_ID + ") " +

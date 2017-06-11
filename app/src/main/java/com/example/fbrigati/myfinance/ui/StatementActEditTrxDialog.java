@@ -34,6 +34,9 @@ import android.widget.Toast;
 
 import com.example.fbrigati.myfinance.R;
 import com.example.fbrigati.myfinance.data.DataContract;
+import com.example.fbrigati.myfinance.elements.Statement;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import org.w3c.dom.Text;
 
@@ -81,6 +84,12 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
     Map<String, Integer> categoryMap;
 
     private Uri detailUri;
+
+    //Firebase variables
+    public static final String ANONYMOUS = "anonymous";
+    private String mUsername;
+    private FirebaseDatabase mFirebaseDatabase;
+    private DatabaseReference mStatementDatabaseReference;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -169,6 +178,12 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
         if (detailUri == null){
             setCurrentDateTimeButtons();
         }
+
+        //Firebase stuff...
+        //initialize object variables
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        mUsername = ANONYMOUS;
+        mStatementDatabaseReference = mFirebaseDatabase.getReference().child("statement");
     }
 
 
@@ -214,10 +229,21 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
         cv.put(DataContract.StatementEntry.COLUMN_ACQUIRER_ID, "0");
         cv.put(DataContract.StatementEntry.COLUMN_CATEGORY_KEY, spinner_ctg.getSelectedItem().toString());
 
-        getContentResolver().insert(DataContract.StatementEntry.CONTENT_URI, cv);
+        Uri uri = getContentResolver().insert(DataContract.StatementEntry.CONTENT_URI, cv);
+
+        int execNum = DataContract.StatementEntry.getIDFromUri(uri);
+
+        if(execNum > 0){
+
+        //if successfully saved to DB we can Save to Firbase aswell...
+        Statement statementData = new Statement(DataContract.StatementEntry.getIDFromUri(uri),
+                "0229801925", dateInt, timeStr,0, descText.getText().toString(), descText.getText().toString(),
+                Double.valueOf(amountText.getText().toString()),trxType,"0",spinner_ctg.getSelectedItem().toString());
+        mStatementDatabaseReference.push().setValue(statementData);}
 
         finish();
     }
+
 
     private boolean validateInputs() {
         boolean validate = true;
