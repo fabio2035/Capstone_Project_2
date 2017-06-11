@@ -29,6 +29,8 @@ import com.example.fbrigati.myfinance.Utility;
 import com.example.fbrigati.myfinance.adapters.CurrenciesAdapter;
 import com.example.fbrigati.myfinance.data.DataContract;
 import com.example.fbrigati.myfinance.sync.MFSyncJob;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 import org.w3c.dom.Text;
 
@@ -60,6 +62,7 @@ public class CurrenciesFragment extends Fragment implements LoaderManager.Loader
     private TextView empty_view;
     private Spinner spinner_view;
     private TextView textDate;
+    private AdView mAdView;
 
     public CurrenciesFragment(){}
 
@@ -145,6 +148,13 @@ public class CurrenciesFragment extends Fragment implements LoaderManager.Loader
             }
             public void onNothingSelected(AdapterView<?> parent) { }
         });
+
+        mAdView = (AdView) rootView.findViewById(R.id.ad_view);
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)        // All emulators
+                .addTestDevice("53F4B94474E00A7E14FD516F7AD2ACDF")  // My Galaxy Nexus test phone
+                .build();
+        mAdView.loadAd(adRequest);
 
         return rootView;
 

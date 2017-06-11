@@ -24,6 +24,10 @@ import com.example.fbrigati.myfinance.data.DataContract;
 
 import com.example.fbrigati.myfinance.R;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
+
 
 /**
  * Created by FBrigati on 03/05/2017.
@@ -41,6 +45,8 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
     StatementAdapter statementAdapter;
 
     private Uri statement_uri;
+
+    private AdView mAdView;
 
     Intent intent;
 
@@ -121,6 +127,14 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
                 showTransactionAddDialog(0L);
             }
         });
+
+
+        mAdView = (AdView) rootView.findViewById(R.id.ad_view);
+        AdRequest adRequest = new AdRequest.Builder()
+        .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)        // All emulators
+                .addTestDevice("53F4B94474E00A7E14FD516F7AD2ACDF")  // My Galaxy Nexus test phone
+                .build();
+        mAdView.loadAd(adRequest);
 
         //addDummyData();
 

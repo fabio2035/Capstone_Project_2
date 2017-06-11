@@ -42,6 +42,9 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.EntryXComparator;
 import com.github.mikephil.charting.utils.Utils;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -64,6 +67,8 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
     public static final int LINECHART_LOADER = 0;
 
     private Uri mUri;
+
+    private AdView mAdView;
 
     public StatsFragment(){
 
@@ -98,6 +103,10 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
         mlineChart = (LineChart) rootView.findViewById(R.id.linechart);
 
         setupLineChart();
+
+        /*mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest); */
 
         return rootView;
     }
