@@ -2,6 +2,8 @@ package com.example.fbrigati.myfinance.ui;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+
 import com.example.fbrigati.myfinance.R;
 
 /**
@@ -15,6 +17,7 @@ public class StatementActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_statement);
+
 
         if (savedInstanceState == null){
             Bundle arguments = new Bundle();

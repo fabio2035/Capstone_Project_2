@@ -4,29 +4,25 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.fbrigati.myfinance.R;
 import com.example.fbrigati.myfinance.adapters.BudgetAdapter;
-import com.example.fbrigati.myfinance.adapters.BudgetItemArrayAdapter;
 import com.example.fbrigati.myfinance.data.DataContract;
 import com.example.fbrigati.myfinance.elements.Budget;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.List;
 
 /**
  * Created by FBrigati on 07/05/2017.
@@ -41,12 +37,11 @@ BudgetSetDialog.setBudgetGoalListener{
 
     public static final int BUDGET_LOADER = 5;
 
-    private String[] temp_items = new String[]{"Leisure", "Bills", "Transportation"};
-    private int[] temp_items_values = new int[]{20, 50, 55};
     private ArrayList<Budget> itemList;
 
     private TextView emptyView;
     private ListView budgetList;
+    private Toolbar toolbarView;
 
     public Budget[] budgetItem = {
       new Budget("2017","05","Transport",15000f,123456,"Transport Desc",154.00f)
@@ -88,6 +83,10 @@ BudgetSetDialog.setBudgetGoalListener{
         emptyView = (TextView) findViewById(R.id.empty_budget);
 
         budgetList = (ListView) findViewById(R.id.budget_list);
+
+        toolbarView = (Toolbar) findViewById(R.id.toolbar);
+
+        toolbarView.setTitle(R.string.toolbar_budget_title);
 
         budgetList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

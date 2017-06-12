@@ -1,22 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/toolbar" />
+
+    </android.support.design.widget.AppBarLayout>
+
+<android.support.v7.widget.GridLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:orientation="vertical"
     app:rowCount="2">
 
-
     <include layout="@layout/item_detail_piechart"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_width="match_parent"
         app:layout_rowWeight="1"
         />
 
-
     <include layout="@layout/item_detail_linechart"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_width="match_parent"
         app:layout_rowWeight="1"/>
 
 </android.support.v7.widget.GridLayout>
+    </LinearLayout>

@@ -84,7 +84,7 @@ public class BudgetSetDialog extends DialogFragment{
                 if(validateInput()){
                     mListener.setBudget(Double.valueOf(amtText.getText().toString()), Budget_id);
                 }else{
-                    Toast.makeText(getActivity(),"Amount not valid, please correct and try again", Toast.LENGTH_LONG ).show();
+                    Toast.makeText(getActivity(),R.string.toast_amount_notvalid, Toast.LENGTH_LONG ).show();
                 }
             }
         })

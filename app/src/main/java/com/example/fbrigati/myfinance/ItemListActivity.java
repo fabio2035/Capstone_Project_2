@@ -69,7 +69,6 @@ public class ItemListActivity extends AppCompatActivity {
                 .build();
         mAdView.loadAd(adRequest);
 
-        //addDummyData();
 
         View recyclerView = findViewById(R.id.item_list);
         assert recyclerView != null;
@@ -84,28 +83,6 @@ public class ItemListActivity extends AppCompatActivity {
         }
     }
 
-    //temporary!!
-    private void addDummyData() {
-
-        Log.v("ItemListACtivity", "About to test csv return data..");
-        MFSyncJob.syncImmediately(this);
-
-        ContentValues cv = new ContentValues();
-
-        cv.put(DataContract.StatementEntry.COLUMN_ACCOUNT_NUMBER, "229801925");
-        cv.put(DataContract.StatementEntry.COLUMN_DATE, 20170505);
-        cv.put(DataContract.StatementEntry.COLUMN_TIME, "1705");
-        cv.put(DataContract.StatementEntry.COLUMN_SEQUENCE, 2);
-        cv.put(DataContract.StatementEntry.COLUMN_DESCRIPTION_ORIGIN, "VB2 SB 100");
-        cv.put(DataContract.StatementEntry.COLUMN_DESCRIPTION_USER, "VB2 SB 100");
-        cv.put(DataContract.StatementEntry.COLUMN_AMOUNT, 100.20);
-        cv.put(DataContract.StatementEntry.COLUMN_TRANSACTION_CODE, 4);
-        cv.put(DataContract.StatementEntry.COLUMN_ACQUIRER_ID, "1044510");
-        cv.put(DataContract.StatementEntry.COLUMN_CATEGORY_KEY, "N/A");
-
-        this.getContentResolver().insert(DataContract.StatementEntry.CONTENT_URI, cv);
-
-    }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
         recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(DummyContent.ITEMS));
@@ -130,8 +107,9 @@ public class ItemListActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
             holder.mItem = mValues.get(position);
-            holder.mIdView.setText(mValues.get(position).id);
+            //holder.mIdView.setText(mValues.get(position).id);
             holder.mContentView.setText(mValues.get(position).content);
+            holder.mContentView.setContentDescription(mValues.get(position).content);
 
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -170,7 +148,7 @@ public class ItemListActivity extends AppCompatActivity {
                                 context.startActivity(intent);
                                 break;
                             default:
-                                Toast.makeText(getApplicationContext(),"Functionality not yet implemented!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(),R.string.toast_functionality_notimplemented, Toast.LENGTH_SHORT).show();
                         }
                     }
                 }
@@ -184,14 +162,14 @@ public class ItemListActivity extends AppCompatActivity {
 
         public class ViewHolder extends RecyclerView.ViewHolder {
             public final View mView;
-            public final TextView mIdView;
+            //public final TextView mIdView;
             public final TextView mContentView;
             public DummyContent.DummyItem mItem;
 
             public ViewHolder(View view) {
                 super(view);
                 mView = view;
-                mIdView = (TextView) view.findViewById(R.id.id);
+               //mIdView = (TextView) view.findViewById(R.id.id);
                 mContentView = (TextView) view.findViewById(R.id.content);
             }
 

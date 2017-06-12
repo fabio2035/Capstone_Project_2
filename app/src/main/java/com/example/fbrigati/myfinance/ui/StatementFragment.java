@@ -11,6 +11,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +29,7 @@ import com.example.fbrigati.myfinance.R;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -50,6 +53,7 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
 
     private AdView mAdView;
 
+
     Intent intent;
 
     public StatementFragment(){
@@ -72,6 +76,7 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
     private TextView empty_view;
     private View header_view;
     private ViewGroup headerView;
+    private Toolbar toolbarView;
 
 
     @Override
@@ -122,6 +127,11 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
 
         empty_view = (TextView) rootView.findViewById(R.id.empty_statement);
 
+        toolbarView = (Toolbar) rootView.findViewById(R.id.toolbar);
+
+
+        toolbarView.setTitle(R.string.toolbar_statement_title);
+
         FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -136,7 +146,6 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
                 .addTestDevice("53F4B94474E00A7E14FD516F7AD2ACDF")  // My Galaxy Nexus test phone
                 .build();
         mAdView.loadAd(adRequest);
-
 
 
         //addDummyData();

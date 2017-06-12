@@ -31,8 +31,6 @@ public class BudgetAdapter extends CursorAdapter {
         super(context,c,flags);
 
         percentageFormat = (DecimalFormat) NumberFormat.getPercentInstance(Locale.getDefault());
-        //percentageFormat.setMaximumFractionDigits(2);
-        //percentageFormat.setMinimumFractionDigits(2);
 
     }
 
@@ -95,6 +93,8 @@ public class BudgetAdapter extends CursorAdapter {
             }
         }
 
+        viewHolder.iconView.setBackgroundColor(context.getResources().getColor(R.color.colorAccent));
+
         viewHolder.textTitle.setText(category);
 
         viewHolder.textBudgetGoal.setText(String.valueOf(goal));
@@ -102,8 +102,6 @@ public class BudgetAdapter extends CursorAdapter {
         viewHolder.textBudgetSpent.setText(String.valueOf(spent));
 
         viewHolder.progressBar.setProgress(percentage.intValue());
-
-        Log.v("BudgetApdapter_BindView", "Percentage: " + percentageFormat.format(percentage));
 
         viewHolder.textPercentage.setText(percentageFormat.format(percentage/100));
 

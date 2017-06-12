@@ -6,6 +6,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
@@ -35,6 +36,7 @@ import android.widget.Toast;
 import com.example.fbrigati.myfinance.R;
 import com.example.fbrigati.myfinance.data.DataContract;
 import com.example.fbrigati.myfinance.elements.Statement;
+import com.example.fbrigati.myfinance.sync.MFSyncJob;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -169,7 +171,7 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
         save_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            if(validateInputs()) saveDataToDB(); else Toast.makeText(getApplicationContext(), "Check description and/or amount before saving", Toast.LENGTH_LONG).show();
+            if(validateInputs()) saveDataToDB(); else Toast.makeText(getApplicationContext(), R.string.toast_check_desc_amt, Toast.LENGTH_LONG).show();
             }
         });
 
@@ -218,7 +220,7 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
                 + ", Category key: " + spinner_ctg.getSelectedItem().toString()
                 + "");
 
-        cv.put(DataContract.StatementEntry.COLUMN_ACCOUNT_NUMBER, "229801925");
+        cv.put(DataContract.StatementEntry.COLUMN_ACCOUNT_NUMBER, "0529925801");
         cv.put(DataContract.StatementEntry.COLUMN_DATE, dateInt);
         cv.put(DataContract.StatementEntry.COLUMN_TIME, timeStr);
         cv.put(DataContract.StatementEntry.COLUMN_SEQUENCE, 0);
@@ -234,15 +236,25 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
         int execNum = DataContract.StatementEntry.getIDFromUri(uri);
 
         if(execNum > 0){
+        Toast.makeText(getApplicationContext(), R.string.toast_savetodbsuccess, Toast.LENGTH_LONG).show();
+
+        updateWidgets();
 
         //if successfully saved to DB we can Save to Firbase aswell...
         Statement statementData = new Statement(DataContract.StatementEntry.getIDFromUri(uri),
-                "0229801925", dateInt, timeStr,0, descText.getText().toString(), descText.getText().toString(),
+                "0529925801", dateInt, timeStr,0, descText.getText().toString(), descText.getText().toString(),
                 Double.valueOf(amountText.getText().toString()),trxType,"0",spinner_ctg.getSelectedItem().toString());
         mStatementDatabaseReference.push().setValue(statementData);}
 
         finish();
     }
+
+    public void updateWidgets() {
+        Intent dataUpdatedIntent = new Intent(MFSyncJob.ACTION_DATA_UPDATED)
+                .setPackage(this.getClass().getPackage().getName());
+        sendBroadcast(dataUpdatedIntent);
+    }
+
 
 
     private boolean validateInputs() {
@@ -359,6 +371,8 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
 
                     String dateStr = date.toString();
 
+                    String category = data.getString(7).trim();
+
                     StringBuilder dateBuild = new StringBuilder().append(dateStr.substring(6,8)).append("/").append(dateStr.substring(4,6)).append("/").append(dateStr.substring(0,4));
 
                     StringBuilder timeBuild = new StringBuilder().append(time.substring(0,2)).append(":").append(time.substring(2,4));
@@ -369,7 +383,8 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
 
                     //Pick category
                     for(int i=0; i<spinner_ctg.getCount(); i++){
-                        if(spinner_ctg.getItemAtPosition(i).toString().equals(categoryMap.get(data.getString(7)))){
+                        Log.v(LOG_TAG, "Item position: " + spinner_ctg.getItemAtPosition(i).toString());
+                        if(spinner_ctg.getItemAtPosition(i).toString().equals(categoryMap.get(category))){
                         spinner_ctg.setSelection(i);}
                     }
 

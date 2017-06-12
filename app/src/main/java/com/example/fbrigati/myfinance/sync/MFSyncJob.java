@@ -7,6 +7,7 @@ import android.content.ContentProviderClient;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SyncRequest;
 import android.content.SyncResult;
@@ -232,6 +233,8 @@ public class MFSyncJob extends AbstractThreadedSyncAdapter {
             Log.v(LOG_TAG, "there was an error: " + e.toString());
         }
     }
+
+
 
 
 

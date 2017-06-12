@@ -13,6 +13,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -63,6 +64,7 @@ public class CurrenciesFragment extends Fragment implements LoaderManager.Loader
     private Spinner spinner_view;
     private TextView textDate;
     private AdView mAdView;
+    private Toolbar toolbarView;
 
     public CurrenciesFragment(){}
 
@@ -104,6 +106,10 @@ public class CurrenciesFragment extends Fragment implements LoaderManager.Loader
         currencyList.setAdapter(currencyAdapter);
 
         spinner_view = (Spinner) rootView.findViewById(R.id.symbols_spinner);
+
+        toolbarView = (Toolbar) rootView.findViewById(R.id.toolbar);
+
+        toolbarView.setTitle(R.string.toolbar_currencies_title);
 
         final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.cur_symbols, android.R.layout.simple_spinner_item);

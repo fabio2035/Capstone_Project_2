@@ -5,11 +5,21 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginStart="@dimen/activity_horizontal_margin"
-    android:layout_marginLeft="@dimen/activity_horizontal_margin"
-    android:layout_marginTop="@dimen/activity_horizontal_margin"
-    android:layout_marginBottom="@dimen/activity_horizontal_margin"
-    android:layout_marginEnd="@dimen/activity_horizontal_margin">
+    android:fitsSystemWindows="true"
+    >
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay"
+        app:expanded="true">
+
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/toolbar" />
+
+    </android.support.design.widget.AppBarLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
@@ -17,7 +27,10 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/ic_add_circle" />
+        android:src="@drawable/ic_add_circle"
+        android:elevation="6dp"
+        app:layout_anchor="@+id/toolbar"
+        app:layout_anchorGravity="end"/>
 
     <!-- The table details -->
     <ListView
@@ -26,6 +39,12 @@
         android:layout_height="wrap_content"
         android:divider="#FFCC00"
         android:dividerHeight="2px"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/activity_horizontal_margin"
+        android:layout_marginBottom="@dimen/activity_horizontal_margin"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
         />
 
     <RelativeLayout
@@ -33,23 +52,23 @@
         android:layout_height="match_parent"
         android:paddingTop="?actionBarSize">
 
-    <android.support.v4.view.ViewPager
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/view_pager"
-        >
+        <android.support.v4.view.ViewPager
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/view_pager"
+            >
 
-    </android.support.v4.view.ViewPager>
+        </android.support.v4.view.ViewPager>
 
-    <com.google.android.gms.ads.AdView
-        android:id="@+id/ad_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
-        ads:adSize="BANNER"
-        ads:adUnitId="@string/banner_ad_unit_id" />
-</RelativeLayout>
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/ad_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            ads:adSize="BANNER"
+            ads:adUnitId="@string/banner_ad_unit_id" />
+    </RelativeLayout>
     <!-- empty list -->
     <TextView
         android:id="@+id/empty_statement"

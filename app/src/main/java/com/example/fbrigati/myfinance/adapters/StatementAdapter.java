@@ -76,7 +76,7 @@ public class StatementAdapter extends CursorAdapter {
         }else{
             String NegativeValue = currencyFormatWithMinus.format(amount);
             viewHolder.textAmount.setText(NegativeValue);
-            viewHolder.textAmount.setTextColor(Color.YELLOW);
+            viewHolder.textAmount.setTextColor(Color.RED);
         }
 
     }

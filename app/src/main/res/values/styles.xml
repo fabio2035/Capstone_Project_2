@@ -1,11 +1,18 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat">
+    <style name="AppTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="toolbarStyle">@style/Toolbar</item>
+    </style>
+
+    <!-- main activity toolbar style -->
+    <style name="Toolbar" parent="Widget.AppCompat.Toolbar">
+        <item name="android:background">?attr/colorPrimary</item>
+        <item name="popupTheme">@style/Theme.AppCompat.Light</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -22,32 +29,32 @@
 
     <style name="GeneralOptionsStyle">
         <item name="android:textSize">15sp</item>
-        <item name="android:textColor">#FFF</item>
+        <item name="android:textColor">@color/primary_text</item>
         <item name="android:textAllCaps">true</item>
     </style>
 
     <style name="MainInputTextStyle">
         <item name="android:textSize">25sp</item>
-        <item name="android:textColor">#FFF</item>
+        <item name="android:textColor">@color/primary_text</item>
         <item name="android:textAllCaps">true</item>
     </style>
 
     <style name="SymbolTextStyle">
         <item name="android:textSize">25sp</item>
-        <item name="android:textColor">#FFF</item>
+        <item name="android:textColor">@color/primary_text</item>
         <item name="android:textAllCaps">true</item>
     </style>
 
     <style name="WarningTextStyle">
         <item name="android:textSize">35sp</item>
-        <item name="android:textColor">#FFF</item>
+        <item name="android:textColor">@color/primary_text</item>
         <item name="android:textAllCaps">true</item>
         <item name="android:textStyle">bold</item>
     </style>
 
     <style name="RateTextStyle">
         <item name="android:textSize">25sp</item>
-        <item name="android:textColor">#FFF</item>
+        <item name="android:textColor">@color/primary_text</item>
         <item name="android:textAllCaps">true</item>
     </style>
 
@@ -68,13 +75,13 @@
         <item name="android:gravity">center_vertical</item>
         <item name="android:layout_gravity">top|left</item>
         <item name="android:textSize">18sp</item>
-        <item name="android:textColor">#FFAAAAAA</item>
+        <item name="android:textColor">@color/primary_text</item>
     </style>
 
 
     <style name="TextAppearance.EditEvent_Spinner" parent="android:style/Widget.Holo.Light.Spinner">
         <item name="android:textSize">18sp</item>
-        <item name="android:textColor">#FF333333</item>
+        <item name="android:textColor">@color/primary_text</item>
         <item name="android:layout_marginRight">12dp</item>
         <item name="android:layout_marginLeft">12dp</item>
     </style>
@@ -83,7 +90,7 @@
 
     <style name="SmallTextStyle">
         <item name="android:textSize">10sp</item>
-        <item name="android:textColor">#FFF</item>
+        <item name="android:textColor">@color/secondary_text</item>
         <item name="android:textAllCaps">true</item>
     </style>
 
@@ -98,7 +105,7 @@
 
     <style name="widgetTextStyle">
         <item name="android:textSize">15sp</item>
-        <item name="android:textColor">#FFF</item>
+        <item name="android:textColor">@color/primary_text</item>
         <item name="android:textAllCaps">true</item>
         <item name="android:textStyle">bold</item>
     </style>

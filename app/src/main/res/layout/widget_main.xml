@@ -6,7 +6,25 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/widget_margin">
+    android:padding="@dimen/widget_margin"
+    android:background="@color/primary_light">
+
+    <FrameLayout
+        android:id="@+id/app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textAppearance="@style/RateTextStyle"
+            android:textColor="@color/icons"
+            android:text="@string/app_name"
+            tools:text="@string/app_name"/>
+
+    </FrameLayout>
 
     <TextView
         android:id="@+id/top_label"
@@ -15,7 +33,8 @@
         android:padding="@dimen/widget_margin"
         android:textAppearance="@style/widgetTextStyle"
         android:text="@string/widget_top_label"
-        tools:text="Recently you've spent: "/>
+        tools:text="Recently you've spent: "
+        android:layout_below="@id/app_bar"/>
 
 
     <ListView

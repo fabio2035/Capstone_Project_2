@@ -11,6 +11,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
@@ -76,6 +77,7 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
 
     private PieChart mpieChart;
     private LineChart mlineChart;
+    private Toolbar toolbarView;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState){
@@ -102,6 +104,10 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
         //Get the linechart view
         mlineChart = (LineChart) rootView.findViewById(R.id.linechart);
 
+        toolbarView = (Toolbar) rootView.findViewById(R.id.toolbar);
+
+        toolbarView.setTitle(R.string.toolbar_stats_title);
+
         setupLineChart();
 
         /*mAdView = (AdView) findViewById(R.id.adView);
@@ -127,8 +133,8 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
         mpieChart.setTransparentCircleColor(Color.WHITE);
         mpieChart.setTransparentCircleAlpha(110);
 
-        mpieChart.setHoleRadius(48f);
-        mpieChart.setTransparentCircleRadius(61f);
+        mpieChart.setHoleRadius(38f);
+        mpieChart.setTransparentCircleRadius(51f);
 
         mpieChart.setDrawCenterText(true);
 
@@ -139,14 +145,14 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
 
         mpieChart.animateY(1400, Easing.EasingOption.EaseInOutQuad);
 
-        Legend l = mpieChart.getLegend();
+       /* Legend l = mpieChart.getLegend();
         l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
         l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
         l.setOrientation(Legend.LegendOrientation.VERTICAL);
         l.setDrawInside(false);
         l.setXEntrySpace(7f);
         l.setYEntrySpace(0f);
-        l.setYOffset(0f);
+        l.setYOffset(0f); */
     }
 
     private void setPieData(Cursor data) {
