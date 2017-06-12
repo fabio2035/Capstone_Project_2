@@ -1,5 +1,7 @@
 package com.example.fbrigati.myfinance.dummy;
 
+import com.example.fbrigati.myfinance.R;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,19 +13,21 @@ import java.util.Map;
  * <p>
  * TODO: Replace all uses of this class before publishing your app.
  */
-public class DummyContent {
+public class MenuContent {
 
     /**
-     * An array of sample (dummy) items.
+     * An array of sample (menu) items.
      */
-    public static final List<DummyItem> ITEMS = new ArrayList<DummyItem>();
+    public static final List<MenuItem> ITEMS = new ArrayList<MenuItem>();
 
     /**
-     * A map of sample (dummy) items, by ID.
+     * A map of sample (menu) items, by ID.
      */
-    public static final Map<String, DummyItem> ITEM_MAP = new HashMap<String, DummyItem>();
+    public static final Map<String, MenuItem> ITEM_MAP = new HashMap<String, MenuItem>();
 
     public static final String[] menu_items = {"Statement", "Budget", "Stats", "Currencies"};
+
+    public static final int[] icon_items = {R.drawable.menu_icon_statement,R.drawable.menu_icon_budget, R.drawable.menu_icon_stats, R.drawable.menu_icon_curex };
 
 
     private static final int COUNT = 3;
@@ -35,13 +39,13 @@ public class DummyContent {
         }
     }
 
-    private static void addItem(DummyItem item) {
+    private static void addItem(MenuItem item) {
         ITEMS.add(item);
         ITEM_MAP.put(item.id, item);
     }
 
-    private static DummyItem createDummyItem(int position) {
-        return new DummyItem(String.valueOf(position), menu_items[position], makeDetails(position));
+    private static MenuItem createDummyItem(int position) {
+        return new MenuItem(String.valueOf(position), menu_items[position], makeDetails(position), icon_items[position]);
     }
 
     private static String makeDetails(int position) {
@@ -54,17 +58,19 @@ public class DummyContent {
     }
 
     /**
-     * A dummy item representing a piece of content.
+     * A menu item representing a piece of content.
      */
-    public static class DummyItem {
+    public static class MenuItem {
         public final String id;
         public final String content;
         public final String details;
+        public final int icon;
 
-        public DummyItem(String id, String content, String details) {
+        public MenuItem(String id, String content, String details, int icon) {
             this.id = id;
             this.content = content;
             this.details = details;
+            this.icon = icon;
         }
 
         @Override

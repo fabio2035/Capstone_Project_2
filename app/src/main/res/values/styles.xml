@@ -78,6 +78,14 @@
         <item name="android:textColor">@color/primary_text</item>
     </style>
 
+    <style name="TitleTextStyle">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/primary_text</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+
 
     <style name="TextAppearance.EditEvent_Spinner" parent="android:style/Widget.Holo.Light.Spinner">
         <item name="android:textSize">18sp</item>

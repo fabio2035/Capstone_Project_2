@@ -14,12 +14,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 
 import com.example.fbrigati.myfinance.data.DataContract;
-import com.example.fbrigati.myfinance.dummy.DummyContent;
+import com.example.fbrigati.myfinance.dummy.MenuContent;
 import com.example.fbrigati.myfinance.elements.Budget;
 import com.example.fbrigati.myfinance.sync.MFSyncJob;
 import com.example.fbrigati.myfinance.ui.BudgetActivity;
@@ -34,14 +35,7 @@ import com.google.android.gms.ads.AdView;
 
 import java.util.List;
 
-/**
- * An activity representing a list of Items. This activity
- * has different presentations for handset and tablet-size devices. On
- * handsets, the activity presents a list of items, which when touched,
- * lead to a {@link ItemDetailActivity} representing
- * item details. On tablets, the activity presents the list of items and
- * item details side-by-side using two vertical panes.
- */
+
 public class ItemListActivity extends AppCompatActivity {
 
     /**
@@ -85,15 +79,15 @@ public class ItemListActivity extends AppCompatActivity {
 
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(DummyContent.ITEMS));
+        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(MenuContent.ITEMS));
     }
 
     public class SimpleItemRecyclerViewAdapter
             extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
 
-        private final List<DummyContent.DummyItem> mValues;
+        private final List<MenuContent.MenuItem> mValues;
 
-        public SimpleItemRecyclerViewAdapter(List<DummyContent.DummyItem> items) {
+        public SimpleItemRecyclerViewAdapter(List<MenuContent.MenuItem> items) {
             mValues = items;
         }
 
@@ -110,18 +104,19 @@ public class ItemListActivity extends AppCompatActivity {
             //holder.mIdView.setText(mValues.get(position).id);
             holder.mContentView.setText(mValues.get(position).content);
             holder.mContentView.setContentDescription(mValues.get(position).content);
+            holder.mIcon.setImageResource(mValues.get(position).icon);
 
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (mTwoPane) {
-                        Bundle arguments = new Bundle();
+                    /*    Bundle arguments = new Bundle();
                         arguments.putString(ItemDetailFragment.ARG_ITEM_ID, holder.mItem.id);
                         ItemDetailFragment fragment = new ItemDetailFragment();
                         fragment.setArguments(arguments);
                         getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.item_detail_container, fragment)
-                                .commit();
+                                .commit();  */
                     } else {
                         Context context = v.getContext();
                         Log.v("Choosing_Menu", "Chose menu item: " + holder.mItem.id);
@@ -164,13 +159,15 @@ public class ItemListActivity extends AppCompatActivity {
             public final View mView;
             //public final TextView mIdView;
             public final TextView mContentView;
-            public DummyContent.DummyItem mItem;
+            public MenuContent.MenuItem mItem;
+            public final ImageView mIcon;
 
             public ViewHolder(View view) {
                 super(view);
                 mView = view;
                //mIdView = (TextView) view.findViewById(R.id.id);
                 mContentView = (TextView) view.findViewById(R.id.content);
+                mIcon = (ImageView) view.findViewById(R.id.menu_icon);
             }
 
             @Override

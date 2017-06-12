@@ -11,7 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.fbrigati.myfinance.dummy.DummyContent;
+import com.example.fbrigati.myfinance.dummy.MenuContent;
 
 import java.util.List;
 
@@ -74,16 +74,16 @@ public class MainFragment extends Fragment {
     }
 
     private void setupRecyclerView(RecyclerView recyclerView) {
-        recyclerView.setAdapter(new MainFragment.SimpleRecyclerViewAdapter(DummyContent.ITEMS));
+        recyclerView.setAdapter(new MainFragment.SimpleRecyclerViewAdapter(MenuContent.ITEMS));
     }
 
 
     public class SimpleRecyclerViewAdapter
             extends RecyclerView.Adapter<MainFragment.SimpleRecyclerViewAdapter.ViewHolder> {
 
-        private final List<DummyContent.DummyItem> mValues;
+        private final List<MenuContent.MenuItem> mValues;
 
-        public SimpleRecyclerViewAdapter(List<DummyContent.DummyItem> items) {
+        public SimpleRecyclerViewAdapter(List<MenuContent.MenuItem> items) {
             mValues = items;
         }
 
@@ -111,7 +111,7 @@ public class MainFragment extends Fragment {
             public final View mView;
             //public final TextView mIdView;
             public final TextView mContentView;
-            public DummyContent.DummyItem mItem;
+            public MenuContent.MenuItem mItem;
 
             public ViewHolder(View view) {
                 super(view);

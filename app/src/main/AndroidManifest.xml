@@ -35,15 +35,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ItemDetailActivity"
-            android:label="@string/title_item_detail"
-            android:parentActivityName=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.fbrigati.myfinance.ItemListActivity" />
-        </activity>
-        <activity
             android:name=".ui.StatementActivity"
             android:label="@string/title_StatementActivity_detail"
             android:parentActivityName=".ItemListActivity"

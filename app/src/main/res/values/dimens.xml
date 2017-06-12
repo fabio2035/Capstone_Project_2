@@ -19,5 +19,7 @@
     <dimen name="element_top_margin">5dp</dimen>
     <dimen name="element_bottom_margin">5dp</dimen>
     <dimen name="widget_margin">8dp</dimen>
+    <dimen name="menu_icon_height">45dp</dimen>
+    <dimen name="menu_icon_width">45dp</dimen>
 
 </resources>
