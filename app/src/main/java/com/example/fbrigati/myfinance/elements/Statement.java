@@ -4,7 +4,7 @@ package com.example.fbrigati.myfinance.elements;
  * Created by FBrigati on 25/04/2017.
  */
 
-public class Statement_tmp {
+public class Statement {
 
     public int _ID;
     public String accountNumber;

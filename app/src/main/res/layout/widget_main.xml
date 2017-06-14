@@ -75,6 +75,7 @@
 
 
         <TextView
+            android:id="@+id/widget_week_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="@dimen/widget_margin"
@@ -94,6 +95,7 @@
 
 
         <TextView
+            android:id="@+id/widget_month_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="@dimen/widget_margin"

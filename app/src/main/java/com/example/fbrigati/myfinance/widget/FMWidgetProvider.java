@@ -10,13 +10,16 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.view.View;
 import android.widget.RemoteViews;
 
-import com.example.fbrigati.myfinance.MainActivity;
+import com.example.fbrigati.myfinance.ItemListActivity;
 import com.example.fbrigati.myfinance.R;
 import com.example.fbrigati.myfinance.data.DataDBHelper;
 import com.example.fbrigati.myfinance.sync.MFSyncJob;
 import com.example.fbrigati.myfinance.ui.BudgetActivity;
+
+import static com.example.fbrigati.myfinance.R.id.widget;
 
 /**
  * Created by FBrigati on 07/06/2017.
@@ -31,7 +34,7 @@ public class FMWidgetProvider extends AppWidgetProvider {
     private DataDBHelper db;
 
 
-    //@Override
+    @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager,
                          int[] appWidgetIds){
         //perform loop for every app widget in this provider
@@ -42,17 +45,15 @@ public class FMWidgetProvider extends AppWidgetProvider {
 
             Log.v(LOG_TAG, "Inside onUpdate, with item number: " + i);
             //Intent to launch main activity
-            Intent intent = new Intent(context, MainActivity.class);
+            Intent intent = new Intent(context, ItemListActivity.class);
             //intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetIds[i]);
             //intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-            rview.setOnClickPendingIntent(R.id.widget, pendingIntent);
+            rview.setOnClickPendingIntent(widget, pendingIntent);
 
             rview.setRemoteAdapter(R.id.widget_collection, new Intent(context, FMRemoteViewProvider.class));
 
-
-            setGeneralData(context);
-
+            showEmptyviews(setGeneralData(context));
 
             Intent clickIntentTemplate = new Intent(context, BudgetActivity.class);
             PendingIntent clickPendingIntentTemplate = android.support.v4.app.TaskStackBuilder.create(context)
@@ -68,8 +69,35 @@ public class FMWidgetProvider extends AppWidgetProvider {
       //  super.onUpdate(context, appWidgetManager, appWidgetIds);
     }
 
+    private void showEmptyviews(boolean show) {
 
-    private void setGeneralData(Context ctx) {
+        //if true then hide views...
+        if(show) {
+            rview.setViewVisibility(R.id.top_label, View.INVISIBLE);
+            rview.setViewVisibility(R.id.widget_today_label, View.INVISIBLE);
+            rview.setViewVisibility(R.id.widget_amount_day, View.INVISIBLE);
+            rview.setViewVisibility(R.id.widget_week_label, View.INVISIBLE);
+            rview.setViewVisibility(R.id.widget_amount_week, View.INVISIBLE);
+            rview.setViewVisibility(R.id.widget_month_label, View.INVISIBLE);
+            rview.setViewVisibility(R.id.widget_amount_month, View.INVISIBLE);
+        }else{
+            Log.v(LOG_TAG, "rendering views visible..");
+            rview.setViewVisibility(R.id.top_label, View.VISIBLE);
+            rview.setViewVisibility(R.id.widget_today_label, View.VISIBLE);
+            rview.setViewVisibility(R.id.widget_amount_day, View.VISIBLE);
+            rview.setViewVisibility(R.id.widget_week_label, View.VISIBLE);
+            rview.setViewVisibility(R.id.widget_amount_week, View.VISIBLE);
+            rview.setViewVisibility(R.id.widget_month_label, View.VISIBLE);
+            rview.setViewVisibility(R.id.widget_amount_month, View.VISIBLE);
+        }
+    }
+
+
+
+    private boolean setGeneralData(Context ctx) {
+
+        Double[] values = new Double[3];
+        Double total = 0.0;
 
         db = new DataDBHelper(ctx);
         SQLiteDatabase dbh = db.getReadableDatabase();
@@ -98,25 +126,36 @@ public class FMWidgetProvider extends AppWidgetProvider {
         for(int j=0 ; j<generalData.getCount(); j++) {
             switch (j) {
                 case 0:{
-                    Log.v(LOG_TAG, "setting for today amuont: " + j + "," + generalData.getDouble(0));
+                    values[j] = generalData.getDouble(0);
                     rview.setTextViewText(R.id.widget_amount_day,
                             String.valueOf(generalData.getDouble(0)));
                     break;}
                 case 1:{
-                    Log.v(LOG_TAG, "setting for week amuont: "  + j + "," + generalData.getDouble(0));
+                    values[j] = generalData.getDouble(0);
                     rview.setTextViewText(R.id.widget_amount_week,
                             String.valueOf(generalData.getDouble(0)));
                     break;}
                 case 2:{
-                    Log.v(LOG_TAG, "setting for month amuont: "  + j + "," + generalData.getDouble(0));
+                    values[j] = generalData.getDouble(0);
                     rview.setTextViewText(R.id.widget_amount_month,
                             String.valueOf(generalData.getDouble(0)));
                     break;}
             }
             generalData.moveToNext();
         }
-
         generalData.close();
+
+        for (int i=0; i < values.length; i++){
+            total = total + values[i];
+        }
+        //If total of values is bigger than 0, then user has
+        //already registered something, show textViews...
+        Log.v(LOG_TAG, "total is: " + total);
+        if (total>0.0){
+            return false;
+        }else{
+            return true;
+        }
     }
 
 
@@ -126,10 +165,15 @@ public class FMWidgetProvider extends AppWidgetProvider {
         Log.v(LOG_TAG, "Intent caught: " + intent.getAction().toString());
         if (MFSyncJob.ACTION_DATA_UPDATED.equals(intent.getAction())) {
             Log.v(LOG_TAG, "Inside onReceive.. supposedly updating data...");
+            rview = new RemoteViews(context.getPackageName(),
+                    R.layout.widget_main);
+            showEmptyviews(setGeneralData(context));
+            ComponentName thisWidget = new ComponentName(context, FMWidgetProvider.class);
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
             int[] appWidgetIds = appWidgetManager.getAppWidgetIds(
                     new ComponentName(context, getClass()));
             appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_collection);
+            appWidgetManager.updateAppWidget(thisWidget, rview);
         }
     }
 
