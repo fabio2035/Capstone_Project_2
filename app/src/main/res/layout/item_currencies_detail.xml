@@ -17,12 +17,14 @@
         android:id="@+id/symbol_value"
         android:textAppearance="@style/SymbolTextStyle"
         android:layout_columnWeight="2"
-        tools:text="MZN/USD"/>
+        tools:text="MZN/USD"
+        tools:targetApi="lollipop" />
 
     <TextView
         android:id="@+id/rate_value"
         android:textAppearance="@style/RateTextStyle"
         android:layout_columnWeight="1"
-        tools:text="70.041"/>
+        tools:text="70.041"
+        tools:targetApi="lollipop" />
 
 </GridLayout>

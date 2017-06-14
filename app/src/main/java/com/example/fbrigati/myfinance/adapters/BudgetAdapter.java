@@ -2,7 +2,6 @@ package com.example.fbrigati.myfinance.adapters;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +11,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.fbrigati.myfinance.R;
-import com.example.fbrigati.myfinance.data.DataContract;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;

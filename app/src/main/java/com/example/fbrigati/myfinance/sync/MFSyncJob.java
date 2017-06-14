@@ -7,7 +7,6 @@ import android.content.ContentProviderClient;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SyncRequest;
 import android.content.SyncResult;
@@ -19,10 +18,8 @@ import android.support.annotation.IntDef;
 import android.util.Log;
 
 import com.example.fbrigati.myfinance.R;
-import com.example.fbrigati.myfinance.data.DataContract;
-import com.example.fbrigati.myfinance.ui.StatementFragment;
+import com.example.fbrigati.myfinance.data.DataContract_tmp;
 
-import org.json.JSONException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -30,7 +27,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -39,15 +35,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-
-import au.com.bytecode.opencsv.CSVReader;
 
 /**
  * Created by FBrigati on 14/05/2017.
@@ -64,7 +55,7 @@ public class MFSyncJob extends AbstractThreadedSyncAdapter {
     public static final int SYNC_INTERVAL = 60 * 180;
     public static final int SYNC_FLEXTIME = SYNC_INTERVAL/3;
 
-    public static final Uri invalid_currencyFetch_uri = DataContract.CurrencyExEntry.CONTENT_URI.buildUpon().appendPath("invalid").build();
+    public static final Uri invalid_currencyFetch_uri = DataContract_tmp.CurrencyExEntry.CONTENT_URI.buildUpon().appendPath("invalid").build();
 
     public static final String ACTION_DATA_UPDATED = "com.example.fbrigati.myfinance.ACTION_DATA_UPDATED";
 
@@ -74,13 +65,13 @@ public class MFSyncJob extends AbstractThreadedSyncAdapter {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    @IntDef({CURRENCYFETCH_STATUS_OK, CURRENCYFETCH_STATUS_SERVER_DOWN, CURRENCYFETCH_STATUS_SERVER_INVALID,  CURRENCYFETCH_STATUS_UNKNOWN, CURRENCYFETCH_STATUS_INVALID})
+    @IntDef({CURRENCYFETCH_STATUS_OK, CURRENCYFETCH_STATUS_INVALID, CURRENCYFETCH_STATUS_SERVER_INVALID})
     public @interface CurrencyFetchStatus {}
 
     public static final int CURRENCYFETCH_STATUS_OK = 0;
-    public static final int CURRENCYFETCH_STATUS_SERVER_DOWN = 1;
+    //public static final int CURRENCYFETCH_STATUS_SERVER_DOWN = 1;
     public static final int CURRENCYFETCH_STATUS_SERVER_INVALID = 2;
-    public static final int CURRENCYFETCH_STATUS_UNKNOWN = 3;
+    //public static final int CURRENCYFETCH_STATUS_UNKNOWN = 3;
     public static final int CURRENCYFETCH_STATUS_INVALID = 4;
 
     @Override
@@ -168,7 +159,7 @@ public class MFSyncJob extends AbstractThreadedSyncAdapter {
 
         } catch (IOException e) {
             Log.e(LOG_TAG, "Error ", e);
-            setCurrencyFetchStatus(context, CURRENCYFETCH_STATUS_INVALID);
+            setCurrencyFetchStatus(context, MFSyncJob.CURRENCYFETCH_STATUS_INVALID);
             context.getContentResolver().notifyChange(invalid_currencyFetch_uri, null, false);
             // If the code didn't successfully get the weather data, there's no point in attempting
             // to parse it.
@@ -185,7 +176,7 @@ public class MFSyncJob extends AbstractThreadedSyncAdapter {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor spe = sp.edit();
         spe.putInt(context.getString(R.string.pref_cur_status_key), currencyfetchStatusInvalid);
-        spe.commit();
+        spe.apply();
     }
 
     private void getDataFromBuffer(String buffer) {
@@ -213,13 +204,13 @@ public class MFSyncJob extends AbstractThreadedSyncAdapter {
                     Log.v(LOG_TAG, "------------");
                     Log.v(LOG_TAG, "Name: " + eElement.getElementsByTagName("Name").item(0).getTextContent());
                     symbol = eElement.getElementsByTagName("Name").item(0).getTextContent();
-                    currCV.put(DataContract.CurrencyExEntry.COLUMN_SYMBOL, symbol);
+                    currCV.put(DataContract_tmp.CurrencyExEntry.COLUMN_SYMBOL, symbol);
                     Log.v(LOG_TAG, "Rate: " + eElement.getElementsByTagName("Rate").item(0).getTextContent());
                     rate = Double.parseDouble(eElement.getElementsByTagName("Rate").item(0).getTextContent());
-                    currCV.put(DataContract.CurrencyExEntry.COLUMN_RATE, rate);
+                    currCV.put(DataContract_tmp.CurrencyExEntry.COLUMN_RATE, rate);
                     Log.v(LOG_TAG, "Date: " + eElement.getElementsByTagName("Date").item(0).getTextContent());
                     date = eElement.getElementsByTagName("Date").item(0).getTextContent();
-                    currCV.put(DataContract.CurrencyExEntry.COLUMN_DATE, date);
+                    currCV.put(DataContract_tmp.CurrencyExEntry.COLUMN_DATE, date);
 
                     currCVs.add(currCV);
             }
@@ -227,7 +218,7 @@ public class MFSyncJob extends AbstractThreadedSyncAdapter {
 
             context.getContentResolver()
                     .bulkInsert(
-                            DataContract.CurrencyExEntry.CONTENT_URI,
+                            DataContract_tmp.CurrencyExEntry.CONTENT_URI,
                             currCVs.toArray(new ContentValues[currCVs.size()]));
     } catch (Exception e){
             Log.v(LOG_TAG, "there was an error: " + e.toString());

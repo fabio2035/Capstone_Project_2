@@ -25,14 +25,15 @@
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:src="@drawable/loco_main"
         android:backgroundTint="@color/colorPrimaryDark"
-        android:layout_width="45dp" />
+        android:layout_width="45dp"
+        android:contentDescription="@string/accessibility_budget_icon"
+        tools:targetApi="lollipop" />
 
     <TextView
         android:id="@+id/budgetTitle"
         android:layout_width="200dp"
         android:layout_height="35dp"
         android:gravity="center_horizontal"
-        android:text="test"
         android:textSize="20sp"
         android:textStyle="bold"
         android:layout_marginLeft="35dp"
@@ -65,7 +66,6 @@
         android:id="@+id/budgetset"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="$1000"
         android:paddingTop="@dimen/activity_horizontal_margin"
         app:layout_columnWeight="1"
         android:layout_marginTop="@dimen/element_top_margin"
@@ -86,7 +86,6 @@
 
     <TextView
         android:id="@+id/budgetspent"
-        android:text="$500"
         app:layout_columnWeight="1"
         android:layout_marginTop="@dimen/element_top_margin"
         android:gravity="center"
@@ -108,7 +107,6 @@
         style="?android:attr/progressBarStyleHorizontal"
         android:max="100"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="false"
         android:progress="100"
         android:layout_width="320dp" />
 

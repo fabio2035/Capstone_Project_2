@@ -17,7 +17,7 @@ import android.widget.TextView;
 
 import com.example.fbrigati.myfinance.R;
 import com.example.fbrigati.myfinance.adapters.BudgetAdapter;
-import com.example.fbrigati.myfinance.data.DataContract;
+import com.example.fbrigati.myfinance.data.DataContract_tmp;
 import com.example.fbrigati.myfinance.elements.Budget;
 
 import java.util.ArrayList;
@@ -41,7 +41,6 @@ BudgetSetDialog.setBudgetGoalListener{
 
     private TextView emptyView;
     private ListView budgetList;
-    private Toolbar toolbarView;
 
     public Budget[] budgetItem = {
       new Budget("2017","05","Transport",15000f,123456,"Transport Desc",154.00f)
@@ -62,7 +61,7 @@ BudgetSetDialog.setBudgetGoalListener{
         super.onCreate(savedInstanceState);
         //addDummyData();
 
-        setContentView(R.layout.fragment_budget);
+            setContentView(R.layout.activity_budget);
 
         if(savedInstanceState == null){
             //Create new test Item for Budget
@@ -73,18 +72,18 @@ BudgetSetDialog.setBudgetGoalListener{
 
         getSupportLoaderManager().initLoader(BUDGET_LOADER, null, this);
 
-        //View rootView = inflater.inflate(R.layout.fragment_budget, container, false);
+        //View rootView = inflater.inflate(R.layout.activity_budget, container, false);
 
         budgetAdapter = new BudgetAdapter(this, null, 0);
 
         //Get reference to the listView and attach adapter to it
-        ListView budgetLV = (ListView) findViewById(R.id.budget_list);
+        // ListView budgetLV = (ListView) findViewById(R.id.budget_list);
 
         emptyView = (TextView) findViewById(R.id.empty_budget);
 
         budgetList = (ListView) findViewById(R.id.budget_list);
 
-        toolbarView = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbarView = (Toolbar) findViewById(R.id.toolbar);
 
         toolbarView.setTitle(R.string.toolbar_budget_title);
 
@@ -97,7 +96,7 @@ BudgetSetDialog.setBudgetGoalListener{
             }
         });
 
-        budgetLV.setAdapter(budgetAdapter);
+        budgetList.setAdapter(budgetAdapter);
 
     }
 
@@ -110,7 +109,7 @@ BudgetSetDialog.setBudgetGoalListener{
                 Log.v(LOG_TAG, "budget cursor loader called");
                 //Todo: make account selection
                 //if(statement_uri!=null){
-                //uri = DataContract.StatementEntry.buildStatementUri(statement_uri);
+                //uri = DataContract_tmp.StatementEntry.buildStatementUri(statement_uri);
                 Calendar c = Calendar.getInstance();
 
                 int month = c.get(Calendar.MONTH)+1;
@@ -118,7 +117,7 @@ BudgetSetDialog.setBudgetGoalListener{
                 Log.v(LOG_TAG, "getting budget info for month: " + month);
                 return new CursorLoader(
                         this,
-                        DataContract.BudgetEntry.buildBudgetMonth(month),
+                        DataContract_tmp.BudgetEntry.buildBudgetMonth(month),
                         null,
                         null,
                         null,
@@ -175,11 +174,11 @@ BudgetSetDialog.setBudgetGoalListener{
 
         ContentValues cv = new ContentValues();
 
-        cv.put(DataContract.BudgetEntry.COLUMN_AMOUNT, amount);
+        cv.put(DataContract_tmp.BudgetEntry.COLUMN_AMOUNT, amount);
 
         //Update budget set for the given budget item
-        getContentResolver().update(DataContract.BudgetEntry.CONTENT_URI, cv,
-                DataContract.BudgetEntry._ID + "=" + id ,
+        getContentResolver().update(DataContract_tmp.BudgetEntry.CONTENT_URI, cv,
+                DataContract_tmp.BudgetEntry._ID + "=" + id ,
                 null);
 
     }

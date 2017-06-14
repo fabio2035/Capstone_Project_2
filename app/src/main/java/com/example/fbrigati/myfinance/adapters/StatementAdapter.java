@@ -7,11 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.fbrigati.myfinance.R;
-import com.example.fbrigati.myfinance.data.DataContract;
+import com.example.fbrigati.myfinance.data.DataContract_tmp;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -57,17 +56,17 @@ public class StatementAdapter extends CursorAdapter {
 
         ViewHolder viewHolder = (ViewHolder) view.getTag();
 
-        String dateRaw = cursor.getString(DataContract.StatementEntry.COL_DATE);
+        String dateRaw = cursor.getString(DataContract_tmp.StatementEntry.COL_DATE);
 
         StringBuilder dateBuild = new StringBuilder().append(dateRaw.substring(6,8)).append("/").append(dateRaw.substring(4,6)).append("/").append("'").append(dateRaw.substring(2,4));
 
         viewHolder.textDate.setText(dateBuild.toString());
 
-        viewHolder.textDescription.setText(cursor.getString(DataContract.StatementEntry.COL_DESCRIPTION_USER));
+        viewHolder.textDescription.setText(cursor.getString(DataContract_tmp.StatementEntry.COL_DESCRIPTION_USER));
 
-        trxType = cursor.getInt(DataContract.StatementEntry.COL_TRANSACTION_CODE);
+        trxType = cursor.getInt(DataContract_tmp.StatementEntry.COL_TRANSACTION_CODE);
 
-        Double amount = Double.valueOf(cursor.getString(DataContract.StatementEntry.COL_AMOUNT));
+        Double amount = Double.valueOf(cursor.getString(DataContract_tmp.StatementEntry.COL_AMOUNT));
 
         if (trxType < 5){
             String PositiveValue = currencyFormatWithPlus.format(amount);

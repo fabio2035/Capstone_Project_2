@@ -1,6 +1,5 @@
 package com.example.fbrigati.myfinance;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,8 +7,6 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,10 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-import com.example.fbrigati.myfinance.data.DataContract;
 import com.example.fbrigati.myfinance.dummy.MenuContent;
-import com.example.fbrigati.myfinance.elements.Budget;
-import com.example.fbrigati.myfinance.sync.MFSyncJob;
 import com.example.fbrigati.myfinance.ui.BudgetActivity;
 import com.example.fbrigati.myfinance.ui.CurrenciesActivity;
 import com.example.fbrigati.myfinance.ui.CurrenciesFragment;

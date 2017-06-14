@@ -28,7 +28,7 @@
         android:id="@+id/menu_icon"
         android:layout_height="@dimen/menu_icon_height"
         android:layout_width="@dimen/menu_icon_width"
-
+        android:contentDescription="@string/accessibility_menu_icon"
          />
 
     <TextView

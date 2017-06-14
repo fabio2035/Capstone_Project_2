@@ -7,16 +7,13 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.example.fbrigati.myfinance.MainActivity;
 import com.example.fbrigati.myfinance.R;
-import com.example.fbrigati.myfinance.data.DataContract;
 import com.example.fbrigati.myfinance.data.DataDBHelper;
 import com.example.fbrigati.myfinance.sync.MFSyncJob;
 import com.example.fbrigati.myfinance.ui.BudgetActivity;
@@ -68,7 +65,7 @@ public class FMWidgetProvider extends AppWidgetProvider {
 
             appWidgetManager.updateAppWidget(appWidgetIds[i], rview);
         }
-        super.onUpdate(context, appWidgetManager, appWidgetIds);
+      //  super.onUpdate(context, appWidgetManager, appWidgetIds);
     }
 
 
@@ -118,6 +115,8 @@ public class FMWidgetProvider extends AppWidgetProvider {
             }
             generalData.moveToNext();
         }
+
+        generalData.close();
     }
 
 

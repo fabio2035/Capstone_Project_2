@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">MyFinance</string>
-    <string name="title_item_detail">Item Detail</string>
     <string name="action_settings">Settings</string>
 
     <!-- Empty Menu Items -->
@@ -87,6 +86,9 @@
     <string name="toolbar_budget_title">Budget</string>
     <string name="toolbar_stats_title">Stats Charts</string>
     <string name="toolbar_currencies_title">Currency Rates</string>
+    <string name="accessibility_budget_icon">Budget Icon</string>
+    <string name="accessibility_menu_icon">Menu icon</string>
+    <string name="accessibility_statment_FAB">add transaction</string>
 
 
 </resources>

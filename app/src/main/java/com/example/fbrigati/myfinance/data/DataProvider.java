@@ -7,12 +7,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
-
-import com.example.fbrigati.myfinance.ui.StatementFragment;
 
 /**
  * Created by FBrigati on 27/04/2017.
@@ -51,41 +48,41 @@ public class DataProvider extends ContentProvider {
         //This is an inner join which looks like
         //statement LEFT JOIN category ON statement.category = category._id
         mStatementQueryBuilder.setTables(
-                DataContract.StatementEntry.TABLE_NAME + " LEFT JOIN " +
-                        DataContract.CategoryEntry.TABLE_NAME +
-                        " ON " + DataContract.StatementEntry.TABLE_NAME +
-                        "." + DataContract.StatementEntry.COLUMN_CATEGORY_KEY +
-                        " = " + DataContract.CategoryEntry.TABLE_NAME +
-                        "." + DataContract.CategoryEntry.COLUMN_CATEGORY_USER_KEY);
+                DataContract_tmp.StatementEntry.TABLE_NAME + " LEFT JOIN " +
+                        DataContract_tmp.CategoryEntry.TABLE_NAME +
+                        " ON " + DataContract_tmp.StatementEntry.TABLE_NAME +
+                        "." + DataContract_tmp.StatementEntry.COLUMN_CATEGORY_KEY +
+                        " = " + DataContract_tmp.CategoryEntry.TABLE_NAME +
+                        "." + DataContract_tmp.CategoryEntry.COLUMN_CATEGORY_USER_KEY);
     }
 
     static{
         mCurrencyQueryBuilder = new SQLiteQueryBuilder();
-        mCurrencyQueryBuilder.setTables(DataContract.CurrencyExEntry.TABLE_NAME);}
+        mCurrencyQueryBuilder.setTables(DataContract_tmp.CurrencyExEntry.TABLE_NAME);}
 
 
 
     //statement._ID = ?
     private static final String sStatementIDSelection =
-            DataContract.StatementEntry.TABLE_NAME +
-                    "." + DataContract.StatementEntry._ID + " = ?";
+            DataContract_tmp.StatementEntry.TABLE_NAME +
+                    "." + DataContract_tmp.StatementEntry._ID + " = ?";
 
 
         //currencyex.symbol like '%Base'
     private static final String sBaseCurrencySelection =
-            DataContract.CurrencyExEntry.TABLE_NAME +
-                    "." + DataContract.CurrencyExEntry.COLUMN_SYMBOL + " like ?";
+            DataContract_tmp.CurrencyExEntry.TABLE_NAME +
+                    "." + DataContract_tmp.CurrencyExEntry.COLUMN_SYMBOL + " like ?";
 
 
     //statement.account = ? AND date = ?
     private static final String sAcctnumberAndDateSelection =
-            DataContract.StatementEntry.TABLE_NAME +
-                    "." + DataContract.StatementEntry.COLUMN_ACCOUNT_NUMBER + " = ? AND " +
-                    DataContract.StatementEntry.COLUMN_DATE + " = ? ";
+            DataContract_tmp.StatementEntry.TABLE_NAME +
+                    "." + DataContract_tmp.StatementEntry.COLUMN_ACCOUNT_NUMBER + " = ? AND " +
+                    DataContract_tmp.StatementEntry.COLUMN_DATE + " = ? ";
 
     private Cursor getCurrenciesByBaseCurrency(
             Uri uri, String[] projection, String sortOrder) {
-        String baseCurrency = DataContract.CurrencyExEntry.getBaseCurrenyFromUri(uri);
+        String baseCurrency = DataContract_tmp.CurrencyExEntry.getBaseCurrenyFromUri(uri);
         Log.v(LOG_TAG, "baseCurrency: " + baseCurrency);
         return mCurrencyQueryBuilder.query(mOpenHelper.getReadableDatabase(),
                 projection,
@@ -106,24 +103,24 @@ public class DataProvider extends ContentProvider {
         // found.  The code passed into the constructor represents the code to return for the root
         // URI.  It's common to use NO_MATCH as the code for this case.
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
-        final String authority = DataContract.CONTENT_AUTHORITY;
+        final String authority = DataContract_tmp.CONTENT_AUTHORITY;
 
         // For each type of URI you want to add, create a corresponding code.
-        matcher.addURI(authority, DataContract.PATH_STATEMENT, STATEMENT);
-        matcher.addURI(authority, DataContract.PATH_STATEMENT + "/*", STATEMENT_WITH_ID);
-        matcher.addURI(authority, DataContract.PATH_STATEMENT + "/#", STATEMENT_WITH_ACCTNUMBER);
-        matcher.addURI(authority, DataContract.PATH_STATEMENT + "/*/#", STATEMENT_STATS_MONTH);
-        matcher.addURI(authority, DataContract.PATH_STATEMENT + "/widget/data", STATEMENT_WIDGET_DATA);
+        matcher.addURI(authority, DataContract_tmp.PATH_STATEMENT, STATEMENT);
+        matcher.addURI(authority, DataContract_tmp.PATH_STATEMENT + "/*", STATEMENT_WITH_ID);
+        matcher.addURI(authority, DataContract_tmp.PATH_STATEMENT + "/#", STATEMENT_WITH_ACCTNUMBER);
+        matcher.addURI(authority, DataContract_tmp.PATH_STATEMENT + "/*/#", STATEMENT_STATS_MONTH);
+        matcher.addURI(authority, DataContract_tmp.PATH_STATEMENT + "/widget/data", STATEMENT_WIDGET_DATA);
 
-        matcher.addURI(authority, DataContract.PATH_CATEGORY, CATEGORY);
-        matcher.addURI(authority, DataContract.PATH_CATEGORY + "/*", CATEGORY_WITH_ACQUIRER);
+        matcher.addURI(authority, DataContract_tmp.PATH_CATEGORY, CATEGORY);
+        matcher.addURI(authority, DataContract_tmp.PATH_CATEGORY + "/*", CATEGORY_WITH_ACQUIRER);
 
-        matcher.addURI(authority, DataContract.PATH_BUDGET, BUDGET);
-        matcher.addURI(authority, DataContract.PATH_BUDGET + "/#", BUDGET_WITH_MONTH);
-        matcher.addURI(authority, DataContract.PATH_BUDGET + "/widget/#", BUDGET_WIDGET);
+        matcher.addURI(authority, DataContract_tmp.PATH_BUDGET, BUDGET);
+        matcher.addURI(authority, DataContract_tmp.PATH_BUDGET + "/#", BUDGET_WITH_MONTH);
+        matcher.addURI(authority, DataContract_tmp.PATH_BUDGET + "/widget/#", BUDGET_WIDGET);
 
-        matcher.addURI(authority, DataContract.PATH_CUREX, CUREX);
-        matcher.addURI(authority, DataContract.PATH_CUREX + "/*", CUREX_WITH_BASE);
+        matcher.addURI(authority, DataContract_tmp.PATH_CUREX, CUREX);
+        matcher.addURI(authority, DataContract_tmp.PATH_CUREX + "/*", CUREX_WITH_BASE);
 
         return matcher;
     }
@@ -163,7 +160,7 @@ public class DataProvider extends ContentProvider {
             // "statement"
             case STATEMENT: {
                 retCursor = mOpenHelper.getReadableDatabase().query(
-                        DataContract.StatementEntry.TABLE_NAME,
+                        DataContract_tmp.StatementEntry.TABLE_NAME,
                         projection,
                         selection,
                         selectionArgs,
@@ -180,7 +177,7 @@ public class DataProvider extends ContentProvider {
             // "Category"
             case CATEGORY: {
                 retCursor = mOpenHelper.getReadableDatabase().query(
-                        DataContract.CategoryEntry.TABLE_NAME,
+                        DataContract_tmp.CategoryEntry.TABLE_NAME,
                         projection,
                         selection,
                         selectionArgs,
@@ -202,7 +199,7 @@ public class DataProvider extends ContentProvider {
             // "Currencies"
             case CUREX: {
                 retCursor = mOpenHelper.getReadableDatabase().query(
-                        DataContract.CurrencyExEntry.TABLE_NAME,
+                        DataContract_tmp.CurrencyExEntry.TABLE_NAME,
                         projection,
                         selection,
                         selectionArgs,
@@ -227,8 +224,8 @@ public class DataProvider extends ContentProvider {
     }
 
     private Cursor getStatsByMOnth(Uri uri, String[] projection, String sortOrder) {
-        //String category = DataContract.BudgetEntry.getBudgetCategory(uri);
-        int month = DataContract.StatementEntry.getMonthFromUri(uri);
+        //String category = DataContract_tmp.BudgetEntry.getBudgetCategory(uri);
+        int month = DataContract_tmp.StatementEntry.getMonthFromUri(uri);
 
         Log.v(LOG_TAG, "Inside getStatementByMonth, retrieved month number: " + String.valueOf(month));
 
@@ -258,7 +255,7 @@ public class DataProvider extends ContentProvider {
 
     private Cursor getWidgetCollectionCursor(Uri uri, String[] projection, String sortOrder) {
 
-        int month = DataContract.BudgetEntry.getBudgetMonth(uri);
+        int month = DataContract_tmp.BudgetEntry.getBudgetMonth(uri);
 
         return mOpenHelper.getReadableDatabase().rawQuery(
                 "select S._ID, S.month, S.year , S.category, S.amount, T.amount, T.date From budget as S inner join " +
@@ -272,8 +269,8 @@ public class DataProvider extends ContentProvider {
 
     private Cursor getBudgetWithMonth(Uri uri, String[] projection, String sortOrder) {
 
-        //String category = DataContract.BudgetEntry.getBudgetCategory(uri);
-        int month = DataContract.BudgetEntry.getBudgetMonth(uri);
+        //String category = DataContract_tmp.BudgetEntry.getBudgetCategory(uri);
+        int month = DataContract_tmp.BudgetEntry.getBudgetMonth(uri);
 
         return mOpenHelper.getReadableDatabase().rawQuery(
                 "select S._ID, S.month, S.year , S.category, S.amount, T.amount From budget as S inner join " +
@@ -286,20 +283,20 @@ public class DataProvider extends ContentProvider {
 
     private Cursor getStatementByID(Uri uri, String[] projection, String sortOrder) {
 
-        String ID = String.valueOf(DataContract.StatementEntry.getIDFromUri(uri));
+        String ID = String.valueOf(DataContract_tmp.StatementEntry.getIDFromUri(uri));
 
         Log.v(LOG_TAG, "ID = " +ID);
 
         return mStatementQueryBuilder.query(mOpenHelper.getReadableDatabase(),
-                new String[]{ DataContract.StatementEntry.COLUMN_TRANSACTION_CODE,
-                DataContract.StatementEntry.COLUMN_CATEGORY_KEY,
-                DataContract.StatementEntry.COLUMN_TRANSACTION_CODE,
-                DataContract.StatementEntry.COLUMN_DESCRIPTION_USER,
-                DataContract.StatementEntry.COLUMN_DATE,
-                DataContract.StatementEntry.COLUMN_TIME,
-                DataContract.StatementEntry.COLUMN_AMOUNT,
-                DataContract.CategoryEntry.COLUMN_CATEGORY_USER_KEY,
-                DataContract.StatementEntry.COLUMN_TRANSACTION_CODE},
+                new String[]{ DataContract_tmp.StatementEntry.COLUMN_TRANSACTION_CODE,
+                DataContract_tmp.StatementEntry.COLUMN_CATEGORY_KEY,
+                DataContract_tmp.StatementEntry.COLUMN_TRANSACTION_CODE,
+                DataContract_tmp.StatementEntry.COLUMN_DESCRIPTION_USER,
+                DataContract_tmp.StatementEntry.COLUMN_DATE,
+                DataContract_tmp.StatementEntry.COLUMN_TIME,
+                DataContract_tmp.StatementEntry.COLUMN_AMOUNT,
+                DataContract_tmp.CategoryEntry.COLUMN_CATEGORY_USER_KEY,
+                DataContract_tmp.StatementEntry.COLUMN_TRANSACTION_CODE},
                 sStatementIDSelection,
                 new String[]{ID},
                 null,
@@ -310,8 +307,8 @@ public class DataProvider extends ContentProvider {
 
     private Cursor getStatementByAccount(Uri uri, String[] projection, String sortOrder) {
 
-            String acctNumber = DataContract.StatementEntry.getAccountFromUri(uri);
-            int date = DataContract.StatementEntry.getDateFromUri(uri);
+            String acctNumber = DataContract_tmp.StatementEntry.getAccountFromUri(uri);
+            int date = DataContract_tmp.StatementEntry.getDateFromUri(uri);
 
             return mStatementQueryBuilder.query(mOpenHelper.getReadableDatabase(),
                     projection,
@@ -330,23 +327,23 @@ public class DataProvider extends ContentProvider {
 
         switch(match){
             case STATEMENT:
-                return DataContract.StatementEntry.CONTENT_TYPE;
+                return DataContract_tmp.StatementEntry.CONTENT_TYPE;
             case STATEMENT_WITH_ACCTNUMBER:
-                return DataContract.StatementEntry.CONTENT_TYPE;
+                return DataContract_tmp.StatementEntry.CONTENT_TYPE;
             case STATEMENT_STATS_MONTH:
-                return DataContract.StatementEntry.CONTENT_TYPE;
+                return DataContract_tmp.StatementEntry.CONTENT_TYPE;
             case CATEGORY:
-                return DataContract.CategoryEntry.CONTENT_TYPE;
+                return DataContract_tmp.CategoryEntry.CONTENT_TYPE;
             case CATEGORY_WITH_ACQUIRER:
-                return DataContract.CategoryEntry.CONTENT_ITEM_TYPE;
+                return DataContract_tmp.CategoryEntry.CONTENT_ITEM_TYPE;
             case BUDGET:
-                return DataContract.BudgetEntry.CONTENT_TYPE;
+                return DataContract_tmp.BudgetEntry.CONTENT_TYPE;
             case BUDGET_WITH_MONTH:
-                return DataContract.BudgetEntry.CONTENT_ITEM_TYPE;
+                return DataContract_tmp.BudgetEntry.CONTENT_ITEM_TYPE;
             case BUDGET_WIDGET:
-                return DataContract.BudgetEntry.CONTENT_ITEM_TYPE;
+                return DataContract_tmp.BudgetEntry.CONTENT_ITEM_TYPE;
             case CUREX:
-                return DataContract.CurrencyExEntry.CONTENT_TYPE;
+                return DataContract_tmp.CurrencyExEntry.CONTENT_TYPE;
 
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -366,34 +363,34 @@ public class DataProvider extends ContentProvider {
             case STATEMENT:{
                 //normalizeData();
                 Log.v(LOG_TAG, "About to execute insert os statement values..");
-                long _id = db.insert(DataContract.StatementEntry.TABLE_NAME, null, values);
+                long _id = db.insert(DataContract_tmp.StatementEntry.TABLE_NAME, null, values);
                 if (_id > 0){
                     Log.v(LOG_TAG, "Inserted something, returned value: " + _id);
-                    returnUri = DataContract.StatementEntry.buildStatementUri(_id);}
+                    returnUri = DataContract_tmp.StatementEntry.buildStatementUri(_id);}
                 else
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
             }
             case CATEGORY:{
-                long _id = db.insert(DataContract.CategoryEntry.TABLE_NAME, null, values);
+                long _id = db.insert(DataContract_tmp.CategoryEntry.TABLE_NAME, null, values);
                 if (_id > 0)
-                    returnUri = DataContract.CategoryEntry.buildCategoryUri(_id);
+                    returnUri = DataContract_tmp.CategoryEntry.buildCategoryUri(_id);
                 else
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
             }
             case BUDGET:{
-                long _id = db.insert(DataContract.BudgetEntry.TABLE_NAME, null, values);
+                long _id = db.insert(DataContract_tmp.BudgetEntry.TABLE_NAME, null, values);
                 if (_id > 0)
-                    returnUri = DataContract.BudgetEntry.buildBudgetUri(_id);
+                    returnUri = DataContract_tmp.BudgetEntry.buildBudgetUri(_id);
                 else
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
             }
             case CUREX:{
-                long _id = db.insert(DataContract.CurrencyExEntry.TABLE_NAME, null, values);
+                long _id = db.insert(DataContract_tmp.CurrencyExEntry.TABLE_NAME, null, values);
                 if (_id > 0)
-                    returnUri = DataContract.CurrencyExEntry.buildCurrencyExUri(_id);
+                    returnUri = DataContract_tmp.CurrencyExEntry.buildCurrencyExUri(_id);
                 else
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
@@ -417,19 +414,19 @@ public class DataProvider extends ContentProvider {
         switch (match) {
             case STATEMENT:
                 rowsDeleted = db.delete(
-                        DataContract.StatementEntry.TABLE_NAME, selection, selectionArgs);
+                        DataContract_tmp.StatementEntry.TABLE_NAME, selection, selectionArgs);
                 break;
             case CATEGORY:
                 rowsDeleted = db.delete(
-                        DataContract.CategoryEntry.TABLE_NAME, selection, selectionArgs);
+                        DataContract_tmp.CategoryEntry.TABLE_NAME, selection, selectionArgs);
                 break;
             case BUDGET:
                 rowsDeleted = db.delete(
-                        DataContract.BudgetEntry.TABLE_NAME, selection, selectionArgs);
+                        DataContract_tmp.BudgetEntry.TABLE_NAME, selection, selectionArgs);
                 break;
             case CUREX:
                 rowsDeleted = db.delete(
-                        DataContract.CurrencyExEntry.TABLE_NAME, selection, selectionArgs);
+                        DataContract_tmp.CurrencyExEntry.TABLE_NAME, selection, selectionArgs);
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -450,15 +447,15 @@ public class DataProvider extends ContentProvider {
             switch (match) {
                 case STATEMENT:
                     //normalizeDate(values);
-                    rowsUpdated = db.update(DataContract.StatementEntry.TABLE_NAME, values, selection,
+                    rowsUpdated = db.update(DataContract_tmp.StatementEntry.TABLE_NAME, values, selection,
                             selectionArgs);
                     break;
                 case CATEGORY:
-                    rowsUpdated = db.update(DataContract.CategoryEntry.TABLE_NAME, values, selection,
+                    rowsUpdated = db.update(DataContract_tmp.CategoryEntry.TABLE_NAME, values, selection,
                             selectionArgs);
                     break;
                 case BUDGET:
-                    rowsUpdated = db.update(DataContract.BudgetEntry.TABLE_NAME, values, selection,
+                    rowsUpdated = db.update(DataContract_tmp.BudgetEntry.TABLE_NAME, values, selection,
                             selectionArgs);
                     break;
                 default:
@@ -483,7 +480,7 @@ public class DataProvider extends ContentProvider {
                 try {
                     for (ContentValues value : values) {
                         db.insert(
-                                DataContract.CurrencyExEntry.TABLE_NAME,
+                                DataContract_tmp.CurrencyExEntry.TABLE_NAME,
                                 null,
                                 value
                         );

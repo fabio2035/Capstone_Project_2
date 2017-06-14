@@ -23,10 +23,6 @@ public class MainFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
 
-    public MainFragment(){
-        //empty constructor
-    }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

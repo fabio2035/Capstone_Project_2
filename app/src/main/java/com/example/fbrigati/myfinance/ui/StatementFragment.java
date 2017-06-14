@@ -1,17 +1,14 @@
 package com.example.fbrigati.myfinance.ui;
 
-import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,16 +19,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.fbrigati.myfinance.adapters.StatementAdapter;
-import com.example.fbrigati.myfinance.data.DataContract;
+import com.example.fbrigati.myfinance.data.DataContract_tmp;
 
 import com.example.fbrigati.myfinance.R;
 
 import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 
 /**
@@ -156,8 +149,8 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
 
     private void showTransactionEditDialog(Long id) {
         intent = new Intent(getActivity(), StatementActEditTrxDialog.class);
-        Log.v(LOG_TAG, "Uri for editing Statement entry: " + DataContract.StatementEntry.buildStatementUri(id));
-        intent.setData(DataContract.StatementEntry.buildStatementUri(id));
+        Log.v(LOG_TAG, "Uri for editing Statement entry: " + DataContract_tmp.StatementEntry.buildStatementUri(id));
+        intent.setData(DataContract_tmp.StatementEntry.buildStatementUri(id));
         getActivity().startActivity(intent);
     }
 
@@ -197,11 +190,11 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
                 Log.v(LOG_TAG, "statement cursor loader called with uri:" + statement_uri );
                 //Todo: make account selection
                 //if(statement_uri!=null){
-                //uri = DataContract.StatementEntry.buildStatementUri(statement_uri);
+                //uri = DataContract_tmp.StatementEntry.buildStatementUri(statement_uri);
                     return new CursorLoader(
                             getActivity(),
-                            DataContract.StatementEntry.CONTENT_URI,
-                            DataContract.StatementEntry.STATEMENT_COLUMNS,
+                            DataContract_tmp.StatementEntry.CONTENT_URI,
+                            DataContract_tmp.StatementEntry.STATEMENT_COLUMNS,
                             null,
                             null,
                             null);

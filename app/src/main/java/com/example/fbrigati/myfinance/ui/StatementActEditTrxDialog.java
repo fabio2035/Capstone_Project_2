@@ -1,30 +1,19 @@
 package com.example.fbrigati.myfinance.ui;
 
-import android.annotation.TargetApi;
-import android.app.Activity;
-import android.app.DatePickerDialog;
-import android.app.Dialog;
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -34,26 +23,19 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.fbrigati.myfinance.R;
-import com.example.fbrigati.myfinance.data.DataContract;
+import com.example.fbrigati.myfinance.data.DataContract_tmp;
 import com.example.fbrigati.myfinance.elements.Statement;
 import com.example.fbrigati.myfinance.sync.MFSyncJob;
+import com.example.fbrigati.myfinance.widget.FMWidgetProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import org.w3c.dom.Text;
-
-import java.text.DateFormat;
-import java.text.Format;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
-import static java.security.AccessController.getContext;
 
 /**
  * Created by FBrigati on 25/05/2017.
@@ -86,6 +68,8 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
     Map<String, Integer> categoryMap;
 
     private Uri detailUri;
+
+    private String categorySet;
 
     //Firebase variables
     public static final String ANONYMOUS = "anonymous";
@@ -205,10 +189,10 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
 
         Integer trxType = 0;
 
-        String dateStr = String.format("%08d", Integer.parseInt(datePickerBtn.getText().toString().replace("/", "")));
+        String dateStr = String.format(Locale.US,"%08d", Integer.parseInt(datePickerBtn.getText().toString().replace("/", "")));
         StringBuilder dateBuild = new StringBuilder().append(dateStr.substring(4)).append(dateStr.substring(2,4)).append(dateStr.substring(0,2));
         Log.v(LOG_TAG, "DateStr: " + dateBuild); //31052017
-        String timeStr = String.format("%04d", Integer.parseInt(timePickerBtn.getText().toString().replace(":","")));
+        String timeStr = String.format(Locale.US,"%04d", Integer.parseInt(timePickerBtn.getText().toString().replace(":","")));
 
         Integer dateInt = Integer.parseInt(dateBuild.toString());
         Integer timeInt = Integer.parseInt(timeStr);
@@ -220,28 +204,29 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
                 + ", Category key: " + spinner_ctg.getSelectedItem().toString()
                 + "");
 
-        cv.put(DataContract.StatementEntry.COLUMN_ACCOUNT_NUMBER, "0529925801");
-        cv.put(DataContract.StatementEntry.COLUMN_DATE, dateInt);
-        cv.put(DataContract.StatementEntry.COLUMN_TIME, timeStr);
-        cv.put(DataContract.StatementEntry.COLUMN_SEQUENCE, 0);
-        cv.put(DataContract.StatementEntry.COLUMN_DESCRIPTION_ORIGIN, descText.getText().toString());
-        cv.put(DataContract.StatementEntry.COLUMN_DESCRIPTION_USER, descText.getText().toString());
-        cv.put(DataContract.StatementEntry.COLUMN_AMOUNT, Double.valueOf(amountText.getText().toString()));
-        cv.put(DataContract.StatementEntry.COLUMN_TRANSACTION_CODE, trxType);
-        cv.put(DataContract.StatementEntry.COLUMN_ACQUIRER_ID, "0");
-        cv.put(DataContract.StatementEntry.COLUMN_CATEGORY_KEY, spinner_ctg.getSelectedItem().toString());
+        cv.put(DataContract_tmp.StatementEntry.COLUMN_ACCOUNT_NUMBER, "0529925801");
+        cv.put(DataContract_tmp.StatementEntry.COLUMN_DATE, dateInt);
+        cv.put(DataContract_tmp.StatementEntry.COLUMN_TIME, timeStr);
+        cv.put(DataContract_tmp.StatementEntry.COLUMN_SEQUENCE, 0);
+        cv.put(DataContract_tmp.StatementEntry.COLUMN_DESCRIPTION_ORIGIN, descText.getText().toString());
+        cv.put(DataContract_tmp.StatementEntry.COLUMN_DESCRIPTION_USER, descText.getText().toString());
+        cv.put(DataContract_tmp.StatementEntry.COLUMN_AMOUNT, Double.valueOf(amountText.getText().toString()));
+        cv.put(DataContract_tmp.StatementEntry.COLUMN_TRANSACTION_CODE, trxType);
+        cv.put(DataContract_tmp.StatementEntry.COLUMN_ACQUIRER_ID, "0");
+        cv.put(DataContract_tmp.StatementEntry.COLUMN_CATEGORY_KEY, spinner_ctg.getSelectedItem().toString());
 
-        Uri uri = getContentResolver().insert(DataContract.StatementEntry.CONTENT_URI, cv);
+        Uri uri = getContentResolver().insert(DataContract_tmp.StatementEntry.CONTENT_URI, cv);
 
-        int execNum = DataContract.StatementEntry.getIDFromUri(uri);
+        int execNum = DataContract_tmp.StatementEntry.getIDFromUri(uri);
 
         if(execNum > 0){
         Toast.makeText(getApplicationContext(), R.string.toast_savetodbsuccess, Toast.LENGTH_LONG).show();
 
+            Log.v(LOG_TAG, "SENDING BROADCAST FOR WIDGET UPDATE!!");
         updateWidgets();
 
         //if successfully saved to DB we can Save to Firbase aswell...
-        Statement statementData = new Statement(DataContract.StatementEntry.getIDFromUri(uri),
+        Statement statementData = new Statement(DataContract_tmp.StatementEntry.getIDFromUri(uri),
                 "0529925801", dateInt, timeStr,0, descText.getText().toString(), descText.getText().toString(),
                 Double.valueOf(amountText.getText().toString()),trxType,"0",spinner_ctg.getSelectedItem().toString());
         mStatementDatabaseReference.push().setValue(statementData);}
@@ -250,8 +235,10 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
     }
 
     public void updateWidgets() {
-        Intent dataUpdatedIntent = new Intent(MFSyncJob.ACTION_DATA_UPDATED)
-                .setPackage(this.getClass().getPackage().getName());
+        Intent dataUpdatedIntent = new Intent(this, FMWidgetProvider.class)//MFSyncJob.ACTION_DATA_UPDATED)
+                .setAction(MFSyncJob.ACTION_DATA_UPDATED);
+        int ids[] = AppWidgetManager.getInstance(getApplication()).getAppWidgetIds(new ComponentName(getApplication(), FMWidgetProvider.class));
+        dataUpdatedIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, ids);
         sendBroadcast(dataUpdatedIntent);
     }
 
@@ -285,11 +272,11 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
                 Log.v(LOG_TAG, "statement cursor loader called");
                 //Todo: make account selection
                 //if(statement_uri!=null){
-                //uri = DataContract.StatementEntry.buildStatementUri(statement_uri);
+                //uri = DataContract_tmp.StatementEntry.buildStatementUri(statement_uri);
                 /*return new CursorLoader(
                         getActivity(),
-                        DataContract.StatementEntry.CONTENT_URI,
-                        DataContract.StatementEntry.STATEMENT_COLUMNS,
+                        DataContract_tmp.StatementEntry.CONTENT_URI,
+                        DataContract_tmp.StatementEntry.STATEMENT_COLUMNS,
                         null,
                         null,
                         null); */
@@ -298,8 +285,8 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
                 //Todo: make category selection
                 return new CursorLoader(
                         getApplicationContext(),
-                        DataContract.CategoryEntry.CONTENT_URI,
-                        DataContract.CategoryEntry.CATEGORY_COLUMNS,
+                        DataContract_tmp.CategoryEntry.CONTENT_URI,
+                        DataContract_tmp.CategoryEntry.CATEGORY_COLUMNS,
                         null,
                         null,
                         null);
@@ -310,7 +297,7 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
                 return new CursorLoader(
                         getApplicationContext(),
                         detailUri,
-                        DataContract.StatementEntry.STATEMENT_COLUMNS,
+                        DataContract_tmp.StatementEntry.STATEMENT_COLUMNS,
                         null,
                         null,
                         null);
@@ -328,16 +315,16 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
 
                 if (data != null && data.moveToFirst() && data.getCount() > 0) {
 
-                    Log.v(LOG_TAG, "data crusor with: " + data.getString(DataContract.CategoryEntry.COL_CATEGORY_USER_KEY));
+                    Log.v(LOG_TAG, "data crusor with: " + data.getString(DataContract_tmp.CategoryEntry.COL_CATEGORY_USER_KEY));
 
                     int i = 0;
 
                     do {
-                        Log.v(LOG_TAG, "inserting key: " + data.getString(DataContract.CategoryEntry.COL_CATEGORY_DEFAULT)
+                        Log.v(LOG_TAG, "inserting key: " + data.getString(DataContract_tmp.CategoryEntry.COL_CATEGORY_DEFAULT)
                                 + " | value: " + i);
                         i++;
-                        categoryMap.put(data.getString(DataContract.CategoryEntry.COL_CATEGORY_DEFAULT), i);
-                        lables.add(data.getString(DataContract.CategoryEntry.COL_CATEGORY_DEFAULT));
+                        categoryMap.put(data.getString(DataContract_tmp.CategoryEntry.COL_CATEGORY_DEFAULT), i);
+                        lables.add(data.getString(DataContract_tmp.CategoryEntry.COL_CATEGORY_DEFAULT));
                     } while (data.moveToNext());
 
                     // Creating adapter for spinner
@@ -382,10 +369,10 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
                     timePickerBtn.setText(timeBuild.toString());
 
                     //Pick category
-                    for(int i=0; i<spinner_ctg.getCount(); i++){
-                        Log.v(LOG_TAG, "Item position: " + spinner_ctg.getItemAtPosition(i).toString());
-                        if(spinner_ctg.getItemAtPosition(i).toString().equals(categoryMap.get(category))){
-                        spinner_ctg.setSelection(i);}
+                    for(int j=0; j<spinner_ctg.getCount(); j++){
+                        Log.v(LOG_TAG, "Item position: " + spinner_ctg.getItemAtPosition(j).toString());
+                        if(spinner_ctg.getItemAtPosition(j).toString().equals(data.getString(7))){
+                        spinner_ctg.setSelection(j);}
                     }
 
                     //Pick trx type
@@ -415,14 +402,14 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
 
     @Override
     public void showDate(int year, int month, int day) {
-        datePickerBtn.setText(new StringBuilder().append(String.format("%02d",day)).append("/")
-                .append(String.format("%02d",month)).append("/").append(year));
+        datePickerBtn.setText(new StringBuilder().append(String.format(Locale.US,"%02d",day)).append("/")
+                .append(String.format(Locale.US,"%02d",month)).append("/").append(year));
     }
 
 
     @Override
     public void showTime(int hour, int minute) {
-        timePickerBtn.setText(new StringBuilder().append(String.format("%02d",hour)).append(":")
-        .append(String.format("%02d",minute)));
+        timePickerBtn.setText(new StringBuilder().append(String.format(Locale.US,"%02d",hour)).append(":")
+        .append(String.format(Locale.US,"%02d",minute)));
     }
 }

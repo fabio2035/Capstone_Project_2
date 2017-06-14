@@ -2,6 +2,7 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:ads="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -30,7 +31,9 @@
         android:src="@drawable/ic_add_circle"
         android:elevation="6dp"
         app:layout_anchor="@+id/toolbar"
-        app:layout_anchorGravity="end"/>
+        app:layout_anchorGravity="end"
+        android:contentDescription="@string/accessibility_statment_FAB"
+        tools:targetApi="lollipop" />
 
     <!-- The table details -->
     <ListView
@@ -38,7 +41,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:divider="#FFCC00"
-        android:dividerHeight="2px"
+        android:dividerHeight="2dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:layout_marginStart="@dimen/activity_horizontal_margin"
         android:layout_marginLeft="@dimen/activity_horizontal_margin"

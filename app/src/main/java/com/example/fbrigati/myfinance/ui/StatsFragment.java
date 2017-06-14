@@ -3,12 +3,10 @@ package com.example.fbrigati.myfinance.ui;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.Toolbar;
@@ -23,35 +21,25 @@ import android.view.ViewGroup;
 
 import com.example.fbrigati.myfinance.R;
 
-import com.example.fbrigati.myfinance.data.DataContract;
+import com.example.fbrigati.myfinance.data.DataContract_tmp;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
-import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
-import com.github.mikephil.charting.utils.EntryXComparator;
-import com.github.mikephil.charting.utils.Utils;
 
-import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by FBrigati on 07/05/2017.
@@ -262,10 +250,10 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
         switch (id){
             case LINECHART_LOADER:
 
-                Log.v(LOG_TAG, "getting linechart info for month: " + month + ", " + DataContract.StatementEntry.buildStatsMonthUri(month));
+                Log.v(LOG_TAG, "getting linechart info for month: " + month + ", " + DataContract_tmp.StatementEntry.buildStatsMonthUri(month));
                 return new CursorLoader(
                         getActivity(),
-                        DataContract.StatementEntry.buildStatsMonthUri(month),
+                        DataContract_tmp.StatementEntry.buildStatsMonthUri(month),
                         null,
                         null,
                         null,
@@ -276,7 +264,7 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
                 Log.v(LOG_TAG, "getting piechart info for month: " + month);
                 return new CursorLoader(
                         getActivity(),
-                        DataContract.BudgetEntry.buildBudgetMonth(month),
+                        DataContract_tmp.BudgetEntry.buildBudgetMonth(month),
                         null,
                         null,
                         null,

@@ -4,13 +4,10 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.example.fbrigati.myfinance.data.DataContract.BudgetEntry;
-import com.example.fbrigati.myfinance.data.DataContract.CategoryEntry;
-import com.example.fbrigati.myfinance.data.DataContract.StatementEntry;
-import com.example.fbrigati.myfinance.data.DataContract.CurrencyExEntry;
-import com.example.fbrigati.myfinance.elements.Budget;
-import com.example.fbrigati.myfinance.elements.Category;
-import com.example.fbrigati.myfinance.elements.Statement;
+import com.example.fbrigati.myfinance.data.DataContract_tmp.BudgetEntry;
+import com.example.fbrigati.myfinance.data.DataContract_tmp.CategoryEntry;
+import com.example.fbrigati.myfinance.data.DataContract_tmp.StatementEntry;
+import com.example.fbrigati.myfinance.data.DataContract_tmp.CurrencyExEntry;
 
 /**
  * Created by FBrigati on 26/04/2017.

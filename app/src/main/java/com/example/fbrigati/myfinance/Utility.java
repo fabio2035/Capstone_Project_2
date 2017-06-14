@@ -23,7 +23,7 @@ public class Utility {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
         SharedPreferences.Editor spe = sp.edit();
         spe.putString(c.getString(R.string.pref_cur_key),Symbol);
-        spe.commit();
+        spe.apply();
     }
 
     @SuppressWarnings("ResourceType")

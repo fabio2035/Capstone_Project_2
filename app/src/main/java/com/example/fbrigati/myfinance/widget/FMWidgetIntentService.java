@@ -1,4 +1,4 @@
-package com.example.fbrigati.myfinance.widget;
+/*package com.example.fbrigati.myfinance.widget;
 
 import android.app.IntentService;
 import android.appwidget.AppWidgetManager;
@@ -12,7 +12,7 @@ import com.example.fbrigati.myfinance.R;
 /**
  * Created by FBrigati on 07/06/2017.
  */
-
+/*
 public class FMWidgetIntentService extends IntentService {
 
 
@@ -23,7 +23,7 @@ public class FMWidgetIntentService extends IntentService {
      *
      * @param name Used to name the worker thread, important only for debugging.
      */
-    public FMWidgetIntentService() {
+ /*   public FMWidgetIntentService() {
         super("FMWidgetIntentService");
     }
 
@@ -46,3 +46,4 @@ public class FMWidgetIntentService extends IntentService {
         }
     }
 }
+*/

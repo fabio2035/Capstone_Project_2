@@ -43,7 +43,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_columnWeight="2"
-        android:groupIndicator="@android:color/transparent" />
+        android:groupIndicator="@android:color/transparent"
+        tools:targetApi="lollipop" />
 
     <GridLayout
         android:layout_below="@+id/widget_collection"
