@@ -70,6 +70,7 @@ public class FMRemoteViewProvider extends RemoteViewsService {
 
             @Override
             public RemoteViews getViewAt(int i) {
+
                 if (i == AdapterView.INVALID_POSITION ||
                         collectionData == null || !collectionData.moveToPosition(i)) {
                     return null;

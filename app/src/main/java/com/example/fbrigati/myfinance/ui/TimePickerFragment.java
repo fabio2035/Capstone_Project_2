@@ -61,7 +61,7 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-// Do something with the time chosen by the user
+        // Do something with the time chosen by the user
         mListener = (TimePickerFragment.TimeSetListenerCustom) getActivity();
         Log.v(LOG_TAG, "Variables: " + hourOfDay + "," + minute);
 

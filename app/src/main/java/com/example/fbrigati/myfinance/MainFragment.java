@@ -33,15 +33,12 @@ public class MainFragment extends Fragment {
 
     @Override
     public void onResume() {
-    //    SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-    //    sp.registerOnSharedPreferenceChangeListener(this);
         super.onResume();
     }
 
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-     //   inflater.inflate(R.menu.forecastfragment, menu);
     }
 
 
@@ -93,7 +90,6 @@ public class MainFragment extends Fragment {
 
         public void onBindViewHolder(final MainFragment.SimpleRecyclerViewAdapter.ViewHolder holder, int position) {
             holder.mItem = mValues.get(position);
-           // holder.mIdView.setText(mValues.get(position).id);
             holder.mContentView.setText(mValues.get(position).content);
 
         }
@@ -105,14 +101,12 @@ public class MainFragment extends Fragment {
 
         public class ViewHolder extends RecyclerView.ViewHolder {
             public final View mView;
-            //public final TextView mIdView;
             public final TextView mContentView;
             public MenuContent.MenuItem mItem;
 
             public ViewHolder(View view) {
                 super(view);
                 mView = view;
-              //  mIdView = (TextView) view.findViewById(R.id.id);
                 mContentView = (TextView) view.findViewById(R.id.content);
             }
 

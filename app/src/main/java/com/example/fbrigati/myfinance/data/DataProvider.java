@@ -364,9 +364,11 @@ public class DataProvider extends ContentProvider {
                 //normalizeData();
                 Log.v(LOG_TAG, "About to execute insert os statement values..");
                 long _id = db.insert(DataContract.StatementEntry.TABLE_NAME, null, values);
-                if (_id > 0){
+                if (_id > 0)
+                {
                     Log.v(LOG_TAG, "Inserted something, returned value: " + _id);
-                    returnUri = DataContract.StatementEntry.buildStatementUri(_id);}
+                    returnUri = DataContract.StatementEntry.buildStatementUri(_id);
+                }
                 else
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
@@ -432,7 +434,8 @@ public class DataProvider extends ContentProvider {
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
         // Because a null deletes all rows
-        if (rowsDeleted != 0) {
+        if (rowsDeleted != 0)
+        {
             getContext().getContentResolver().notifyChange(uri, null);
         }
         return rowsDeleted;
@@ -461,7 +464,8 @@ public class DataProvider extends ContentProvider {
                 default:
                     throw new UnsupportedOperationException("Unknown uri: " + uri);
             }
-            if (rowsUpdated != 0) {
+            if (rowsUpdated != 0)
+            {
                 getContext().getContentResolver().notifyChange(uri, null);
             }
             return rowsUpdated;

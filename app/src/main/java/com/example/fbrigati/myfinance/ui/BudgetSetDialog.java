@@ -6,13 +6,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.fbrigati.myfinance.R;
+
+import static android.text.TextUtils.isEmpty;
 
 /**
  * Created by FBrigati on 05/06/2017.
@@ -102,11 +103,13 @@ public class BudgetSetDialog extends DialogFragment{
         Boolean validate = true;
 
         //check that amount is >0
-        if(amtText.getText() != null && amtText.getText().length() > 0){
+        if (!isEmpty(amtText.getText())) {
         if(Double.valueOf(amtText.getText().toString()) == 0F ||
-                Double.valueOf(amtText.getText().toString()) == 0)
-        {validate = false;
-            amtText.requestFocus();}}else{
+                Double.valueOf(amtText.getText().toString()) == 0){
+            validate = false;
+            amtText.requestFocus();
+            }
+        } else {
             validate = false;
             amtText.requestFocus();
         }

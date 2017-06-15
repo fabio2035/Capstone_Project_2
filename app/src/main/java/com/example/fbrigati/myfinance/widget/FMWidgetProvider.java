@@ -46,8 +46,7 @@ public class FMWidgetProvider extends AppWidgetProvider {
             Log.v(LOG_TAG, "Inside onUpdate, with item number: " + i);
             //Intent to launch main activity
             Intent intent = new Intent(context, ItemListActivity.class);
-            //intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetIds[i]);
-            //intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
+
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
             rview.setOnClickPendingIntent(widget, pendingIntent);
 

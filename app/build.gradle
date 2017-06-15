@@ -7,9 +7,9 @@ repositories {
 android {
     signingConfigs {
         config {
-            keyAlias 'udacityfabio'
-            keyPassword 'password'
-            storeFile file('$rootDir/keystore.jks')
+            keyAlias 'CapstoneKey'
+            keyPassword 'passord1'
+            storeFile file('C:/Users/FBrigati/AndroidStudioProjects/MyFinance/keystore.jks')
             storePassword 'password'
         }
     }
@@ -22,6 +22,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        signingConfig signingConfigs.config
     }
     buildTypes {
         release {
@@ -29,6 +30,8 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.config
         }
+    }
+    productFlavors {
     }
 }
 

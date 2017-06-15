@@ -246,8 +246,9 @@ public class CurrenciesFragment extends Fragment implements LoaderManager.Loader
         Log.v(LOG_TAG, "Inside swapcursor...");
         switch (loader.getId()){
             case CURRENCIES_LOADER:
-                if(currencyAdapter != null)
+                if(currencyAdapter != null){
                     currencyAdapter.swapCursor(null);
+                }
                 break;
         }
     }

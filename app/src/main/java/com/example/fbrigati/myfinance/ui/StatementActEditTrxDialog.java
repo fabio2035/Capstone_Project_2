@@ -37,6 +37,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import static android.text.TextUtils.isEmpty;
+
 /**
  * Created by FBrigati on 25/05/2017.
  */
@@ -44,15 +46,15 @@ import java.util.Map;
 public class StatementActEditTrxDialog extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>,
         DatePickerFragment.DateSetListenerCustom, TimePickerFragment.TimeSetListenerCustom {
 
-    final static String LOG_TAG = StatementActEditTrxDialog.class.getSimpleName();
-
     public final static String ID_MESSAGE = "com.example.fbrigati.myfinance.ui.StatementFragEditTrxDialog.MESSAGE";
-
     public static final int CATEGORY_LOADER = 2;
     public static final int STATEMENT_LOADER_ID = 3;
 
-    private DatePicker datePicker;
-    private TimePicker timePicker;
+    //Firebase variables
+    public static final String ANONYMOUS = "anonymous";
+    final static String LOG_TAG = StatementActEditTrxDialog.class.getSimpleName();
+
+    Map<String, Integer> categoryMap;
     private TextView amountText;
     private TextView descText;
     private Button datePickerBtn;
@@ -61,18 +63,10 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
     private Spinner spinner_trxType;
     private Button save_btn;
     private Button close_btn;
-
     private List<String> lables = null;
     private ArrayAdapter<String> categoryAdapter;
-
-    Map<String, Integer> categoryMap;
-
     private Uri detailUri;
-
     private String categorySet;
-
-    //Firebase variables
-    public static final String ANONYMOUS = "anonymous";
     private String mUsername;
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mStatementDatabaseReference;
@@ -84,21 +78,21 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
 
         setContentView(R.layout.fragment_transaction_edit);
 
-        if(savedInstanceState == null){
+        if (savedInstanceState == null) {
             detailUri = getIntent().getData();
-            if(detailUri != null){
-            Log.v(LOG_TAG, "Uri from Intent: " + detailUri);
-            Log.v(LOG_TAG, "Initialising new data loader..");
+            if (detailUri != null) {
+                Log.v(LOG_TAG, "Uri from Intent: " + detailUri);
+                Log.v(LOG_TAG, "Initialising new data loader..");
                 //First load the category items
-            getSupportLoaderManager().initLoader(CATEGORY_LOADER, null, this);
-            getSupportLoaderManager().initLoader(STATEMENT_LOADER_ID, null, this);}
-            else{
+                getSupportLoaderManager().initLoader(CATEGORY_LOADER, null, this);
+                getSupportLoaderManager().initLoader(STATEMENT_LOADER_ID, null, this);
+            } else {
                 //if its a new transaction only load category items..
-                getSupportLoaderManager().initLoader(CATEGORY_LOADER, null, this);}
+                getSupportLoaderManager().initLoader(CATEGORY_LOADER, null, this);
+            }
         }
 
         //Initialize cursor
-
 
 
         lables = new ArrayList<String>();
@@ -155,13 +149,17 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
         save_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            if(validateInputs()) saveDataToDB(); else Toast.makeText(getApplicationContext(), R.string.toast_check_desc_amt, Toast.LENGTH_LONG).show();
+                if (validateInputs()){
+                    saveDataToDB();
+                }else {
+                    Toast.makeText(getApplicationContext(), R.string.toast_check_desc_amt, Toast.LENGTH_LONG).show();
+                }
             }
         });
 
-        categoryMap = new HashMap<String,Integer>();
+        categoryMap = new HashMap<String, Integer>();
 
-        if (detailUri == null){
+        if (detailUri == null) {
             setCurrentDateTimeButtons();
         }
 
@@ -180,7 +178,7 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
         int day = c.get(java.util.Calendar.DAY_OF_MONTH);
         int hour = c.get(Calendar.HOUR_OF_DAY);
         int minute = c.get(Calendar.MINUTE);
-        showDate(year, month,day);
+        showDate(year, month, day);
         showTime(hour, minute);
     }
 
@@ -189,20 +187,19 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
 
         Integer trxType = 0;
 
-        String dateStr = String.format(Locale.US,"%08d", Integer.parseInt(datePickerBtn.getText().toString().replace("/", "")));
-        StringBuilder dateBuild = new StringBuilder().append(dateStr.substring(4)).append(dateStr.substring(2,4)).append(dateStr.substring(0,2));
+        String dateStr = String.format(Locale.US, "%08d", Integer.parseInt(datePickerBtn.getText().toString().replace("/", "")));
+        StringBuilder dateBuild = new StringBuilder().append(dateStr.substring(4)).append(dateStr.substring(2, 4)).append(dateStr.substring(0, 2));
         Log.v(LOG_TAG, "DateStr: " + dateBuild); //31052017
-        String timeStr = String.format(Locale.US,"%04d", Integer.parseInt(timePickerBtn.getText().toString().replace(":","")));
+        String timeStr = String.format(Locale.US, "%04d", Integer.parseInt(timePickerBtn.getText().toString().replace(":", "")));
 
         Integer dateInt = Integer.parseInt(dateBuild.toString());
         Integer timeInt = Integer.parseInt(timeStr);
 
-        if(spinner_trxType.getSelectedItem().equals("Debit")) trxType = 6; else trxType =0;
-
-        Log.v(LOG_TAG, "Date: " + dateStr + "," + dateInt + ", Time: " +
-                timeStr + "," + timeInt + ", Transaction code: " + trxType
-                + ", Category key: " + spinner_ctg.getSelectedItem().toString()
-                + "");
+        if (spinner_trxType.getSelectedItem().equals("Debit")){
+            trxType = 6;
+        }else{
+            trxType = 0;
+        }
 
         cv.put(DataContract.StatementEntry.COLUMN_ACCOUNT_NUMBER, "0529925801");
         cv.put(DataContract.StatementEntry.COLUMN_DATE, dateInt);
@@ -219,17 +216,27 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
 
         int execNum = DataContract.StatementEntry.getIDFromUri(uri);
 
-        if(execNum > 0){
-        Toast.makeText(getApplicationContext(), R.string.toast_savetodbsuccess, Toast.LENGTH_LONG).show();
+        if (execNum > 0) {
+            Toast.makeText(getApplicationContext(), R.string.toast_savetodbsuccess, Toast.LENGTH_LONG).show();
 
             Log.v(LOG_TAG, "SENDING BROADCAST FOR WIDGET UPDATE!!");
-        updateWidgets();
+            updateWidgets();
 
-        //if successfully saved to DB we can Save to Firbase aswell...
-        Statement statementData = new Statement(DataContract.StatementEntry.getIDFromUri(uri),
-                "0529925801", dateInt, timeStr,0, descText.getText().toString(), descText.getText().toString(),
-                Double.valueOf(amountText.getText().toString()),trxType,"0",spinner_ctg.getSelectedItem().toString());
-        mStatementDatabaseReference.push().setValue(statementData);}
+            //if successfully saved to DB we can Save to Firbase aswell...
+            Statement statementData = new Statement(DataContract.StatementEntry.getIDFromUri(uri),
+                    "0529925801",
+                    dateInt,
+                    timeStr,
+                    0,
+                    descText.getText().toString(),
+                    descText.getText().toString(),
+                    Double.valueOf(amountText.getText().toString()),
+                    trxType,
+                    "0",
+                    spinner_ctg.getSelectedItem().toString());
+
+            mStatementDatabaseReference.push().setValue(statementData);
+        }
 
         finish();
     }
@@ -237,30 +244,32 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
     public void updateWidgets() {
         Intent dataUpdatedIntent = new Intent(this, FMWidgetProvider.class)//MFSyncJob.ACTION_DATA_UPDATED)
                 .setAction(MFSyncJob.ACTION_DATA_UPDATED);
-        int ids[] = AppWidgetManager.getInstance(getApplication()).getAppWidgetIds(new ComponentName(getApplication(), FMWidgetProvider.class));
+        int ids[] = AppWidgetManager.getInstance(getApplication()).getAppWidgetIds(new ComponentName(getApplication(),
+                FMWidgetProvider.class));
         dataUpdatedIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, ids);
         sendBroadcast(dataUpdatedIntent);
     }
-
 
 
     private boolean validateInputs() {
         boolean validate = true;
 
         //check length of description text
-        if(descText.getText().length() < 1 ||
-           descText.getText() == "" ||
-           descText.getText() == null) {
+        if (descText.getText().length() < 1 ||
+                descText.getText() == "" ||
+                descText.getText() == null) {
             validate = false;
             descText.requestFocus();
         }
 
         //check that amount is >0
-        if(amountText.getText() != null && amountText.getText().length()>0 ){
-        if(Double.valueOf(amountText.getText().toString()) == 0F ||
-           Double.valueOf(amountText.getText().toString()) == 0)
-        {validate = false;
-         amountText.requestFocus();}}else{
+        if (!isEmpty(amountText.getText())) {
+            if (Double.valueOf(amountText.getText().toString()) == 0F ||
+                    Double.valueOf(amountText.getText().toString()) == 0) {
+                validate = false;
+                amountText.requestFocus();
+            }
+        } else {
             validate = false;
             amountText.requestFocus();
         }
@@ -271,7 +280,7 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        switch (id){
+        switch (id) {
             case StatementFragment.STATEMENT_LOADER:
                 Log.v(LOG_TAG, "statement cursor loader called");
                 //Todo: make account selection
@@ -284,7 +293,7 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
                         null,
                         null,
                         null); */
-            case CATEGORY_LOADER:{
+            case CATEGORY_LOADER: {
                 Log.v(LOG_TAG, "Category loader called");
                 //Todo: make category selection
                 return new CursorLoader(
@@ -364,40 +373,41 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
 
                     String category = data.getString(7).trim();
 
-                    StringBuilder dateBuild = new StringBuilder().append(dateStr.substring(6,8)).append("/").append(dateStr.substring(4,6)).append("/").append(dateStr.substring(0,4));
+                    StringBuilder dateBuild = new StringBuilder().append(dateStr.substring(6, 8)).append("/").append(dateStr.substring(4, 6)).append("/").append(dateStr.substring(0, 4));
 
-                    StringBuilder timeBuild = new StringBuilder().append(time.substring(0,2)).append(":").append(time.substring(2,4));
+                    StringBuilder timeBuild = new StringBuilder().append(time.substring(0, 2)).append(":").append(time.substring(2, 4));
 
                     datePickerBtn.setText(dateBuild.toString());
 
                     timePickerBtn.setText(timeBuild.toString());
 
                     //Pick category
-                    for(int j=0; j<spinner_ctg.getCount(); j++){
+                    for (int j = 0; j < spinner_ctg.getCount(); j++) {
                         Log.v(LOG_TAG, "Item position: " + spinner_ctg.getItemAtPosition(j).toString());
-                        if(spinner_ctg.getItemAtPosition(j).toString().equals(data.getString(7))){
-                        spinner_ctg.setSelection(j);}
+                        if (spinner_ctg.getItemAtPosition(j).toString().equals(data.getString(7))) {
+                            spinner_ctg.setSelection(j);
+                        }
                     }
 
                     //Pick trx type
-                    if(data.getInt(8)>5){
+                    if (data.getInt(8) > 5) {
                         spinner_trxType.setSelection(0);
-                    }else{
+                    } else {
                         spinner_trxType.setSelection(1);
                     }
 
 
                 }
 
-                }
+        }
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         Log.v(LOG_TAG, "Inside swapcursor...");
-        switch (loader.getId()){
+        switch (loader.getId()) {
             case CATEGORY_LOADER:
-                if(categoryAdapter != null)
+                if (categoryAdapter != null)
                     categoryAdapter.clear();
                 break;
         }
@@ -406,14 +416,14 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
 
     @Override
     public void showDate(int year, int month, int day) {
-        datePickerBtn.setText(new StringBuilder().append(String.format(Locale.US,"%02d",day)).append("/")
-                .append(String.format(Locale.US,"%02d",month)).append("/").append(year));
+        datePickerBtn.setText(new StringBuilder().append(String.format(Locale.US, "%02d", day)).append("/")
+                .append(String.format(Locale.US, "%02d", month)).append("/").append(year));
     }
 
 
     @Override
     public void showTime(int hour, int minute) {
-        timePickerBtn.setText(new StringBuilder().append(String.format(Locale.US,"%02d",hour)).append(":")
-        .append(String.format(Locale.US,"%02d",minute)));
+        timePickerBtn.setText(new StringBuilder().append(String.format(Locale.US, "%02d", hour)).append(":")
+                .append(String.format(Locale.US, "%02d", minute)));
     }
 }

@@ -49,9 +49,6 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
 
     Intent intent;
 
-    public StatementFragment(){
-
-    }
 
     @Override
     public void onStart(){
@@ -83,20 +80,11 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
 
         View rootView = inflater.inflate(R.layout.fragment_statement_main_bkp, container, false);
 
-        //transaction sequence
-       // textSequence = (TextView) rootView.findViewById(R.id.row_num);
-
         //transaction date
         textDate = (TextView) rootView.findViewById(R.id.row_date);
 
         //user transaction notes
         textDescription = (TextView) rootView.findViewById(R.id.row_description);
-
-        //acquirer of transaction
-        //textPayee = (TextView) rootView.findViewById(R.id.row_payee);
-
-        //transaction category
-        //textCategory = (TextView) rootView.findViewById(R.id.row_cat);
 
         //transaction amount
         textAmount = (TextView) rootView.findViewById(R.id.row_amt);
@@ -139,9 +127,6 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
                 .addTestDevice("53F4B94474E00A7E14FD516F7AD2ACDF")  // My Galaxy Nexus test phone
                 .build();
         mAdView.loadAd(adRequest);
-
-
-        //addDummyData();
 
         return rootView;
 
@@ -231,11 +216,9 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
 
     private void updateEmptyView(int flag) {
         if(flag == 1){
-//            header_view.setVisibility(View.VISIBLE);
             statement_details.setVisibility(View.VISIBLE);
             empty_view.setVisibility(View.GONE);
         }else if(flag == 0){
-  //          header_view.setVisibility(View.GONE);
             statement_details.setVisibility(View.GONE);
             empty_view.setVisibility(View.VISIBLE);
         }

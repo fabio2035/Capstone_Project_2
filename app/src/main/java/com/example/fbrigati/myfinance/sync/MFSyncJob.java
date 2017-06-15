@@ -69,9 +69,7 @@ public class MFSyncJob extends AbstractThreadedSyncAdapter {
     public @interface CurrencyFetchStatus {}
 
     public static final int CURRENCYFETCH_STATUS_OK = 0;
-    //public static final int CURRENCYFETCH_STATUS_SERVER_DOWN = 1;
     public static final int CURRENCYFETCH_STATUS_SERVER_INVALID = 2;
-    //public static final int CURRENCYFETCH_STATUS_UNKNOWN = 3;
     public static final int CURRENCYFETCH_STATUS_INVALID = 4;
 
     @Override
@@ -83,11 +81,6 @@ public class MFSyncJob extends AbstractThreadedSyncAdapter {
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
 
-        // Will contain the raw CSV response as a string.
-        String CSVStr = null;
-
-        String format = ".csv";
-        String format_2 = "c4l1";
 
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
 
@@ -104,13 +97,17 @@ public class MFSyncJob extends AbstractThreadedSyncAdapter {
 
         //Builds the currencies to show on listView
         for(int i=0; i<symbolArray.length; i++){
-        if(!symbolArray[i].equals(base_cur)) {
+        if(!symbolArray[i].equals(base_cur))
+            {
             currencies_group.append("\"" +symbolArray[i] + base_cur).append("\"");
-            if(i < symbolArray.length - 1) currencies_group.append(",");}
+            if(i < symbolArray.length - 1) {
+                currencies_group.append(",");
+                }
+            }
         }
         currencies_group.append(")");
 
-        //String defaultCur = "(\"EUR" + base_cur +"\",\"USD" + base_cur +"\",\"ZAR" + base_cur + "\")";
+
         Log.v(LOG_TAG, "defaultCur: " + currencies_group);
         String source = "store://datatables.org/alltableswithkeys";
         String joint = yql_query + currencies_group;
@@ -118,8 +115,6 @@ public class MFSyncJob extends AbstractThreadedSyncAdapter {
         Log.v(LOG_TAG, "Inside onPerformSync.. trying to fetch csv");
 
         try{
-           // final String BASE_URL = "http://api.fixer.io/latest?base=USD";
-            //final String BASE_URL = "http://download.finance.yahoo.com/d/quotes.csv?e=.csv&f=c4l1&s=EURMZN=X";
             final String BASE_URL = "http://query.yahooapis.com/v1/public/yql?";
             final String QUERY_PARAM_1 = "q";
             final String QUERY_PARAM_2 = "env";
@@ -148,8 +143,6 @@ public class MFSyncJob extends AbstractThreadedSyncAdapter {
             String line;
             while ((line = reader.readLine()) != null) {
                 Log.v(LOG_TAG, "Current csv Line: " + line);
-                //String[] RowData = line.split(",");
-                //values.put(RowData[0], RowData[1]);
                 buffer.append(line + "\n");
             }
 
@@ -196,7 +189,8 @@ public class MFSyncJob extends AbstractThreadedSyncAdapter {
             Log.v(LOG_TAG, "root element :" + doc.getDocumentElement().getNodeName());
             for(int i = 0; i < nList.getLength(); i++){
                 Node nNode = nList.item(i);
-                if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+                if (nNode.getNodeType() == Node.ELEMENT_NODE)
+                    {
                     ContentValues currCV = new ContentValues();
 
                     Element eElement = (Element) nNode;
@@ -213,8 +207,8 @@ public class MFSyncJob extends AbstractThreadedSyncAdapter {
                     currCV.put(DataContract.CurrencyExEntry.COLUMN_DATE, date);
 
                     currCVs.add(currCV);
-            }
-            }
+                    }
+                }
 
             context.getContentResolver()
                     .bulkInsert(
@@ -224,8 +218,6 @@ public class MFSyncJob extends AbstractThreadedSyncAdapter {
             Log.v(LOG_TAG, "there was an error: " + e.toString());
         }
     }
-
-
 
 
 
@@ -247,7 +239,7 @@ public class MFSyncJob extends AbstractThreadedSyncAdapter {
     public static void configurePeriodicSync(Context context, int syncInterval, int flexTime) {
         Account account = getSyncAccount(context);
         String authority = context.getString(R.string.content_authority);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
             // we can enable inexact timers in our periodic sync
             SyncRequest request = new SyncRequest.Builder().
                     syncPeriodic(syncInterval, flexTime).

@@ -42,10 +42,8 @@ public class CurrenciesAdapter extends CursorAdapter {
     public void bindView(View view, Context context, Cursor cursor) {
 
         ViewHolder viewHolder = (ViewHolder) view.getTag();
-
         viewHolder.symbol.setText(cursor.getString(DataContract.CurrencyExEntry.COL_SYMBOL));
         viewHolder.rate.setText(cursor.getString(DataContract.CurrencyExEntry.COL_RATE));
-    //    viewHolder.textPayee.setText(cursor.getString(DataContract.StatementEntry.COL_ACQUIRER_ID));
 
     }
 
@@ -53,7 +51,6 @@ public class CurrenciesAdapter extends CursorAdapter {
     public static class ViewHolder {
         TextView symbol;
         TextView rate;
-        int position;
 
         public ViewHolder(View view){
             symbol = (TextView) view.findViewById(R.id.symbol_value);

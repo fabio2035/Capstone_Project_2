@@ -59,10 +59,6 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
 
     private AdView mAdView;
 
-    public StatsFragment(){
-
-    }
-
     private PieChart mpieChart;
     private LineChart mlineChart;
     private Toolbar toolbarView;
@@ -98,10 +94,6 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
 
         setupLineChart();
 
-        /*mAdView = (AdView) findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest); */
-
         return rootView;
     }
 
@@ -112,8 +104,6 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
         mpieChart.setExtraOffsets(5, 10, 5, 5);
 
         mpieChart.setDragDecelerationFrictionCoef(0.95f);
-
-        //mpieChart.setCenterText(generateCenterSpannableText());
 
         mpieChart.setDrawHoleEnabled(true);
         mpieChart.setHoleColor(Color.WHITE);
@@ -133,14 +123,6 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
 
         mpieChart.animateY(1400, Easing.EasingOption.EaseInOutQuad);
 
-       /* Legend l = mpieChart.getLegend();
-        l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
-        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
-        l.setOrientation(Legend.LegendOrientation.VERTICAL);
-        l.setDrawInside(false);
-        l.setXEntrySpace(7f);
-        l.setYEntrySpace(0f);
-        l.setYOffset(0f); */
     }
 
     private void setPieData(Cursor data) {
@@ -356,50 +338,6 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
 
         }
     }
-
-/*            int i = 0;
-        String historyString = "13/05/2017,1500\n12/05/2017,1400\n11/05/2017,1300\n";
-
-        List<Entry> entries = new ArrayList<Entry>();
-
-        final Map<Integer, String> valueMap = new HashMap<Integer, String>();
-
-        //calculate quarterly values for compressed chart diagram...
-        for (String retVal : historyString.split("\n") ){
-            Log.v(LOG_TAG, "value for i=" + i + " is: " + retVal);
-            i++;
-            String[] something = retVal.split(",");
-
-            valueMap.put(i, something[0]);
-
-            float xValue = (int) i;
-            float yValue = (int) Double.parseDouble(something[1]);
-            entries.add(new Entry(xValue,yValue));
-        }
-
-        Collections.sort(entries, new EntryXComparator());
-        LineDataSet dataSet = new LineDataSet(entries, "Quote");
-        LineData lineData = new LineData(dataSet);
-        mlineChart.setData(lineData);
-
-        IAxisValueFormatter formatter = new IAxisValueFormatter() {
-
-            @Override
-            public String getFormattedValue(float value, AxisBase axis) {
-                Log.v(LOG_TAG, "Getting date value for: " + (Float) value);
-                return valueMap.get((int) value).toString();
-            }
-        };
-
-        XAxis xAxis = mlineChart.getXAxis();
-        xAxis.setGranularity(10);
-        xAxis.setValueFormatter(formatter);
-        mlineChart.setPinchZoom(true);
-        mlineChart.fitScreen();
-
-        //  mChart.setVisibleXRangeMaximum(30);
-        mlineChart.invalidate(); //refresh
-    } */
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {

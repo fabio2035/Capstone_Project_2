@@ -72,17 +72,14 @@ BudgetSetDialog.setBudgetGoalListener{
 
         getSupportLoaderManager().initLoader(BUDGET_LOADER, null, this);
 
-        //View rootView = inflater.inflate(R.layout.activity_budget, container, false);
-
         budgetAdapter = new BudgetAdapter(this, null, 0);
 
-        //Get reference to the listView and attach adapter to it
-        // ListView budgetLV = (ListView) findViewById(R.id.budget_list);
 
         emptyView = (TextView) findViewById(R.id.empty_budget);
 
         budgetList = (ListView) findViewById(R.id.budget_list);
 
+        //Get reference to the listView and attach adapter to it
         Toolbar toolbarView = (Toolbar) findViewById(R.id.toolbar);
 
         toolbarView.setTitle(R.string.toolbar_budget_title);
@@ -107,9 +104,7 @@ BudgetSetDialog.setBudgetGoalListener{
         switch (id){
             case BUDGET_LOADER:
                 Log.v(LOG_TAG, "budget cursor loader called");
-                //Todo: make account selection
-                //if(statement_uri!=null){
-                //uri = DataContract.StatementEntry.buildStatementUri(statement_uri);
+
                 Calendar c = Calendar.getInstance();
 
                 int month = c.get(Calendar.MONTH)+1;

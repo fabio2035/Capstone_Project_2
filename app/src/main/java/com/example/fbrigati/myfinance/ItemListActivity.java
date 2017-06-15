@@ -104,13 +104,7 @@ public class ItemListActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     if (mTwoPane) {
-                    /*    Bundle arguments = new Bundle();
-                        arguments.putString(ItemDetailFragment.ARG_ITEM_ID, holder.mItem.id);
-                        ItemDetailFragment fragment = new ItemDetailFragment();
-                        fragment.setArguments(arguments);
-                        getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.item_detail_container, fragment)
-                                .commit();  */
+                        //Todo: add layouts for twopane
                     } else {
                         Context context = v.getContext();
                         Log.v("Choosing_Menu", "Chose menu item: " + holder.mItem.id);
@@ -159,7 +153,6 @@ public class ItemListActivity extends AppCompatActivity {
             public ViewHolder(View view) {
                 super(view);
                 mView = view;
-               //mIdView = (TextView) view.findViewById(R.id.id);
                 mContentView = (TextView) view.findViewById(R.id.content);
                 mIcon = (ImageView) view.findViewById(R.id.menu_icon);
             }

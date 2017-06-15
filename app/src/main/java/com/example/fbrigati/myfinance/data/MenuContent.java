@@ -29,7 +29,7 @@ public class MenuContent {
 
     static {
         // Add some sample items.
-        for (int i = 0; i <= COUNT; i++) {
+        for (int i = 0; i <= COUNT; i++){
             addItem(createMenuItem(i));
         }
     }
