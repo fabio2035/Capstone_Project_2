@@ -7,9 +7,9 @@ repositories {
 android {
     signingConfigs {
         config {
-            keyAlias 'CapstoneKey'
-            keyPassword 'passord1'
-            storeFile file('C:/Users/FBrigati/AndroidStudioProjects/MyFinance/keystore.jks')
+            keyAlias 'capstoneAlias'
+            keyPassword 'password'
+            storeFile file("$rootDir/keystore.jks")
             storePassword 'password'
         }
     }
