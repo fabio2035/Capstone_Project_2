@@ -17,7 +17,7 @@ import android.widget.TextView;
 
 import com.example.fbrigati.myfinance.R;
 import com.example.fbrigati.myfinance.adapters.BudgetAdapter;
-import com.example.fbrigati.myfinance.data.DataContract_tmp;
+import com.example.fbrigati.myfinance.data.DataContract;
 import com.example.fbrigati.myfinance.elements.Budget;
 
 import java.util.ArrayList;
@@ -90,9 +90,9 @@ BudgetSetDialog.setBudgetGoalListener{
         budgetList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                DialogFragment editMonthdiag = BudgetSetDialog.newInstance("Some title", id);
-                editMonthdiag.show(getSupportFragmentManager(), "editMonth");
+                String title = ((TextView) view.findViewById(R.id.budgetTitle)).getText().toString();
+                DialogFragment editGoal = BudgetSetDialog.newInstance(title, id);
+                editGoal.show(getSupportFragmentManager(), "editMonth");
             }
         });
 
@@ -109,7 +109,7 @@ BudgetSetDialog.setBudgetGoalListener{
                 Log.v(LOG_TAG, "budget cursor loader called");
                 //Todo: make account selection
                 //if(statement_uri!=null){
-                //uri = DataContract_tmp.StatementEntry.buildStatementUri(statement_uri);
+                //uri = DataContract.StatementEntry.buildStatementUri(statement_uri);
                 Calendar c = Calendar.getInstance();
 
                 int month = c.get(Calendar.MONTH)+1;
@@ -117,7 +117,7 @@ BudgetSetDialog.setBudgetGoalListener{
                 Log.v(LOG_TAG, "getting budget info for month: " + month);
                 return new CursorLoader(
                         this,
-                        DataContract_tmp.BudgetEntry.buildBudgetMonth(month),
+                        DataContract.BudgetEntry.buildBudgetMonth(month),
                         null,
                         null,
                         null,
@@ -174,11 +174,11 @@ BudgetSetDialog.setBudgetGoalListener{
 
         ContentValues cv = new ContentValues();
 
-        cv.put(DataContract_tmp.BudgetEntry.COLUMN_AMOUNT, amount);
+        cv.put(DataContract.BudgetEntry.COLUMN_AMOUNT, amount);
 
         //Update budget set for the given budget item
-        getContentResolver().update(DataContract_tmp.BudgetEntry.CONTENT_URI, cv,
-                DataContract_tmp.BudgetEntry._ID + "=" + id ,
+        getContentResolver().update(DataContract.BudgetEntry.CONTENT_URI, cv,
+                DataContract.BudgetEntry._ID + "=" + id ,
                 null);
 
     }

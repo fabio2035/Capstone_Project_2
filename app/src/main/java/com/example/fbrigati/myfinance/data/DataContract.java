@@ -9,7 +9,7 @@ import android.provider.BaseColumns;
  * Created by FBrigati on 26/04/2017.
  */
 
-public class DataContract_tmp {
+public class DataContract {
 
     //name of content provider
     public static final String CONTENT_AUTHORITY = "com.example.fbrigati.myfinance";

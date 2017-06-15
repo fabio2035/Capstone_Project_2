@@ -19,7 +19,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.fbrigati.myfinance.adapters.StatementAdapter;
-import com.example.fbrigati.myfinance.data.DataContract_tmp;
+import com.example.fbrigati.myfinance.data.DataContract;
 
 import com.example.fbrigati.myfinance.R;
 
@@ -149,8 +149,8 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
 
     private void showTransactionEditDialog(Long id) {
         intent = new Intent(getActivity(), StatementActEditTrxDialog.class);
-        Log.v(LOG_TAG, "Uri for editing Statement entry: " + DataContract_tmp.StatementEntry.buildStatementUri(id));
-        intent.setData(DataContract_tmp.StatementEntry.buildStatementUri(id));
+        Log.v(LOG_TAG, "Uri for editing Statement entry: " + DataContract.StatementEntry.buildStatementUri(id));
+        intent.setData(DataContract.StatementEntry.buildStatementUri(id));
         getActivity().startActivity(intent);
     }
 
@@ -190,11 +190,11 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
                 Log.v(LOG_TAG, "statement cursor loader called with uri:" + statement_uri );
                 //Todo: make account selection
                 //if(statement_uri!=null){
-                //uri = DataContract_tmp.StatementEntry.buildStatementUri(statement_uri);
+                //uri = DataContract.StatementEntry.buildStatementUri(statement_uri);
                     return new CursorLoader(
                             getActivity(),
-                            DataContract_tmp.StatementEntry.CONTENT_URI,
-                            DataContract_tmp.StatementEntry.STATEMENT_COLUMNS,
+                            DataContract.StatementEntry.CONTENT_URI,
+                            DataContract.StatementEntry.STATEMENT_COLUMNS,
                             null,
                             null,
                             null);

@@ -76,8 +76,8 @@
 
 
     <!-- AdMob ad unit IDs -->
-    <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
-    <string name="banner_test">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="banner_ad_unit_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="banner_test" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
     <string name="toast_savetodbsuccess">New data saved successfully</string>
     <string name="toast_functionality_notimplemented">Functionality not implemented</string>
     <string name="toast_amount_notvalid">Amount not valid, please correct and try again</string>

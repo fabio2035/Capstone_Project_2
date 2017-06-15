@@ -21,7 +21,7 @@ import android.view.ViewGroup;
 
 import com.example.fbrigati.myfinance.R;
 
-import com.example.fbrigati.myfinance.data.DataContract_tmp;
+import com.example.fbrigati.myfinance.data.DataContract;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
@@ -250,10 +250,10 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
         switch (id){
             case LINECHART_LOADER:
 
-                Log.v(LOG_TAG, "getting linechart info for month: " + month + ", " + DataContract_tmp.StatementEntry.buildStatsMonthUri(month));
+                Log.v(LOG_TAG, "getting linechart info for month: " + month + ", " + DataContract.StatementEntry.buildStatsMonthUri(month));
                 return new CursorLoader(
                         getActivity(),
-                        DataContract_tmp.StatementEntry.buildStatsMonthUri(month),
+                        DataContract.StatementEntry.buildStatsMonthUri(month),
                         null,
                         null,
                         null,
@@ -264,7 +264,7 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
                 Log.v(LOG_TAG, "getting piechart info for month: " + month);
                 return new CursorLoader(
                         getActivity(),
-                        DataContract_tmp.BudgetEntry.buildBudgetMonth(month),
+                        DataContract.BudgetEntry.buildBudgetMonth(month),
                         null,
                         null,
                         null,

@@ -23,7 +23,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.fbrigati.myfinance.R;
-import com.example.fbrigati.myfinance.data.DataContract_tmp;
+import com.example.fbrigati.myfinance.data.DataContract;
 import com.example.fbrigati.myfinance.elements.Statement;
 import com.example.fbrigati.myfinance.sync.MFSyncJob;
 import com.example.fbrigati.myfinance.widget.FMWidgetProvider;
@@ -204,20 +204,20 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
                 + ", Category key: " + spinner_ctg.getSelectedItem().toString()
                 + "");
 
-        cv.put(DataContract_tmp.StatementEntry.COLUMN_ACCOUNT_NUMBER, "0529925801");
-        cv.put(DataContract_tmp.StatementEntry.COLUMN_DATE, dateInt);
-        cv.put(DataContract_tmp.StatementEntry.COLUMN_TIME, timeStr);
-        cv.put(DataContract_tmp.StatementEntry.COLUMN_SEQUENCE, 0);
-        cv.put(DataContract_tmp.StatementEntry.COLUMN_DESCRIPTION_ORIGIN, descText.getText().toString());
-        cv.put(DataContract_tmp.StatementEntry.COLUMN_DESCRIPTION_USER, descText.getText().toString());
-        cv.put(DataContract_tmp.StatementEntry.COLUMN_AMOUNT, Double.valueOf(amountText.getText().toString()));
-        cv.put(DataContract_tmp.StatementEntry.COLUMN_TRANSACTION_CODE, trxType);
-        cv.put(DataContract_tmp.StatementEntry.COLUMN_ACQUIRER_ID, "0");
-        cv.put(DataContract_tmp.StatementEntry.COLUMN_CATEGORY_KEY, spinner_ctg.getSelectedItem().toString());
+        cv.put(DataContract.StatementEntry.COLUMN_ACCOUNT_NUMBER, "0529925801");
+        cv.put(DataContract.StatementEntry.COLUMN_DATE, dateInt);
+        cv.put(DataContract.StatementEntry.COLUMN_TIME, timeStr);
+        cv.put(DataContract.StatementEntry.COLUMN_SEQUENCE, 0);
+        cv.put(DataContract.StatementEntry.COLUMN_DESCRIPTION_ORIGIN, descText.getText().toString());
+        cv.put(DataContract.StatementEntry.COLUMN_DESCRIPTION_USER, descText.getText().toString());
+        cv.put(DataContract.StatementEntry.COLUMN_AMOUNT, Double.valueOf(amountText.getText().toString()));
+        cv.put(DataContract.StatementEntry.COLUMN_TRANSACTION_CODE, trxType);
+        cv.put(DataContract.StatementEntry.COLUMN_ACQUIRER_ID, "0");
+        cv.put(DataContract.StatementEntry.COLUMN_CATEGORY_KEY, spinner_ctg.getSelectedItem().toString());
 
-        Uri uri = getContentResolver().insert(DataContract_tmp.StatementEntry.CONTENT_URI, cv);
+        Uri uri = getContentResolver().insert(DataContract.StatementEntry.CONTENT_URI, cv);
 
-        int execNum = DataContract_tmp.StatementEntry.getIDFromUri(uri);
+        int execNum = DataContract.StatementEntry.getIDFromUri(uri);
 
         if(execNum > 0){
         Toast.makeText(getApplicationContext(), R.string.toast_savetodbsuccess, Toast.LENGTH_LONG).show();
@@ -226,7 +226,7 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
         updateWidgets();
 
         //if successfully saved to DB we can Save to Firbase aswell...
-        Statement statementData = new Statement(DataContract_tmp.StatementEntry.getIDFromUri(uri),
+        Statement statementData = new Statement(DataContract.StatementEntry.getIDFromUri(uri),
                 "0529925801", dateInt, timeStr,0, descText.getText().toString(), descText.getText().toString(),
                 Double.valueOf(amountText.getText().toString()),trxType,"0",spinner_ctg.getSelectedItem().toString());
         mStatementDatabaseReference.push().setValue(statementData);}
@@ -256,10 +256,14 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
         }
 
         //check that amount is >0
+        if(amountText.getText() != null && amountText.getText().length()>0 ){
         if(Double.valueOf(amountText.getText().toString()) == 0F ||
            Double.valueOf(amountText.getText().toString()) == 0)
         {validate = false;
-         amountText.requestFocus();}
+         amountText.requestFocus();}}else{
+            validate = false;
+            amountText.requestFocus();
+        }
 
         return validate;
     }
@@ -272,11 +276,11 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
                 Log.v(LOG_TAG, "statement cursor loader called");
                 //Todo: make account selection
                 //if(statement_uri!=null){
-                //uri = DataContract_tmp.StatementEntry.buildStatementUri(statement_uri);
+                //uri = DataContract.StatementEntry.buildStatementUri(statement_uri);
                 /*return new CursorLoader(
                         getActivity(),
-                        DataContract_tmp.StatementEntry.CONTENT_URI,
-                        DataContract_tmp.StatementEntry.STATEMENT_COLUMNS,
+                        DataContract.StatementEntry.CONTENT_URI,
+                        DataContract.StatementEntry.STATEMENT_COLUMNS,
                         null,
                         null,
                         null); */
@@ -285,8 +289,8 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
                 //Todo: make category selection
                 return new CursorLoader(
                         getApplicationContext(),
-                        DataContract_tmp.CategoryEntry.CONTENT_URI,
-                        DataContract_tmp.CategoryEntry.CATEGORY_COLUMNS,
+                        DataContract.CategoryEntry.CONTENT_URI,
+                        DataContract.CategoryEntry.CATEGORY_COLUMNS,
                         null,
                         null,
                         null);
@@ -297,7 +301,7 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
                 return new CursorLoader(
                         getApplicationContext(),
                         detailUri,
-                        DataContract_tmp.StatementEntry.STATEMENT_COLUMNS,
+                        DataContract.StatementEntry.STATEMENT_COLUMNS,
                         null,
                         null,
                         null);
@@ -315,16 +319,16 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
 
                 if (data != null && data.moveToFirst() && data.getCount() > 0) {
 
-                    Log.v(LOG_TAG, "data crusor with: " + data.getString(DataContract_tmp.CategoryEntry.COL_CATEGORY_USER_KEY));
+                    Log.v(LOG_TAG, "data crusor with: " + data.getString(DataContract.CategoryEntry.COL_CATEGORY_USER_KEY));
 
                     int i = 0;
 
                     do {
-                        Log.v(LOG_TAG, "inserting key: " + data.getString(DataContract_tmp.CategoryEntry.COL_CATEGORY_DEFAULT)
+                        Log.v(LOG_TAG, "inserting key: " + data.getString(DataContract.CategoryEntry.COL_CATEGORY_DEFAULT)
                                 + " | value: " + i);
                         i++;
-                        categoryMap.put(data.getString(DataContract_tmp.CategoryEntry.COL_CATEGORY_DEFAULT), i);
-                        lables.add(data.getString(DataContract_tmp.CategoryEntry.COL_CATEGORY_DEFAULT));
+                        categoryMap.put(data.getString(DataContract.CategoryEntry.COL_CATEGORY_DEFAULT), i);
+                        lables.add(data.getString(DataContract.CategoryEntry.COL_CATEGORY_DEFAULT));
                     } while (data.moveToNext());
 
                     // Creating adapter for spinner

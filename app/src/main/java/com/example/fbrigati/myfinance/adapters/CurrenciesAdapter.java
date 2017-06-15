@@ -9,7 +9,7 @@ import android.widget.CursorAdapter;
 import android.widget.TextView;
 
 import com.example.fbrigati.myfinance.R;
-import com.example.fbrigati.myfinance.data.DataContract_tmp;
+import com.example.fbrigati.myfinance.data.DataContract;
 
 /**
  * Created by FBrigati on 04/05/2017.
@@ -43,9 +43,9 @@ public class CurrenciesAdapter extends CursorAdapter {
 
         ViewHolder viewHolder = (ViewHolder) view.getTag();
 
-        viewHolder.symbol.setText(cursor.getString(DataContract_tmp.CurrencyExEntry.COL_SYMBOL));
-        viewHolder.rate.setText(cursor.getString(DataContract_tmp.CurrencyExEntry.COL_RATE));
-    //    viewHolder.textPayee.setText(cursor.getString(DataContract_tmp.StatementEntry.COL_ACQUIRER_ID));
+        viewHolder.symbol.setText(cursor.getString(DataContract.CurrencyExEntry.COL_SYMBOL));
+        viewHolder.rate.setText(cursor.getString(DataContract.CurrencyExEntry.COL_RATE));
+    //    viewHolder.textPayee.setText(cursor.getString(DataContract.StatementEntry.COL_ACQUIRER_ID));
 
     }
 

@@ -102,18 +102,18 @@ public class MainActivity extends AppCompatActivity {
             //It's not an update from local device, add data..
             ContentValues cv = new ContentValues();
 
-            cv.put(DataContract_tmp.StatementEntry.COLUMN_ACCOUNT_NUMBER, statementMessage.getAccountNumber());
-            cv.put(DataContract_tmp.StatementEntry.COLUMN_DATE, statementMessage.getDate());
-            cv.put(DataContract_tmp.StatementEntry.COLUMN_TIME, statementMessage.getTime());
-            cv.put(DataContract_tmp.StatementEntry.COLUMN_SEQUENCE, statementMessage.getSequence());
-            cv.put(DataContract_tmp.StatementEntry.COLUMN_DESCRIPTION_ORIGIN, statementMessage.getDescription());
-            cv.put(DataContract_tmp.StatementEntry.COLUMN_DESCRIPTION_USER, statementMessage.getDesc_user());
-            cv.put(DataContract_tmp.StatementEntry.COLUMN_AMOUNT, statementMessage.getAmount());
-            cv.put(DataContract_tmp.StatementEntry.COLUMN_TRANSACTION_CODE, statementMessage.getTransactionCode());
-            cv.put(DataContract_tmp.StatementEntry.COLUMN_ACQUIRER_ID, statementMessage.getAcquirer_id());
-            cv.put(DataContract_tmp.StatementEntry.COLUMN_CATEGORY_KEY, statementMessage.getCategory());
+            cv.put(DataContract.StatementEntry.COLUMN_ACCOUNT_NUMBER, statementMessage.getAccountNumber());
+            cv.put(DataContract.StatementEntry.COLUMN_DATE, statementMessage.getDate());
+            cv.put(DataContract.StatementEntry.COLUMN_TIME, statementMessage.getTime());
+            cv.put(DataContract.StatementEntry.COLUMN_SEQUENCE, statementMessage.getSequence());
+            cv.put(DataContract.StatementEntry.COLUMN_DESCRIPTION_ORIGIN, statementMessage.getDescription());
+            cv.put(DataContract.StatementEntry.COLUMN_DESCRIPTION_USER, statementMessage.getDesc_user());
+            cv.put(DataContract.StatementEntry.COLUMN_AMOUNT, statementMessage.getAmount());
+            cv.put(DataContract.StatementEntry.COLUMN_TRANSACTION_CODE, statementMessage.getTransactionCode());
+            cv.put(DataContract.StatementEntry.COLUMN_ACQUIRER_ID, statementMessage.getAcquirer_id());
+            cv.put(DataContract.StatementEntry.COLUMN_CATEGORY_KEY, statementMessage.getCategory());
 
-            getContentResolver().insert(DataContract_tmp.StatementEntry.CONTENT_URI, cv);
+            getContentResolver().insert(DataContract.StatementEntry.CONTENT_URI, cv);
         }
 
     }

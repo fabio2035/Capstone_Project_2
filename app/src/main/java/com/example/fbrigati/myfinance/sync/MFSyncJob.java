@@ -18,7 +18,7 @@ import android.support.annotation.IntDef;
 import android.util.Log;
 
 import com.example.fbrigati.myfinance.R;
-import com.example.fbrigati.myfinance.data.DataContract_tmp;
+import com.example.fbrigati.myfinance.data.DataContract;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -55,7 +55,7 @@ public class MFSyncJob extends AbstractThreadedSyncAdapter {
     public static final int SYNC_INTERVAL = 60 * 180;
     public static final int SYNC_FLEXTIME = SYNC_INTERVAL/3;
 
-    public static final Uri invalid_currencyFetch_uri = DataContract_tmp.CurrencyExEntry.CONTENT_URI.buildUpon().appendPath("invalid").build();
+    public static final Uri invalid_currencyFetch_uri = DataContract.CurrencyExEntry.CONTENT_URI.buildUpon().appendPath("invalid").build();
 
     public static final String ACTION_DATA_UPDATED = "com.example.fbrigati.myfinance.ACTION_DATA_UPDATED";
 
@@ -204,13 +204,13 @@ public class MFSyncJob extends AbstractThreadedSyncAdapter {
                     Log.v(LOG_TAG, "------------");
                     Log.v(LOG_TAG, "Name: " + eElement.getElementsByTagName("Name").item(0).getTextContent());
                     symbol = eElement.getElementsByTagName("Name").item(0).getTextContent();
-                    currCV.put(DataContract_tmp.CurrencyExEntry.COLUMN_SYMBOL, symbol);
+                    currCV.put(DataContract.CurrencyExEntry.COLUMN_SYMBOL, symbol);
                     Log.v(LOG_TAG, "Rate: " + eElement.getElementsByTagName("Rate").item(0).getTextContent());
                     rate = Double.parseDouble(eElement.getElementsByTagName("Rate").item(0).getTextContent());
-                    currCV.put(DataContract_tmp.CurrencyExEntry.COLUMN_RATE, rate);
+                    currCV.put(DataContract.CurrencyExEntry.COLUMN_RATE, rate);
                     Log.v(LOG_TAG, "Date: " + eElement.getElementsByTagName("Date").item(0).getTextContent());
                     date = eElement.getElementsByTagName("Date").item(0).getTextContent();
-                    currCV.put(DataContract_tmp.CurrencyExEntry.COLUMN_DATE, date);
+                    currCV.put(DataContract.CurrencyExEntry.COLUMN_DATE, date);
 
                     currCVs.add(currCV);
             }
@@ -218,7 +218,7 @@ public class MFSyncJob extends AbstractThreadedSyncAdapter {
 
             context.getContentResolver()
                     .bulkInsert(
-                            DataContract_tmp.CurrencyExEntry.CONTENT_URI,
+                            DataContract.CurrencyExEntry.CONTENT_URI,
                             currCVs.toArray(new ContentValues[currCVs.size()]));
     } catch (Exception e){
             Log.v(LOG_TAG, "there was an error: " + e.toString());

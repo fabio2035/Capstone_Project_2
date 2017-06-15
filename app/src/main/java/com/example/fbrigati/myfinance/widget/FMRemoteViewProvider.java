@@ -10,7 +10,7 @@ import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
 import com.example.fbrigati.myfinance.R;
-import com.example.fbrigati.myfinance.data.DataContract_tmp;
+import com.example.fbrigati.myfinance.data.DataContract;
 
 import java.util.Calendar;
 
@@ -48,7 +48,7 @@ public class FMRemoteViewProvider extends RemoteViewsService {
                 Log.v(LOG_TAG, "Inside onDataSetChanged.. getting CollectionData cursor");
                 final long identityToken = Binder.clearCallingIdentity();
                 collectionData = getContentResolver().query(
-                        DataContract_tmp.BudgetEntry.buildBudgetWidgetUri(month),
+                        DataContract.BudgetEntry.buildBudgetWidgetUri(month),
                         null,
                         null, null, null);
 
@@ -95,7 +95,7 @@ public class FMRemoteViewProvider extends RemoteViewsService {
                 //Fill intent for detail view...
                 final Intent fillIntent = new Intent();
 
-                Uri intentUri = DataContract_tmp.BudgetEntry.buildBudgetUri(collectionData.getInt(0));
+                Uri intentUri = DataContract.BudgetEntry.buildBudgetUri(collectionData.getInt(0));
                 fillIntent.setData(intentUri);
                 views.setOnClickFillInIntent(R.id.widget_list_item, fillIntent);
 

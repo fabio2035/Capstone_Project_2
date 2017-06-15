@@ -26,7 +26,7 @@ import android.widget.Toast;
 import com.example.fbrigati.myfinance.R;
 import com.example.fbrigati.myfinance.Utility;
 import com.example.fbrigati.myfinance.adapters.CurrenciesAdapter;
-import com.example.fbrigati.myfinance.data.DataContract_tmp;
+import com.example.fbrigati.myfinance.data.DataContract;
 import com.example.fbrigati.myfinance.sync.MFSyncJob;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -178,7 +178,7 @@ public class CurrenciesFragment extends Fragment implements LoaderManager.Loader
         //get last selected position
         if(SP!=null){
             String selected = SP.getString(getContext().getString(R.string.pref_cur_key), getContext().getString(R.string.pref_cur_default));
-            getActivity().getContentResolver().registerContentObserver(DataContract_tmp.CurrencyExEntry.buildCurrencyUri(selected), false, mObserver);
+            getActivity().getContentResolver().registerContentObserver(DataContract.CurrencyExEntry.buildCurrencyUri(selected), false, mObserver);
             Log.v(LOG_TAG, "Retrieved selected position: " + selected);
             String[] symbolArray = getResources().getStringArray(R.array.cur_symbols);
             int pos = Arrays.asList(symbolArray).indexOf(selected.trim());
@@ -210,8 +210,8 @@ public class CurrenciesFragment extends Fragment implements LoaderManager.Loader
                 String symbol = SP.getString(getContext().getString(R.string.pref_cur_key), getContext().getString(R.string.pref_cur_default));
                 return new CursorLoader(
                         getActivity(),
-                        DataContract_tmp.CurrencyExEntry.buildCurrencyUri(symbol),
-                        DataContract_tmp.CurrencyExEntry.CURRENCIES_COLUMNS,
+                        DataContract.CurrencyExEntry.buildCurrencyUri(symbol),
+                        DataContract.CurrencyExEntry.CURRENCIES_COLUMNS,
                         null,
                         null,
                         null);
@@ -231,7 +231,7 @@ public class CurrenciesFragment extends Fragment implements LoaderManager.Loader
 
                 if (data != null && data.moveToFirst() && data.getCount() > 0) {
                     currencyAdapter.swapCursor(data);
-                    textDate.setText(data.getString(DataContract_tmp.CurrencyExEntry.COL_DATE));
+                    textDate.setText(data.getString(DataContract.CurrencyExEntry.COL_DATE));
                     updateEmptyView(1);
                 }else updateEmptyView(0);
 

@@ -102,11 +102,14 @@ public class BudgetSetDialog extends DialogFragment{
         Boolean validate = true;
 
         //check that amount is >0
-        Log.v(LOG_TAG, "value of amtText: " + amtText.getText());
+        if(amtText.getText() != null && amtText.getText().length() > 0){
         if(Double.valueOf(amtText.getText().toString()) == 0F ||
                 Double.valueOf(amtText.getText().toString()) == 0)
         {validate = false;
-            amtText.requestFocus();}
+            amtText.requestFocus();}}else{
+            validate = false;
+            amtText.requestFocus();
+        }
         return validate;
     }
 
