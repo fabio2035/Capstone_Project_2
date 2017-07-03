@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "653700538355",
+    "firebase_url": "https://myfinancedb.firebaseio.com",
+    "project_id": "myfinancedb",
+    "storage_bucket": "myfinancedb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:653700538355:android:a0099d436c351b1e",
+        "android_client_info": {
+          "package_name": "com.example.fbrigati.myfinance"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "653700538355-ssiin8ola3f1f7cm1shl47t03qj4egoq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.fbrigati.myfinance",
+            "certificate_hash": "3146354102f3819176c2a125e8535c857c86e0e1"
+          }
+        },
+        {
+          "client_id": "653700538355-h1tkb270msp05cd3esponshkqsk6g5bv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD2I7q_4iG5wu3MEVgwqCzsNwD_CSj3vb8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "653700538355-h1tkb270msp05cd3esponshkqsk6g5bv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
