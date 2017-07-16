@@ -1,5 +1,7 @@
 package com.example.fbrigati.myfinance.ui;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -9,15 +11,19 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.fbrigati.myfinance.Utility;
 import com.example.fbrigati.myfinance.adapters.StatementAdapter;
 import com.example.fbrigati.myfinance.data.DataContract;
 
@@ -25,6 +31,8 @@ import com.example.fbrigati.myfinance.R;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+
+import java.util.Locale;
 
 
 /**
@@ -67,6 +75,9 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
     private View header_view;
     private ViewGroup headerView;
     private Toolbar toolbarView;
+    private ImageButton bakBtn;
+    private ImageButton fwdBtn;
+    private TextView monthLabel;
 
 
     @Override
@@ -98,6 +109,39 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
             }
         });
 
+        statement_details.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, final View view, int position, long id) {
+                final Long identifier = id;
+
+                AlertDialog.Builder alert = new AlertDialog.Builder(
+                        getActivity());
+                alert.setTitle(R.string.dialog_delete_record_title);
+                alert.setMessage(R.string.dialog_delete_record_message);
+                alert.setPositiveButton(R.string.dialog_delete_record_yes, new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        deleteRecord(identifier);
+                        //do your work here
+                        dialog.dismiss();
+
+                    }
+                });
+                alert.setNegativeButton(R.string.dialog_delete_record_no, new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+                alert.show();
+
+                return true;
+            }
+        });
+
         headerView = (ViewGroup) inflater.inflate(R.layout.item_statement_header, statement_details, false);
 
         statement_details.addHeaderView(headerView);
@@ -110,8 +154,29 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
 
         toolbarView = (Toolbar) rootView.findViewById(R.id.toolbar);
 
-
         toolbarView.setTitle(R.string.toolbar_statement_title);
+
+        bakBtn = (ImageButton) rootView.findViewById(R.id.bkbtn);
+
+        monthLabel = (TextView) rootView.findViewById(R.id.monthlbl);
+
+        bakBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navigateMonth(0);
+            }
+        });
+
+        fwdBtn = (ImageButton) rootView.findViewById(R.id.fwdbtn);
+
+        fwdBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navigateMonth(1);
+            }
+        });
+
+
 
         FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -121,15 +186,64 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
             }
         });
 
-        mAdView = (AdView) rootView.findViewById(R.id.ad_view);
+        /*mAdView = (AdView) rootView.findViewById(R.id.ad_view);
         AdRequest adRequest = new AdRequest.Builder()
         .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)        // All emulators
                 .addTestDevice("53F4B94474E00A7E14FD516F7AD2ACDF")  // My Galaxy Nexus test phone
                 .build();
-        mAdView.loadAd(adRequest);
+        mAdView.loadAd(adRequest); */
 
         return rootView;
 
+    }
+
+    private void deleteRecord(Long id) {
+        Log.v(LOG_TAG, "id is: " + id);
+
+        int i = getActivity().getContentResolver().delete(
+                DataContract.StatementEntry.CONTENT_URI,
+                DataContract.StatementEntry._ID + " = ?",
+                new String[] {String.valueOf(id)});
+
+        if(i>0){
+            Toast.makeText(getContext(), R.string.toast_deleterecord_success, Toast.LENGTH_LONG).show();
+        }else{
+            Toast.makeText(getContext(), R.string.toast_deleterecord_nosuccess, Toast.LENGTH_LONG).show();
+        }
+
+    }
+
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        navigateMonth(2);
+    }
+
+
+    private void navigateMonth(int i) {
+
+        Context ctx = getContext();
+
+        int currentSetMonth = Utility.getNavigationMonth(ctx);
+        Log.v(LOG_TAG, "currentSetMonth:" + currentSetMonth);
+        //move month forward or backwards depending on passed parameter
+        if(i==0 && currentSetMonth >= 2){
+            //move a month bak
+            Log.v(LOG_TAG, "subtracting month..");
+            Utility.setNavigationMonth(ctx, currentSetMonth-1);
+            monthLabel.setText(Utility.getMonth(ctx,Utility.getNavigationMonth(ctx)));
+            getLoaderManager().restartLoader(STATEMENT_LOADER, null, this);
+        }else if(i==1 && currentSetMonth <= 11){
+            //move a month bak
+            Log.v(LOG_TAG, "adding month..");
+            Utility.setNavigationMonth(getContext(), currentSetMonth+1);
+            monthLabel.setText(Utility.getMonth(ctx,Utility.getNavigationMonth(ctx)));
+            getLoaderManager().restartLoader(STATEMENT_LOADER, null, this);
+        }else{
+            //refresh current Month status onto month label
+            monthLabel.setText(Utility.getMonth(ctx,Utility.getNavigationMonth(ctx)));
+        }
     }
 
     private void showTransactionEditDialog(Long id) {
@@ -169,21 +283,31 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
         //Uri uri;
+        Log.v(LOG_TAG, "inside onCreateLoader");
 
         switch (id){
             case STATEMENT_LOADER:
-                Log.v(LOG_TAG, "statement cursor loader called with uri:" + statement_uri );
                 //Todo: make account selection
                 //if(statement_uri!=null){
                 //uri = DataContract.StatementEntry.buildStatementUri(statement_uri);
-                    return new CursorLoader(
-                            getActivity(),
-                            DataContract.StatementEntry.CONTENT_URI,
-                            DataContract.StatementEntry.STATEMENT_COLUMNS,
-                            null,
-                            null,
-                            null);
+                String[] selectionArgs = {String.format("%02d", Utility.getNavigationMonth(getContext()))};
+                //String selection = DataContract.StatementEntry.COLUMN_DATE
 
+
+                return new CursorLoader(
+                        getActivity(),
+                        DataContract.StatementEntry.CONTENT_URI, //.buildStatsMonthUri(Utility.getNavigationMonth(getContext())),
+                        DataContract.StatementEntry.STATEMENT_COLUMNS,
+                        "substr(date,5,2) = ?",
+                        selectionArgs,
+                        null);
+                    /*return new CursorLoader(
+                            getActivity(),
+                            DataContract.StatementEntry.CONTENT_URI, //.buildStatsMonthUri(Utility.getNavigationMonth(getContext())),
+                            DataContract.StatementEntry.STATEMENT_COLUMNS,
+                            "substr(date,5,2)*1 = ?",
+                            selectionArgs,
+                            null); */
                 }
         return null;
     }
@@ -191,12 +315,16 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 
+        Log.v(LOG_TAG, "inside onLoadFinished data in cursor: " + data.getCount());
+
         switch (loader.getId()) {
             case STATEMENT_LOADER:
+                Log.v(LOG_TAG, "there are items in cursor: " + data.getCount());
                 if (data != null && data.moveToFirst() && data.getCount() > 0) {
+
                     statementAdapter.swapCursor(data);
-                    updateEmptyView(1);
-                }else updateEmptyView(0);
+                    updateView(1);
+                }else updateView(0);
 
                 break;
         }
@@ -214,7 +342,7 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
 
     }
 
-    private void updateEmptyView(int flag) {
+    private void updateView(int flag) {
         if(flag == 1){
             statement_details.setVisibility(View.VISIBLE);
             empty_view.setVisibility(View.GONE);

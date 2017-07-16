@@ -22,4 +22,9 @@
     <dimen name="menu_icon_height">45dp</dimen>
     <dimen name="menu_icon_width">45dp</dimen>
 
+    <!-- FAB button settings -->
+    <dimen name="fab_elevation">6dp</dimen>
+
+    <dimen name="month_label_dimen">120dp</dimen>
+
 </resources>

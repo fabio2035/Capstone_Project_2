@@ -18,7 +18,7 @@
 
         <include
             android:id="@+id/toolbar"
-            layout="@layout/toolbar" />
+            layout="@layout/item_month_picker" />
 
     </android.support.design.widget.AppBarLayout>
 
@@ -29,31 +29,45 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
         android:src="@drawable/ic_add_circle"
-        android:elevation="6dp"
+        android:elevation="@dimen/fab_elevation"
         app:layout_anchor="@+id/toolbar"
-        app:layout_anchorGravity="end"
+        app:layout_anchorGravity="end|center_vertical"
         android:contentDescription="@string/accessibility_statment_FAB"
-        tools:targetApi="lollipop" />
+        tools:targetApi="lollipop"
+        android:stateListAnimator="@animator/fab_raise"/>
 
-    <!-- The table details -->
-    <ListView
-        android:id="@+id/item_statement_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:divider="#FFCC00"
-        android:dividerHeight="2dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:layout_marginStart="@dimen/activity_horizontal_margin"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_marginTop="@dimen/activity_horizontal_margin"
-        android:layout_marginBottom="@dimen/activity_horizontal_margin"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
-        />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingTop="?actionBarSize">
+
+        <TextView
+            android:id="@+id/subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/toolbar_statement_title"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            />
+
+        <!-- The table details -->
+        <ListView
+            android:id="@+id/item_statement_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/subtitle"
+            android:divider="#FFCC00"
+            android:dividerHeight="2dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/activity_horizontal_margin"
+            android:layout_marginBottom="@dimen/activity_horizontal_margin"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            />
+
 
         <android.support.v4.view.ViewPager
             android:layout_width="match_parent"
@@ -63,14 +77,45 @@
 
         </android.support.v4.view.ViewPager>
 
-        <com.google.android.gms.ads.AdView
-            android:id="@+id/ad_view"
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_above="@+id/grid_balance"
+
+            style="@style/Divider"/>
+
+        <android.support.v7.widget.GridLayout
+            android:id="@+id/grid_balance"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
             android:layout_alignParentBottom="true"
-            ads:adSize="BANNER"
-            ads:adUnitId="@string/banner_ad_unit_id" />
+            android:paddingBottom="@dimen/widget_margin"
+            android:paddingTop="@dimen/widget_margin"
+            android:layout_marginTop="@dimen/widget_margin"
+            android:elevation="@dimen/appbar_elevation"
+            >
+            <TextView
+                android:id="@+id/balance_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                app:layout_columnWeight="1"
+                android:textColor="@color/secondary_text"
+                android:text="Balance : "
+                tools:text="Balance : "/>
+            <TextView
+                android:id="@+id/balance_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                app:layout_columnWeight="1"
+                android:textColor="@color/secondary_text"
+                android:text="- 500.00 MZN "
+                tools:text="- 500.00 MZN "/>
+        </android.support.v7.widget.GridLayout>
+
+
     </RelativeLayout>
     <!-- empty list -->
     <TextView

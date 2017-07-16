@@ -168,6 +168,8 @@ public class DataProvider extends ContentProvider {
                         null,
                         sortOrder
                 );
+                Log.v(LOG_TAG, "selectionArgs: " + selectionArgs[0]);
+                Log.v(LOG_TAG, "selection: " + selection);
                 break;
             }
             case STATEMENT_WIDGET_DATA: {
@@ -231,7 +233,7 @@ public class DataProvider extends ContentProvider {
 
         return mOpenHelper.getReadableDatabase().rawQuery(
                 "select a._ID, a.date, a.amount, a.category from statement a " +
-                        " where substr(a.date,5,2)*1 = 6 ", null); // new String[] {String.valueOf(month)});
+                        " where substr(a.date,5,2)*1 = ? ", new String[] {String.valueOf(month)}); // new String[] {String.valueOf(month)});
     }
 
 
@@ -265,7 +267,6 @@ public class DataProvider extends ContentProvider {
                         "where S.month = ? ORDER BY T.date DESC LIMIT 2",new String[] {String.valueOf(month)});
 
     }
-
 
     private Cursor getBudgetWithMonth(Uri uri, String[] projection, String sortOrder) {
 

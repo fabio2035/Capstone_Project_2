@@ -23,6 +23,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.fbrigati.myfinance.R;
+import com.example.fbrigati.myfinance.Utility;
 import com.example.fbrigati.myfinance.data.DataContract;
 import com.example.fbrigati.myfinance.elements.Statement;
 import com.example.fbrigati.myfinance.sync.MFSyncJob;
@@ -204,7 +205,7 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
         cv.put(DataContract.StatementEntry.COLUMN_ACCOUNT_NUMBER, "0529925801");
         cv.put(DataContract.StatementEntry.COLUMN_DATE, dateInt);
         cv.put(DataContract.StatementEntry.COLUMN_TIME, timeStr);
-        cv.put(DataContract.StatementEntry.COLUMN_SEQUENCE, 0);
+        cv.put(DataContract.StatementEntry.COLUMN_SEQUENCE, Utility.getTransSequence(this));
         cv.put(DataContract.StatementEntry.COLUMN_DESCRIPTION_ORIGIN, descText.getText().toString());
         cv.put(DataContract.StatementEntry.COLUMN_DESCRIPTION_USER, descText.getText().toString());
         cv.put(DataContract.StatementEntry.COLUMN_AMOUNT, Double.valueOf(amountText.getText().toString()));

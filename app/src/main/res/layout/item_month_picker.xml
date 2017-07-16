@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/toolbar"
+    app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    app:layout_scrollFlags="scroll|enterAlways"
+    android:fitsSystemWindows="true">
+
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginEnd="70dp"
+        android:layout_marginRight="70dp"
+        app:columnCount="3">
+
+    <ImageButton
+        android:id="@+id/bkbtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:src="@drawable/back_btn"
+        android:background="@color/colorPrimary"
+        android:layout_columnWeight="1"/>
+
+    <TextView
+        android:id="@+id/monthlbl"
+        android:layout_height="wrap_content"
+        android:layout_width="@dimen/month_label_dimen"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title"
+        android:textColor="@color/primary_light"
+        android:textAlignment="center"
+        tools:text="DECEMBER"
+        android:layout_gravity="center_vertical|center_horizontal"
+
+        android:layout_columnWeight="1"/>
+
+    <ImageButton
+        android:id="@+id/fwdbtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:src="@drawable/frwrd_btn"
+        android:background="@color/colorPrimary"
+        android:layout_columnWeight="1"/>
+
+    </GridLayout>
+
+    </android.support.v7.widget.Toolbar>

@@ -43,12 +43,33 @@
         <item>EUR</item>
         </string-array>
 
+
+
+    <!-- Months in a year -->
+    <string-array name="months">
+        <item>JANUARY</item>
+        <item>FEBRUARY</item>
+        <item>MARCH</item>
+        <item>APRIL</item>
+        <item>MAY</item>
+        <item>JUNE</item>
+        <item>JULY</item>
+        <item>AUGUST</item>
+        <item>SEPTEMBER</item>
+        <item>OCTOBER</item>
+        <item>NOVEMBER</item>
+        <item>DECEMBER</item>
+    </string-array>
+
     <string name="pref_cur_key" translatable="false">cur_symbol</string>
     <string name="pref_cur_default" translatable="false">USD</string>
 
     <string name="pref_cur_status_key" translatable="false">cur-status</string>
 
     <string name="pref_cur_status_invalid">There was an error retrieving currnecie data for selected item, please try again.</string>
+
+    <string name="pref_month_status" translatable="false">month-status</string>
+
     <string name="trans_amt_edit_hint">Amount</string>
     <string name="trans_desc_edit_hint">Description</string>
     <string name="title_trxEdit_detail">Transaction Details</string>
@@ -89,6 +110,14 @@
     <string name="accessibility_budget_icon">Budget Icon</string>
     <string name="accessibility_menu_icon">Menu icon</string>
     <string name="accessibility_statment_FAB">add transaction</string>
+    <string name="dialog_delete_record_title">Delete Record</string>
+    <string name="dialog_delete_record_message">Are you sure you want to delete this record?</string>
+    <string name="dialog_delete_record_yes">yes</string>
+    <string name="dialog_delete_record_no">no</string>
+    <string name="toast_deleterecord_success">record deleted</string>
+    <string name="toast_deleterecord_nosuccess">record was not deleted, please try again</string>
+    <string name="pref_last_posting_date">postDate</string>
+    <string name="pref_post_seq">postSequence</string>
 
 
 </resources>
