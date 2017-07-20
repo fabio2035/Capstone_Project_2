@@ -78,10 +78,9 @@ public class Utility {
         int month = cal.get(Calendar.MONTH);
         int day = cal.get(Calendar.DAY_OF_MONTH);
 
-        int currentPostDate = String.valueOf(year) + String.format("%02d")
-                String.valueOf(year +
-                String.format("%02d", String.valueOf(month)) +
-                String.format("%02d", String.valueOf(day));
+        int currentPostDate = Integer.parseInt(String.valueOf(year) +
+                String.format("%02d", month) +
+                String.format("%02d", day));
 
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
         SharedPreferences.Editor spe = sp.edit();
@@ -89,7 +88,7 @@ public class Utility {
         int lastPostDate = sp.getInt(c.getString(R.string.pref_last_posting_date), 0);
         int currentSequence = sp.getInt(c.getString(R.string.pref_post_seq), 0);
 
-        Log.v("Utility", "LastPostDate: " + lastPostDate + "; CurrentSequence: " + currentSequence);
+        Log.v("Utility", "LastPostDate: " + lastPostDate + "; CurrentPostDate: " + currentPostDate);
 
         int sequence = 0;
 

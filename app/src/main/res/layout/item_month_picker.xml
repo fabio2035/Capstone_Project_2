@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:src="@drawable/back_btn"
-        android:background="@color/colorPrimary"
+        android:background="?android:attr/selectableItemBackground"
         android:layout_columnWeight="1"/>
 
     <TextView
@@ -44,7 +44,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="start"
         android:src="@drawable/frwrd_btn"
-        android:background="@color/colorPrimary"
+        android:background="?android:attr/selectableItemBackground"
         android:layout_columnWeight="1"/>
 
     </GridLayout>

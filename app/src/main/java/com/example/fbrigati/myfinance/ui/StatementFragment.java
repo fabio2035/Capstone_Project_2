@@ -32,6 +32,8 @@ import com.example.fbrigati.myfinance.R;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.Locale;
 
 
@@ -45,8 +47,10 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
 
     public final static String ID_MESSAGE = "com.example.fbrigati.myfinance.ui.StatementFragment.MESSAGE";
     public static final int STATEMENT_LOADER = 0;
+    private int mShortAnimationDuration;
 
     static final String STATEMENT_URI = "URI";
+    private boolean onResumeflag = false;
 
     StatementAdapter statementAdapter;
 
@@ -63,6 +67,7 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
         super.onStart();
     }
 
+    private View rootView;
     private TextView textSequence;
     private TextView textDate;
     private TextView textDescription;
@@ -79,6 +84,17 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
     private ImageButton fwdBtn;
     private TextView monthLabel;
 
+    private final DecimalFormat currencyFormatWithPlus;
+    private final DecimalFormat currencyFormatWithMinus;
+
+
+    public StatementFragment(){
+        currencyFormatWithMinus = (DecimalFormat) NumberFormat.getInstance(Locale.US);
+        currencyFormatWithPlus = (DecimalFormat) NumberFormat.getInstance(Locale.US);
+        currencyFormatWithPlus.setPositivePrefix(" + ");
+        currencyFormatWithMinus.setPositivePrefix(" - ");
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -89,7 +105,7 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
             statement_uri = arguments.getParcelable(StatementFragment.STATEMENT_URI);
         }
 
-        View rootView = inflater.inflate(R.layout.fragment_statement_main_bkp, container, false);
+        rootView = inflater.inflate(R.layout.fragment_statement_main_bkp, container, false);
 
         //transaction date
         textDate = (TextView) rootView.findViewById(R.id.row_date);
@@ -176,7 +192,7 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
             }
         });
 
-
+        textBalance = (TextView) rootView.findViewById(R.id.balance_value);
 
         FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -185,6 +201,7 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
                 showTransactionAddDialog(0L);
             }
         });
+
 
         /*mAdView = (AdView) rootView.findViewById(R.id.ad_view);
         AdRequest adRequest = new AdRequest.Builder()
@@ -210,13 +227,23 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
         }else{
             Toast.makeText(getContext(), R.string.toast_deleterecord_nosuccess, Toast.LENGTH_LONG).show();
         }
-
     }
 
 
     @Override
     public void onResume(){
         super.onResume();
+
+        //run alpha opacity animation only when screen is first loaded
+        if(onResumeflag == false){
+        //Initially hide the content view
+        rootView.setVisibility(View.GONE);
+
+        // Retrieve and cache the system's default "short" animation time.
+        mShortAnimationDuration = getResources().getInteger(
+                android.R.integer.config_shortAnimTime);
+        }
+
         navigateMonth(2);
     }
 
@@ -315,19 +342,64 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 
-        Log.v(LOG_TAG, "inside onLoadFinished data in cursor: " + data.getCount());
-
         switch (loader.getId()) {
             case STATEMENT_LOADER:
-                Log.v(LOG_TAG, "there are items in cursor: " + data.getCount());
+
                 if (data != null && data.moveToFirst() && data.getCount() > 0) {
-
                     statementAdapter.swapCursor(data);
+                    calculateBalance(data);
                     updateView(1);
-                }else updateView(0);
-
+                }else{
+                    updateView(0);
+                    String positiveValue = currencyFormatWithPlus.format(0);
+                    textBalance.setText(String.valueOf(positiveValue));
+                    textBalance.setTextColor(getResources().getColor(R.color.positive));}
                 break;
         }
+    }
+
+    private void calculateBalance(Cursor data) {
+
+        //Calculate the monthly balance..
+
+        Double balance = 0.0;
+        Double sum = 0.0;
+        int trxType = 0;
+
+        data.moveToFirst();
+        sum = Double.valueOf(data.getString(DataContract.StatementEntry.COL_AMOUNT));
+
+        trxType = data.getInt(DataContract.StatementEntry.COL_TRANSACTION_CODE);
+
+        if (trxType < 5){
+            balance += sum;
+        }else{
+            balance -= sum;
+        }
+
+        while(data.moveToNext()){
+            sum = Double.valueOf(data.getString(DataContract.StatementEntry.COL_AMOUNT));
+            trxType = data.getInt(DataContract.StatementEntry.COL_TRANSACTION_CODE);
+            Log.v(LOG_TAG, "Sum: " + sum);
+            if (trxType < 5){
+                balance += sum;
+            }else{
+                balance -= sum;
+            }
+        }
+
+        //set the colors..
+
+        if(balance > 0.0){
+            String positiveValue = currencyFormatWithPlus.format(balance);
+            textBalance.setText(String.valueOf(positiveValue));
+            textBalance.setTextColor(getResources().getColor(R.color.positive));
+        }else{
+            String negativeValue = currencyFormatWithMinus.format(balance);
+            textBalance.setText(String.valueOf(negativeValue));
+            textBalance.setTextColor(getResources().getColor(R.color.negative));
+        }
+
     }
 
     @Override
@@ -343,9 +415,22 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
     }
 
     private void updateView(int flag) {
+        //Data found
         if(flag == 1){
+            if(onResumeflag == false){
+            // Set the content view to 0% opacity but visible, so that it is visible
+            // (but fully transparent) during the animation.
+            rootView.setAlpha(0f);
+            rootView.setVisibility(View.VISIBLE);
+            rootView.animate()
+                    .alpha(1f)
+                    .setDuration(mShortAnimationDuration)
+                    .setListener(null);
+            onResumeflag =true;
+            }
             statement_details.setVisibility(View.VISIBLE);
             empty_view.setVisibility(View.GONE);
+        //No data found to be displayed
         }else if(flag == 0){
             statement_details.setVisibility(View.GONE);
             empty_view.setVisibility(View.VISIBLE);

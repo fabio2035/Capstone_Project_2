@@ -50,6 +50,7 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Title"
             android:layout_marginStart="@dimen/activity_horizontal_margin"
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/widget_margin"
             />
 
         <!-- The table details -->
@@ -61,11 +62,12 @@
             android:divider="#FFCC00"
             android:dividerHeight="2dp"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:layout_above="@+id/grid_balance"
             android:layout_marginStart="@dimen/activity_horizontal_margin"
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:layout_marginTop="@dimen/activity_horizontal_margin"
-            android:layout_marginBottom="@dimen/activity_horizontal_margin"
             android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/activity_horizontal_margin"
             />
 
 
@@ -111,8 +113,8 @@
                 android:gravity="center_horizontal"
                 app:layout_columnWeight="1"
                 android:textColor="@color/secondary_text"
-                android:text="- 500.00 MZN "
-                tools:text="- 500.00 MZN "/>
+                android:text=" 0.00 MZN "
+                tools:text=" 0.00 MZN "/>
         </android.support.v7.widget.GridLayout>
 
 

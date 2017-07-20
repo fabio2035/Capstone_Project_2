@@ -3,6 +3,7 @@ package com.example.fbrigati.myfinance.adapters;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,14 +69,18 @@ public class StatementAdapter extends CursorAdapter {
 
         Double amount = Double.valueOf(cursor.getString(DataContract.StatementEntry.COL_AMOUNT));
 
+        Double balance = 0.0;
+
         if (trxType < 5){
             String PositiveValue = currencyFormatWithPlus.format(amount);
             viewHolder.textAmount.setText(PositiveValue);
-            viewHolder.textAmount.setTextColor(Color.GREEN);
+            viewHolder.textAmount.setTextColor(context.getResources().getColor(R.color.positive));
+            balance += amount;
         }else{
             String NegativeValue = currencyFormatWithMinus.format(amount);
             viewHolder.textAmount.setText(NegativeValue);
-            viewHolder.textAmount.setTextColor(Color.RED);
+            viewHolder.textAmount.setTextColor(context.getResources().getColor(R.color.negative));
+            balance -= amount;
         }
 
     }
