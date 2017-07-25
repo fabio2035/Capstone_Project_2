@@ -1,10 +1,13 @@
 package com.example.fbrigati.myfinance.elements;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by FBrigati on 25/04/2017.
  */
 
-public class Statement {
+public class Statement implements Parcelable {
 
     public int _ID;
     public String accountNumber;
@@ -115,4 +118,13 @@ public class Statement {
         this.category = category;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+
+    }
 }

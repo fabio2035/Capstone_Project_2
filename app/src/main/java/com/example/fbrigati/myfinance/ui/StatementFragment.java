@@ -29,6 +29,9 @@ import com.example.fbrigati.myfinance.data.DataContract;
 
 import com.example.fbrigati.myfinance.R;
 
+import com.example.fbrigati.myfinance.data.StatementLoader;
+import com.example.fbrigati.myfinance.data.UpdateableFragment;
+import com.example.fbrigati.myfinance.elements.Statement;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
@@ -45,8 +48,12 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
 
     final static String LOG_TAG = StatementFragment.class.getSimpleName();
 
+    public static final String ARG_ITEM_ID = "item_id";
+    private int uMonth;
+
     public final static String ID_MESSAGE = "com.example.fbrigati.myfinance.ui.StatementFragment.MESSAGE";
     public static final int STATEMENT_LOADER = 0;
+    private Cursor mCursor;
     private int mShortAnimationDuration;
 
     static final String STATEMENT_URI = "URI";
@@ -58,9 +65,7 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
 
     private AdView mAdView;
 
-
     Intent intent;
-
 
     @Override
     public void onStart(){
@@ -96,14 +101,25 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
     }
 
 
+    static StatementFragment newInstance(int month) {
+        Bundle arguments = new Bundle();
+        arguments.putInt(ARG_ITEM_ID, month);
+        StatementFragment fragment = new StatementFragment();
+        fragment.setArguments(arguments);
+        return fragment;
+    }
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState){
 
         Bundle arguments = getArguments();
         if (arguments != null){
-            statement_uri = arguments.getParcelable(StatementFragment.STATEMENT_URI);
+            uMonth = arguments.getInt(ARG_ITEM_ID);
         }
+
+        Log.v(LOG_TAG, "Month received from bundle: " + uMonth);
 
         rootView = inflater.inflate(R.layout.fragment_statement_main_bkp, container, false);
 
@@ -168,51 +184,12 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
 
         empty_view = (TextView) rootView.findViewById(R.id.empty_statement);
 
-        toolbarView = (Toolbar) rootView.findViewById(R.id.toolbar);
-
-        toolbarView.setTitle(R.string.toolbar_statement_title);
-
-        bakBtn = (ImageButton) rootView.findViewById(R.id.bkbtn);
-
-        monthLabel = (TextView) rootView.findViewById(R.id.monthlbl);
-
-        bakBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                navigateMonth(0);
-            }
-        });
-
-        fwdBtn = (ImageButton) rootView.findViewById(R.id.fwdbtn);
-
-        fwdBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                navigateMonth(1);
-            }
-        });
-
         textBalance = (TextView) rootView.findViewById(R.id.balance_value);
-
-        FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showTransactionAddDialog(0L);
-            }
-        });
-
-
-        /*mAdView = (AdView) rootView.findViewById(R.id.ad_view);
-        AdRequest adRequest = new AdRequest.Builder()
-        .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)        // All emulators
-                .addTestDevice("53F4B94474E00A7E14FD516F7AD2ACDF")  // My Galaxy Nexus test phone
-                .build();
-        mAdView.loadAd(adRequest); */
 
         return rootView;
 
     }
+
 
     private void deleteRecord(Long id) {
         Log.v(LOG_TAG, "id is: " + id);
@@ -233,45 +210,20 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
     @Override
     public void onResume(){
         super.onResume();
-
+        //rootView.setVisibility(View.GONE);
         //run alpha opacity animation only when screen is first loaded
-        if(onResumeflag == false){
+      /*  if(onResumeflag == false){
         //Initially hide the content view
         rootView.setVisibility(View.GONE);
 
         // Retrieve and cache the system's default "short" animation time.
         mShortAnimationDuration = getResources().getInteger(
                 android.R.integer.config_shortAnimTime);
-        }
+        } */
 
-        navigateMonth(2);
+//        navigateMonth(2);
     }
 
-
-    private void navigateMonth(int i) {
-
-        Context ctx = getContext();
-
-        int currentSetMonth = Utility.getNavigationMonth(ctx);
-        Log.v(LOG_TAG, "currentSetMonth:" + currentSetMonth);
-        //move month forward or backwards depending on passed parameter
-        if(i==0 && currentSetMonth >= 2){
-            //move a month bak
-            Log.v(LOG_TAG, "subtracting month..");
-            Utility.setNavigationMonth(ctx, currentSetMonth-1);
-            monthLabel.setText(Utility.getMonth(ctx,Utility.getNavigationMonth(ctx)));
-            getLoaderManager().restartLoader(STATEMENT_LOADER, null, this);
-        }else if(i==1 && currentSetMonth <= 11){
-            //move a month bak
-            Log.v(LOG_TAG, "adding month..");
-            Utility.setNavigationMonth(getContext(), currentSetMonth+1);
-            monthLabel.setText(Utility.getMonth(ctx,Utility.getNavigationMonth(ctx)));
-            getLoaderManager().restartLoader(STATEMENT_LOADER, null, this);
-        }else{
-            //refresh current Month status onto month label
-            monthLabel.setText(Utility.getMonth(ctx,Utility.getNavigationMonth(ctx)));
-        }
-    }
 
     private void showTransactionEditDialog(Long id) {
         intent = new Intent(getActivity(), StatementActEditTrxDialog.class);
@@ -301,55 +253,29 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState){
-        getLoaderManager().initLoader(STATEMENT_LOADER, null, this);
         super.onActivityCreated(savedInstanceState);
+        getLoaderManager().initLoader(STATEMENT_LOADER, null, this);
     }
 
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-
-        //Uri uri;
-        Log.v(LOG_TAG, "inside onCreateLoader");
-
-        switch (id){
-            case STATEMENT_LOADER:
-                //Todo: make account selection
-                //if(statement_uri!=null){
-                //uri = DataContract.StatementEntry.buildStatementUri(statement_uri);
-                String[] selectionArgs = {String.format("%02d", Utility.getNavigationMonth(getContext()))};
-                //String selection = DataContract.StatementEntry.COLUMN_DATE
-
-
-                return new CursorLoader(
-                        getActivity(),
-                        DataContract.StatementEntry.CONTENT_URI, //.buildStatsMonthUri(Utility.getNavigationMonth(getContext())),
-                        DataContract.StatementEntry.STATEMENT_COLUMNS,
-                        "substr(date,5,2) = ?",
-                        selectionArgs,
-                        null);
-                    /*return new CursorLoader(
-                            getActivity(),
-                            DataContract.StatementEntry.CONTENT_URI, //.buildStatsMonthUri(Utility.getNavigationMonth(getContext())),
-                            DataContract.StatementEntry.STATEMENT_COLUMNS,
-                            "substr(date,5,2)*1 = ?",
-                            selectionArgs,
-                            null); */
-                }
-        return null;
+       return StatementLoader.newInstance(getContext(), uMonth);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-
+        mCursor = data;
         switch (loader.getId()) {
             case STATEMENT_LOADER:
 
-                if (data != null && data.moveToFirst() && data.getCount() > 0) {
-                    statementAdapter.swapCursor(data);
-                    calculateBalance(data);
+                if (mCursor != null && mCursor.moveToFirst() && mCursor.getCount() > 0) {
+                    Log.v(LOG_TAG, "There is data in cursor.. load data");
+                    statementAdapter.swapCursor(mCursor);
+                    calculateBalance(mCursor);
                     updateView(1);
                 }else{
+                    Log.v(LOG_TAG, "There is nothing in cursor");
                     updateView(0);
                     String positiveValue = currencyFormatWithPlus.format(0);
                     textBalance.setText(String.valueOf(positiveValue));
@@ -405,19 +331,22 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         Log.v(LOG_TAG, "Inside swapcursor...");
+        statementAdapter.swapCursor(null);
+        mCursor = null;
+        /*
         switch (loader.getId()){
             case STATEMENT_LOADER:
                 if(statementAdapter != null)
+                Log.v(LOG_TAG, "its statement loader being reset..");
                 statementAdapter.swapCursor(null);
                 break;
-        }
-
+        } */
     }
 
     private void updateView(int flag) {
         //Data found
         if(flag == 1){
-            if(onResumeflag == false){
+        /*//    if(onResumeflag == false){
             // Set the content view to 0% opacity but visible, so that it is visible
             // (but fully transparent) during the animation.
             rootView.setAlpha(0f);
@@ -427,13 +356,15 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
                     .setDuration(mShortAnimationDuration)
                     .setListener(null);
             onResumeflag =true;
-            }
+         //   } */
             statement_details.setVisibility(View.VISIBLE);
             empty_view.setVisibility(View.GONE);
         //No data found to be displayed
-        }else if(flag == 0){
+        }else{ //if(flag == 0){
             statement_details.setVisibility(View.GONE);
             empty_view.setVisibility(View.VISIBLE);
         }
     }
+
+
 }

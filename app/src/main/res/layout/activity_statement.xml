@@ -1,8 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_statement_detail"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     tools:context="com.example.fbrigati.myfinance.ui.StatementActivity">
-</RelativeLayout>
+
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay"
+        app:expanded="true">
+
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/item_month_picker" />
+
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@drawable/ic_add_circle"
+        android:elevation="@dimen/fab_elevation"
+        app:layout_anchor="@+id/toolbar"
+        app:layout_anchorGravity="end|center_vertical"
+        android:contentDescription="@string/accessibility_statment_FAB"
+        tools:targetApi="lollipop"
+        android:stateListAnimator="@animator/fab_raise"/>
+
+    <android.support.v4.view.ViewPager
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/statement_pager"
+        >
+
+    </android.support.v4.view.ViewPager>
+
+
+
+
+</android.support.design.widget.CoordinatorLayout >
