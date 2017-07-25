@@ -35,7 +35,6 @@ public class StatementActivity extends AppCompatActivity {
     private ViewPager mPager;
     private StatementPagerAdapter mPagerAdapter;
 
-    private Cursor mCursor;
     private int lastPosition;
 
     private Toolbar toolbarView;
@@ -92,7 +91,6 @@ public class StatementActivity extends AppCompatActivity {
 
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
             }
 
             @Override
@@ -115,11 +113,9 @@ public class StatementActivity extends AppCompatActivity {
 
             @Override
             public void onPageScrollStateChanged(int arg0){
-
             }
         });
     }
-
 
 
 
@@ -141,7 +137,7 @@ public class StatementActivity extends AppCompatActivity {
             Utility.setNavigationMonth(this, currentSetMonth+1);
             mPagerAdapter.notifyDataSetChanged();
         }else{
-            //refresh current Month status onto month label
+            //Do nothing?
         }
         monthLabel.setText(Utility.getMonth(this,mPager.getCurrentItem()+1));
     }
@@ -163,12 +159,6 @@ public class StatementActivity extends AppCompatActivity {
         public int getCount() {
             return NUM_PAGES;
         }
-
-        /*@Override
-        public int getItemPosition(Object object){
-            StatementFragment f = (StatementFragment) object;
-            if()
-        }*/
 
     }
 }

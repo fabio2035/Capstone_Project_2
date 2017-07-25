@@ -210,15 +210,18 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
     @Override
     public void onResume(){
         super.onResume();
-        //rootView.setVisibility(View.GONE);
+
+        /*rootView.setVisibility(View.GONE);
+
+        mShortAnimationDuration = getResources().getInteger(
+                android.R.integer.config_shortAnimTime); */
+        /*
         //run alpha opacity animation only when screen is first loaded
-      /*  if(onResumeflag == false){
+        if(onResumeflag == false){
         //Initially hide the content view
         rootView.setVisibility(View.GONE);
 
         // Retrieve and cache the system's default "short" animation time.
-        mShortAnimationDuration = getResources().getInteger(
-                android.R.integer.config_shortAnimTime);
         } */
 
 //        navigateMonth(2);
@@ -344,19 +347,19 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
     }
 
     private void updateView(int flag) {
+        // Set the content view to 0% opacity but visible, so that it is visible
+        // (but fully transparent) during the animation.
+        /*
+        rootView.setAlpha(0f);
+        rootView.setVisibility(View.VISIBLE);
+        rootView.animate()
+                .alpha(1f)
+                .setDuration(mShortAnimationDuration)
+                .setListener(null); */
+
         //Data found
         if(flag == 1){
-        /*//    if(onResumeflag == false){
-            // Set the content view to 0% opacity but visible, so that it is visible
-            // (but fully transparent) during the animation.
-            rootView.setAlpha(0f);
-            rootView.setVisibility(View.VISIBLE);
-            rootView.animate()
-                    .alpha(1f)
-                    .setDuration(mShortAnimationDuration)
-                    .setListener(null);
             onResumeflag =true;
-         //   } */
             statement_details.setVisibility(View.VISIBLE);
             empty_view.setVisibility(View.GONE);
         //No data found to be displayed

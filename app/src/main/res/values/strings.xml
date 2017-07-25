@@ -103,7 +103,7 @@
     <string name="toast_functionality_notimplemented">Functionality not implemented</string>
     <string name="toast_amount_notvalid">Amount not valid, please correct and try again</string>
     <string name="toast_check_desc_amt">Check description and/or amount before saving</string>
-    <string name="toolbar_statement_title">Statement</string>
+    <string name="toolbar_statement_title"></string>
     <string name="toolbar_budget_title">Budget</string>
     <string name="toolbar_stats_title">Stats Charts</string>
     <string name="toolbar_currencies_title">Currency Rates</string>
