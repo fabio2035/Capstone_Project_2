@@ -1,8 +1,10 @@
 package com.example.fbrigati.myfinance.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -41,6 +43,9 @@ public class StatementActivity extends AppCompatActivity {
     private ImageButton bakBtn;
     private ImageButton fwdBtn;
     private TextView monthLabel;
+
+
+    Intent intent;
 
 
     @Override
@@ -115,6 +120,33 @@ public class StatementActivity extends AppCompatActivity {
             public void onPageScrollStateChanged(int arg0){
             }
         });
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showTransactionAddDialog(0L);
+            }
+        });
+    }
+
+
+    private void showTransactionAddDialog(Long id) {
+
+        intent = new Intent(this, StatementActEditTrxDialog.class);
+
+        switch(id.toString()) {
+            case "0": {
+                intent.putExtra(StatementActEditTrxDialog.ID_MESSAGE, 0);
+                this.startActivity(intent);
+                break;
+            }
+            default:{
+                intent.putExtra(StatementActEditTrxDialog.ID_MESSAGE, id);
+                this.startActivity(intent);
+                break;
+            }
+        }
     }
 
 

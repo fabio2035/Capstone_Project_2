@@ -47,15 +47,15 @@ public class BudgetSetDialog extends DialogFragment{
 
     // Override the Fragment.onAttach() method to instantiate the DateSetListenerCustom
     @Override
-    public void onAttach(Context activity) {
-        super.onAttach(activity);
+    public void onAttach(Context ctx) {
+        super.onAttach(ctx);
         // Verify that the host activity implements the callback interface
         try {
             // Instantiate the DateSetListenerCustom so we can send events to the host
-            mListener = (BudgetSetDialog.setBudgetGoalListener) activity;
+            mListener = (BudgetSetDialog.setBudgetGoalListener) ctx;
         } catch (ClassCastException e) {
             // The activity doesn't implement the interface, throw exception
-            throw new ClassCastException(activity.toString()
+            throw new ClassCastException(ctx.toString()
                     + " must implement setBudgetGoalListener");
         }
     }

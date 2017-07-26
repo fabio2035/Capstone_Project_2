@@ -51,11 +51,11 @@ public class BudgetAdapter extends CursorAdapter {
 
         ViewHolder viewHolder = (ViewHolder) view.getTag();
 
-        String category = cursor.getString(3);
+        String category = cursor.getString(0);
 
-        Double spent = cursor.getDouble(5);
+        Double spent = cursor.getDouble(1);
 
-        Double goal = cursor.getDouble(4);
+        Double goal = cursor.getDouble(2);
 
         Double percentage = spent/goal*100;
 

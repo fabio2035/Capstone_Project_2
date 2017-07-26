@@ -191,7 +191,15 @@ public class DataProvider extends ContentProvider {
             }
             // "Budget"
             case BUDGET_WITH_MONTH: {
+                retCursor = checkCategory(uri, projection, sortOrder);
+
+                Log.v(LOG_TAG, "N. Items in Category: " + retCursor.getCount());
+
+                retCursor.close();
+
                 retCursor = getBudgetWithMonth(uri, projection, sortOrder);
+
+                Log.v(LOG_TAG, "count from BUDGET_WITH_MONTH: " +retCursor.getCount());
                 break;
             }
             case BUDGET_WIDGET: {
@@ -268,7 +276,7 @@ public class DataProvider extends ContentProvider {
 
     }
 
-    private Cursor getBudgetWithMonth(Uri uri, String[] projection, String sortOrder) {
+    /*private Cursor getBudgetWithMonth(Uri uri, String[] projection, String sortOrder) {
 
         //String category = DataContract.BudgetEntry.getBudgetCategory(uri);
         int month = DataContract.BudgetEntry.getBudgetMonth(uri);
@@ -280,7 +288,38 @@ public class DataProvider extends ContentProvider {
                         "S.month = T.month and S.category = T.category " +
                         "where S.month = ? ",new String[] {String.valueOf(month)});
 
+    }*/
+
+    private Cursor checkCategory(Uri uri, String[] projection, String sortOrder) {
+
+        String query = "SELECT * FROM category ";
+
+        return mOpenHelper.getReadableDatabase().rawQuery(
+                query , null);//, String.valueOf(month)});
     }
+
+
+    private Cursor getBudgetWithMonth(Uri uri, String[] projection, String sortOrder) {
+
+        //String category = DataContract.BudgetEntry.getBudgetCategory(uri);
+        int month = DataContract.BudgetEntry.getBudgetMonth(uri);
+
+        String query = "SELECT A.desc_default, ifnull(C.amount,0), ifnull(B.amount,0), " +
+                "ifnull(C.month_1,0) FROM category as A " +
+                "LEFT JOIN budget AS B ON A.desc_default = B.category " +
+                "LEFT JOIN (SELECT substr(t.date,5,2)*1 as month_1, " +
+                "sum(t.amount) as amount, t.category category FROM statement AS t " +
+                "group by t.category, substr(t.date,5,2)*1) AS C ON " +
+                "A.desc_default = C.category " +
+                "WHERE ifnull(B.month," + month +") = ? "; // AND " +
+                //"ifnull(C.month_1," + month + ") = ?";
+
+        Log.v(LOG_TAG, "Query is: " + query );
+
+        return mOpenHelper.getReadableDatabase().rawQuery(
+                query , new String[] {String.valueOf(month)});//, String.valueOf(month)});
+    }
+
 
     private Cursor getStatementByID(Uri uri, String[] projection, String sortOrder) {
 

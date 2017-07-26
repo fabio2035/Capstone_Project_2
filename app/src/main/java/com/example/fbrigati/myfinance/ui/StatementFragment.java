@@ -235,23 +235,6 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
         getActivity().startActivity(intent);
     }
 
-    private void showTransactionAddDialog(Long id) {
-
-        intent = new Intent(getActivity(), StatementActEditTrxDialog.class);
-
-        switch(id.toString()) {
-            case "0": {
-                intent.putExtra(StatementActEditTrxDialog.ID_MESSAGE, 0);
-                getActivity().startActivity(intent);
-                break;
-            }
-            default:{
-                intent.putExtra(StatementActEditTrxDialog.ID_MESSAGE, id);
-                getActivity().startActivity(intent);
-                break;
-            }
-        }
-    }
 
 
     @Override

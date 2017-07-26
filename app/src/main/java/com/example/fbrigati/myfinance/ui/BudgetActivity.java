@@ -4,18 +4,24 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.fbrigati.myfinance.R;
+import com.example.fbrigati.myfinance.Utility;
 import com.example.fbrigati.myfinance.adapters.BudgetAdapter;
 import com.example.fbrigati.myfinance.data.DataContract;
 import com.example.fbrigati.myfinance.elements.Budget;
@@ -28,7 +34,7 @@ import java.util.Calendar;
  * Created by FBrigati on 07/05/2017.
  */
 
-public class BudgetActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>,
+public class BudgetActivity extends AppCompatActivity implements BudgetFragment.Callback,
 BudgetSetDialog.setBudgetGoalListener{
 
     final static String LOG_TAG = BudgetActivity.class.getSimpleName();
@@ -37,23 +43,17 @@ BudgetSetDialog.setBudgetGoalListener{
 
     public static final int BUDGET_LOADER = 5;
 
-    private ArrayList<Budget> itemList;
+    private int lastPosition;
 
-    private TextView emptyView;
-    private ListView budgetList;
+    private static final int NUM_PAGES = 12;
+    private int startMonth;
+    private ViewPager mPager;
+    private BudgetActivity.BudgetPagerAdapter mPagerAdapter;
 
-    public Budget[] budgetItem = {
-      new Budget("2017","05","Transport",15000f,123456,"Transport Desc",154.00f)
-    };
-
-    BudgetAdapter budgetAdapter;
-
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        outState.putParcelableArrayList(ID_MESSAGE, itemList);
-        super.onSaveInstanceState(outState);
-    }
+    private Toolbar toolbarView;
+    private ImageButton bakBtn;
+    private ImageButton fwdBtn;
+    private TextView monthLabel;
 
 
     @Override
@@ -61,107 +61,103 @@ BudgetSetDialog.setBudgetGoalListener{
         super.onCreate(savedInstanceState);
         //addDummyData();
 
-            setContentView(R.layout.activity_budget);
-
-        if(savedInstanceState == null){
-            //Create new test Item for Budget
-            itemList = new ArrayList<Budget>(Arrays.asList(budgetItem));
-        }else{
-            itemList = savedInstanceState.getParcelableArrayList(ID_MESSAGE);
-        }
-
-        getSupportLoaderManager().initLoader(BUDGET_LOADER, null, this);
-
-        budgetAdapter = new BudgetAdapter(this, null, 0);
-
-
-        emptyView = (TextView) findViewById(R.id.empty_budget);
-
-        budgetList = (ListView) findViewById(R.id.budget_list);
+        setContentView(R.layout.activity_budget);
 
         //Get reference to the listView and attach adapter to it
-        Toolbar toolbarView = (Toolbar) findViewById(R.id.toolbar);
+        toolbarView = (Toolbar) findViewById(R.id.toolbar);
 
-        toolbarView.setTitle(R.string.toolbar_budget_title);
+        toolbarView.setTitle("");
 
-        budgetList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        bakBtn = (ImageButton) findViewById(R.id.bkbtn);
+
+        monthLabel = (TextView) findViewById(R.id.monthlbl);
+
+        bakBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String title = ((TextView) view.findViewById(R.id.budgetTitle)).getText().toString();
-                DialogFragment editGoal = BudgetSetDialog.newInstance(title, id);
-                editGoal.show(getSupportFragmentManager(), "editMonth");
+            public void onClick(View v) {
+                mPager.setCurrentItem(mPager.getCurrentItem()-1);
             }
         });
 
-        budgetList.setAdapter(budgetAdapter);
+        fwdBtn = (ImageButton) findViewById(R.id.fwdbtn);
 
-    }
+        fwdBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPager.setCurrentItem(mPager.getCurrentItem()+1);
+            }
+        });
 
+        final Calendar c = Calendar.getInstance();
+        startMonth = c.get(Calendar.MONTH) +1;
 
+        mPager = (ViewPager) findViewById(R.id.budget_pager);
+        mPagerAdapter = new BudgetActivity.BudgetPagerAdapter(getSupportFragmentManager());
+        mPager.setAdapter(mPagerAdapter);
+        mPager.setCurrentItem(startMonth-1);
+        lastPosition = startMonth;
 
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        switch (id){
-            case BUDGET_LOADER:
-                Log.v(LOG_TAG, "budget cursor loader called");
+        monthLabel.setText(Utility.getMonth(this,mPager.getCurrentItem()+1));
+        Utility.setNavigationMonth(this, startMonth);
 
-                Calendar c = Calendar.getInstance();
+        mPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener(){
 
-                int month = c.get(Calendar.MONTH)+1;
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
 
-                Log.v(LOG_TAG, "getting budget info for month: " + month);
-                return new CursorLoader(
-                        this,
-                        DataContract.BudgetEntry.buildBudgetMonth(month),
-                        null,
-                        null,
-                        null,
-                        null);
+            @Override
+            public void onPageSelected(int selectedPosition){
 
-        }
-        return null;
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-
-        switch (loader.getId()) {
-            case BUDGET_LOADER:
-
-                Log.v(LOG_TAG, "onLoadFinish method called. data with: " + data.getCount());
-
-                if (data != null && data.moveToFirst() && data.getCount() > 0) {
-                    updateEmptyView(1);
-                    budgetAdapter.swapCursor(data);
-                }else{
-                    updateEmptyView(0);
+                Log.v(LOG_TAG, "position: " + selectedPosition);
+                /*if(selectedPosition == 0){
+                    mPager.setCurrentItem(1);
+                }else*/ if(lastPosition > selectedPosition){
+                    //Subtract Month
+                    Log.v(LOG_TAG, "Swiped left, Selected Position:" + selectedPosition + " last Position: " + lastPosition);
+                    navigateMonth(0);
+                } else if(selectedPosition > lastPosition) {
+                    //Add month
+                    Log.v(LOG_TAG, "Swiped right, Selected Position:" + selectedPosition + " last Position: " + lastPosition);
+                    navigateMonth(1);
                 }
+                lastPosition = selectedPosition;
+            }
 
-                break;
+            @Override
+            public void onPageScrollStateChanged(int arg0){
+            }
+        });
+
+    }
+
+    private void navigateMonth(int i) {
+
+        int currentSetMonth = Utility.getNavigationMonth(this);
+
+        Log.v(LOG_TAG, "currentSetMonth " + currentSetMonth);
+
+        //move month forward or backwards depending on passed parameter
+        if(i==0 && currentSetMonth >= 2){
+            //move a month bak
+            Log.v(LOG_TAG, "subtracting month..");
+            Utility.setNavigationMonth(this, currentSetMonth-1);
+            mPagerAdapter.notifyDataSetChanged();
+        }else if(i==1 && currentSetMonth <= 11){
+            //move a month bak
+            Log.v(LOG_TAG, "adding month..");
+            Utility.setNavigationMonth(this, currentSetMonth+1);
+            mPagerAdapter.notifyDataSetChanged();
+        }else{
+            //Do nothing?
         }
+        monthLabel.setText(Utility.getMonth(this,mPager.getCurrentItem()+1));
     }
 
     @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-        Log.v(LOG_TAG, "Inside swapcursor...");
-        switch (loader.getId()){
-            case BUDGET_LOADER:
-                if(budgetAdapter != null)
-                    budgetAdapter.swapCursor(null);
-                break;
-        }
-    }
-
-
-
-    private void updateEmptyView(int flag) {
-        if(flag == 1){
-            budgetList.setVisibility(View.VISIBLE);
-            emptyView.setVisibility(View.GONE);
-        }else if(flag == 0){
-            budgetList.setVisibility(View.GONE);
-            emptyView.setVisibility(View.VISIBLE);
-        }
+    public void changeBudgetGoal(String title, long id) {
+        DialogFragment editGoal = BudgetSetDialog.newInstance(title, id);
+        editGoal.show(getSupportFragmentManager(), "editMonth");
     }
 
     @Override
@@ -177,4 +173,25 @@ BudgetSetDialog.setBudgetGoalListener{
                 null);
 
     }
+
+
+    private class BudgetPagerAdapter extends FragmentStatePagerAdapter {
+
+        public BudgetPagerAdapter(FragmentManager fm){
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            Log.v(LOG_TAG, "Pager Item position: " + position + "sending Position: " + position+1);
+            return BudgetFragment.newInstance(position+1);
+        }
+
+        @Override
+        public int getCount() {
+            return NUM_PAGES;
+        }
+
+    }
+
 }
