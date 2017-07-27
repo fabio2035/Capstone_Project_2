@@ -27,18 +27,20 @@ public class BudgetSetDialog extends DialogFragment{
 
 
     public interface setBudgetGoalListener{
-         void setBudget(Double amount, long id);
+         void setBudget(Double amount, int month, int year, String category, long id);
     }
 
     public BudgetSetDialog(){
 
     }
 
-    public static BudgetSetDialog newInstance(String title, long id){
+    public static BudgetSetDialog newInstance(String title, int month, int year, long id){
         BudgetSetDialog frag = new BudgetSetDialog();
         Bundle args = new Bundle();
         args.putString("title", title);
         args.putLong("id", id);
+        args.putInt("month", month);
+        args.putInt("year", year);
         frag.setArguments(args);
         return frag;
     }
@@ -65,6 +67,8 @@ public class BudgetSetDialog extends DialogFragment{
 
         final String title = getArguments().getString("title");
         final long Budget_id = getArguments().getLong("id");
+        final int month = getArguments().getInt("month");
+        final int year = getArguments().getInt("year");
 
         AlertDialog.Builder  builder = new AlertDialog.Builder(getActivity());
 
@@ -83,7 +87,7 @@ public class BudgetSetDialog extends DialogFragment{
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if(validateInput()){
-                    mListener.setBudget(Double.valueOf(amtText.getText().toString()), Budget_id);
+                    mListener.setBudget(Double.valueOf(amtText.getText().toString()),month,year, title, Budget_id);
                 }else{
                     Toast.makeText(getActivity(),R.string.toast_amount_notvalid, Toast.LENGTH_LONG ).show();
                 }

@@ -18,6 +18,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.fbrigati.myfinance.R;
+import com.example.fbrigati.myfinance.Utility;
 import com.example.fbrigati.myfinance.adapters.BudgetAdapter;
 import com.example.fbrigati.myfinance.data.BudgetLoader;
 import com.example.fbrigati.myfinance.data.DataContract;
@@ -55,7 +56,7 @@ public class BudgetFragment extends Fragment implements LoaderManager.LoaderCall
         /*//**
          * DetailFragmentCallback for when an item has been selected.
          */
-        public void changeBudgetGoal(String title, long id);
+        public void changeBudgetGoal(String title,int month, int year, long id);
     }
 
 
@@ -89,7 +90,11 @@ public class BudgetFragment extends Fragment implements LoaderManager.LoaderCall
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String title = ((TextView) view.findViewById(R.id.budgetTitle)).getText().toString();
-                ((Callback) getActivity()).changeBudgetGoal(title, id);
+                int month = Utility.getNavigationMonth(getActivity());
+                int year = 2017;
+                Log.v(LOG_TAG, "Budget chosen month: " + month);
+                Log.v(LOG_TAG, "Budget chosen year: " + year);
+                ((Callback) getActivity()).changeBudgetGoal(title, month, year, id);
                 //editGoal.show(getFragmentManager(), "editMonth");
             }
         });

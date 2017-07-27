@@ -276,7 +276,7 @@ public class DataProvider extends ContentProvider {
 
     }
 
-    /*private Cursor getBudgetWithMonth(Uri uri, String[] projection, String sortOrder) {
+    private Cursor setNewBudget(Uri uri, String[] projection, String sortOrder) {
 
         //String category = DataContract.BudgetEntry.getBudgetCategory(uri);
         int month = DataContract.BudgetEntry.getBudgetMonth(uri);
@@ -288,7 +288,7 @@ public class DataProvider extends ContentProvider {
                         "S.month = T.month and S.category = T.category " +
                         "where S.month = ? ",new String[] {String.valueOf(month)});
 
-    }*/
+    }
 
     private Cursor checkCategory(Uri uri, String[] projection, String sortOrder) {
 
@@ -304,20 +304,20 @@ public class DataProvider extends ContentProvider {
         //String category = DataContract.BudgetEntry.getBudgetCategory(uri);
         int month = DataContract.BudgetEntry.getBudgetMonth(uri);
 
-        String query = "SELECT A.desc_default, ifnull(C.amount,0), ifnull(B.amount,0), " +
-                "ifnull(C.month_1,0) FROM category as A " +
-                "LEFT JOIN budget AS B ON A.desc_default = B.category " +
+        String query = "SELECT B._ID, A.desc_default, ifnull(C.amount,0), ifnull(B.amount,0), " +
+                "ifnull(C.month_1,0), B.month, B.year FROM category as A " +
+                "LEFT JOIN (SELECT * from budget WHERE month ="+ month +") AS B ON A.desc_default = B.category " +
                 "LEFT JOIN (SELECT substr(t.date,5,2)*1 as month_1, " +
                 "sum(t.amount) as amount, t.category category FROM statement AS t " +
-                "group by t.category, substr(t.date,5,2)*1) AS C ON " +
+                "WHERE substr(t.date,5,2)*1 = "+ month + " AND trxcode >=6" +
+                " group by t.category, substr(t.date,5,2)*1) AS C ON " +
                 "A.desc_default = C.category " +
-                "WHERE ifnull(B.month," + month +") = ? "; // AND " +
-                //"ifnull(C.month_1," + month + ") = ?";
+                "ORDER BY A.desc_default";
 
         Log.v(LOG_TAG, "Query is: " + query );
 
         return mOpenHelper.getReadableDatabase().rawQuery(
-                query , new String[] {String.valueOf(month)});//, String.valueOf(month)});
+                query , null); // new String[] {String.valueOf(month)});//, String.valueOf(month)});
     }
 
 
@@ -423,9 +423,10 @@ public class DataProvider extends ContentProvider {
             }
             case BUDGET:{
                 long _id = db.insert(DataContract.BudgetEntry.TABLE_NAME, null, values);
-                if (_id > 0)
+                if (_id > 0) {
+                    Log.v(LOG_TAG, "inserted Budget item..");
                     returnUri = DataContract.BudgetEntry.buildBudgetUri(_id);
-                else
+                }else
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
             }

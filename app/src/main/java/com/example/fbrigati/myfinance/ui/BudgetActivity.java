@@ -155,22 +155,32 @@ BudgetSetDialog.setBudgetGoalListener{
     }
 
     @Override
-    public void changeBudgetGoal(String title, long id) {
-        DialogFragment editGoal = BudgetSetDialog.newInstance(title, id);
+    public void changeBudgetGoal(String title, int month, int year, long id) {
+        DialogFragment editGoal = BudgetSetDialog.newInstance(title, month, year, id);
         editGoal.show(getSupportFragmentManager(), "editMonth");
     }
 
     @Override
-    public void setBudget(Double amount, long id) {
+    public void setBudget(Double amount,int month, int year,String category, long id) {
+
+        Log.v(LOG_TAG, "budget record ID: " + id);
 
         ContentValues cv = new ContentValues();
 
         cv.put(DataContract.BudgetEntry.COLUMN_AMOUNT, amount);
+        cv.put(DataContract.BudgetEntry.COLUMN_MONTH, month);
+        cv.put(DataContract.BudgetEntry.COLUMN_YEAR, year);
+        cv.put(DataContract.BudgetEntry.COLUMN_CATEGORY, category);
 
         //Update budget set for the given budget item
-        getContentResolver().update(DataContract.BudgetEntry.CONTENT_URI, cv,
+        int UpdateNum = getContentResolver().update(DataContract.BudgetEntry.CONTENT_URI, cv,
                 DataContract.BudgetEntry._ID + "=" + id ,
                 null);
+        Log.v(LOG_TAG,"update count: " + UpdateNum);
+
+        if (UpdateNum < 1){
+            getContentResolver().insert(DataContract.BudgetEntry.CONTENT_URI, cv);
+        }
 
     }
 
