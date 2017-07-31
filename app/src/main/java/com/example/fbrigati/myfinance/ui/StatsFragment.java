@@ -9,18 +9,24 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.widget.GridLayout;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.SeekBar;
+import android.widget.TextView;
 
 import com.example.fbrigati.myfinance.R;
 
+import com.example.fbrigati.myfinance.Utility;
 import com.example.fbrigati.myfinance.data.DataContract;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.LineChart;
@@ -41,11 +47,16 @@ import com.google.android.gms.ads.AdView;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import static android.R.attr.textColor;
+import static com.example.fbrigati.myfinance.Utility.getStatsNavYear;
+import static com.example.fbrigati.myfinance.Utility.getStatsTrimester;
+
 /**
  * Created by FBrigati on 07/05/2017.
  */
 
-public class StatsFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class StatsFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>,
+        SeekBar.OnSeekBarChangeListener{
 
     final static String LOG_TAG = StatsFragment.class.getSimpleName();
 
@@ -55,6 +66,10 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
 
     public static final int LINECHART_LOADER = 0;
 
+    int maxCount;
+
+    private int mTrimester;
+
     private Uri mUri;
 
     private AdView mAdView;
@@ -62,11 +77,14 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
     private PieChart mpieChart;
     private LineChart mlineChart;
     private Toolbar toolbarView;
+    private GridLayout masterGrid;
+    private SeekBar seekBar;
+    LinearLayout mSeekLin;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState){
         getLoaderManager().initLoader(PIECHART_LOADER, null, this);
-        getLoaderManager().initLoader(LINECHART_LOADER, null, this);
+        //getLoaderManager().initLoader(LINECHART_LOADER, null, this);
         super.onActivityCreated(savedInstanceState);
     }
 
@@ -83,6 +101,33 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
         //Get the pieschart view
         mpieChart = (PieChart) rootView.findViewById(R.id.piechart);
 
+        //seekBarLabel = (TextView) rootView.findViewById(R.id.seekBarLabel);
+
+        seekBar = (SeekBar) rootView.findViewById(R.id.seekBarpie);
+
+        seekBar.setOnSeekBarChangeListener(this);
+
+        mSeekLin = (LinearLayout) rootView.findViewById(R.id.seekBarLabelLayout);
+
+        maxCount = 4;
+
+        seekBar.setMax(maxCount - 1);
+
+        mSeekLin.setOrientation(LinearLayout.HORIZONTAL);
+
+        mSeekLin.setPadding(10, 0, 10, 0);
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+
+        params.setMargins(35, 0, 35, 0);
+
+        mSeekLin.setLayoutParams(params);
+
+        addLabelsBelowSeekBar();
+
         setupPieChart();
 
         //Get the linechart view
@@ -94,7 +139,57 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
 
         setupLineChart();
 
+        //masterGrid = (GridLayout) rootView.findViewById(R.id.master_grid);
+
         return rootView;
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
+        switch (loader.getId()){
+            case PIECHART_LOADER:
+                loader = null;
+                break;
+        }
+    }
+
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        Log.v(LOG_TAG, "Pie Data selected: " + seekBar.getProgress());
+        Utility.setStatsPieTrimester(getActivity(), seekBar.getProgress()+1);
+        //mTrimester = seekBar.getProgress()+1;
+        getLoaderManager().restartLoader(PIECHART_LOADER, null, this);
+        //setPieData(seekBar.getProgress());
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+
+    }
+
+    private void addLabelsBelowSeekBar() {
+        String[] trimester = getResources().getStringArray(R.array.trimesters);
+        for (int count = 0; count < maxCount; count++) {
+            TextView textView = new TextView(getContext());
+            textView.setText(trimester[count]);
+            textView.setTextColor(getResources().getColor(R.color.colorPrimary));
+            textView.setGravity(Gravity.LEFT);
+            mSeekLin.addView(textView);
+            textView.setLayoutParams((count == maxCount - 1) ? getLayoutParams(0.0f) : getLayoutParams(1.0f));
+        }
+    }
+
+    LinearLayout.LayoutParams getLayoutParams(float weight) {
+        return new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT, weight);
     }
 
     private void setupPieChart() {
@@ -121,11 +216,21 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
         mpieChart.setRotationEnabled(true);
         mpieChart.setHighlightPerTapEnabled(true);
 
-        mpieChart.animateY(1400, Easing.EasingOption.EaseInOutQuad);
+
+        Legend l = mpieChart.getLegend();
+        l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
+        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
+        l.setOrientation(Legend.LegendOrientation.VERTICAL);
+        l.setDrawInside(false);
+        l.setXEntrySpace(7f);
+        l.setYEntrySpace(0f);
+        l.setYOffset(0f);
 
     }
 
     private void setPieData(Cursor data) {
+
+        mpieChart.animateY(1400, Easing.EasingOption.EaseInOutQuad);
 
         ArrayList<PieEntry> entries = new ArrayList<PieEntry>();
 
@@ -133,7 +238,7 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
 
         //first get the total value of spendings..
         for(int i=0; i< data.getCount(); i++){
-        totalAmount = totalAmount + data.getDouble(5);
+        totalAmount = totalAmount + data.getDouble(1);
             data.moveToNext();
         }
 
@@ -144,11 +249,11 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
         // NOTE: The order of the entries when being added to the entries array determines their position around the center of
         // the chart.
         for (int i = 0; i < data.getCount() ; i++) {
-            entries.add(new PieEntry((float) (data.getDouble(5) / totalAmount), data.getString(3) ));
+            entries.add(new PieEntry((float) (data.getDouble(1) / totalAmount), data.getString(0) ));
             data.moveToNext();
         }
 
-        PieDataSet dataSet = new PieDataSet(entries, "Spending Amounts");
+        PieDataSet dataSet = new PieDataSet(entries, getResources().getString(R.string.piechartLegedTitle));
         dataSet.setSliceSpace(3f);
         dataSet.setSelectionShift(5f);
 
@@ -156,20 +261,20 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
 
         ArrayList<Integer> colors = new ArrayList<Integer>();
 
+        for (int c : ColorTemplate.MATERIAL_COLORS)
+            colors.add(c);
+        /*
         for (int c : ColorTemplate.VORDIPLOM_COLORS)
             colors.add(c);
 
-        for (int c : ColorTemplate.JOYFUL_COLORS)
-            colors.add(c);
-
-        for (int c : ColorTemplate.COLORFUL_COLORS)
+        for (int c : ColorTemplate.PASTEL_COLORS)
             colors.add(c);
 
         for (int c : ColorTemplate.LIBERTY_COLORS)
             colors.add(c);
 
         for (int c : ColorTemplate.PASTEL_COLORS)
-            colors.add(c);
+            colors.add(c); */
 
         colors.add(ColorTemplate.getHoloBlue());
 
@@ -186,6 +291,8 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
         mpieChart.highlightValues(null);
 
         mpieChart.invalidate();
+
+        data.close();
 
     }
 
@@ -225,32 +332,32 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Calendar c = Calendar.getInstance();
+        //Calendar c = Calendar.getInstance();
 
-        int month = c.get(Calendar.MONTH)+1;
+        //int month = c.get(Calendar.MONTH)+1;
 
         switch (id){
-            case LINECHART_LOADER:
-
-                Log.v(LOG_TAG, "getting linechart info for month: " + month + ", " + DataContract.StatementEntry.buildStatsMonthUri(month));
-                return new CursorLoader(
-                        getActivity(),
-                        DataContract.StatementEntry.buildStatsMonthUri(month),
-                        null,
-                        null,
-                        null,
-                        null);
-
             case PIECHART_LOADER:
 
-                Log.v(LOG_TAG, "getting piechart info for month: " + month);
+                Log.v(LOG_TAG, "getting linechart info for trimester: " + mTrimester);
                 return new CursorLoader(
                         getActivity(),
-                        DataContract.BudgetEntry.buildBudgetMonth(month),
+                        DataContract.StatementEntry.buildStatsTrimUri(getStatsTrimester(getActivity())),
                         null,
                         null,
                         null,
                         null);
+
+            case LINECHART_LOADER:
+            /*
+                Log.v(LOG_TAG, "getting piechart info for month: " + mTrimester);
+                return new CursorLoader(
+                        getActivity(),
+                        DataContract.BudgetEntry.buildBudgetMonth(mTrimester),
+                        null,
+                        null,
+                        null,
+                        null); */
         }
         return null;
     }
@@ -337,11 +444,6 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
             mlineChart.setData(datav);
 
         }
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-
     }
 
 

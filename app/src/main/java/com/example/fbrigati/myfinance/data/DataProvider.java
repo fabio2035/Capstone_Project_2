@@ -7,9 +7,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
+
+import com.example.fbrigati.myfinance.Utility;
 
 /**
  * Created by FBrigati on 27/04/2017.
@@ -26,8 +29,9 @@ public class DataProvider extends ContentProvider {
     static final int STATEMENT = 100;
     static final int STATEMENT_WITH_ID = 101;
     static final int STATEMENT_WITH_ACCTNUMBER = 102;
-    static final int STATEMENT_STATS_MONTH = 103;
-    static final int STATEMENT_WIDGET_DATA = 104;
+    static final int STATEMENT_STATS_TRIMESTER = 103;
+    static final int STATEMENT_STATS_MONTH = 104;
+    static final int STATEMENT_WIDGET_DATA = 105;
     static final int CATEGORY = 200;
     static final int CATEGORY_WITH_ACQUIRER = 201;
     static final int BUDGET = 300;
@@ -111,6 +115,8 @@ public class DataProvider extends ContentProvider {
         matcher.addURI(authority, DataContract.PATH_STATEMENT + "/#", STATEMENT_WITH_ACCTNUMBER);
         matcher.addURI(authority, DataContract.PATH_STATEMENT + "/*/#", STATEMENT_STATS_MONTH);
         matcher.addURI(authority, DataContract.PATH_STATEMENT + "/widget/data", STATEMENT_WIDGET_DATA);
+        matcher.addURI(authority, DataContract.PATH_STATEMENT + "/*/*/#", STATEMENT_STATS_TRIMESTER);
+
 
         matcher.addURI(authority, DataContract.PATH_CATEGORY, CATEGORY);
         matcher.addURI(authority, DataContract.PATH_CATEGORY + "/*", CATEGORY_WITH_ACQUIRER);
@@ -157,6 +163,11 @@ public class DataProvider extends ContentProvider {
                 retCursor = getStatsByMOnth(uri, projection, sortOrder);
                 break;
             }
+            case STATEMENT_STATS_TRIMESTER: {
+                retCursor = getStatsByTrimester(uri, projection, sortOrder);
+                Log.v(LOG_TAG, "Stats trimester data count: " + retCursor.getCount());
+                break;
+            }
             // "statement"
             case STATEMENT: {
                 retCursor = mOpenHelper.getReadableDatabase().query(
@@ -191,15 +202,7 @@ public class DataProvider extends ContentProvider {
             }
             // "Budget"
             case BUDGET_WITH_MONTH: {
-                retCursor = checkCategory(uri, projection, sortOrder);
-
-                Log.v(LOG_TAG, "N. Items in Category: " + retCursor.getCount());
-
-                retCursor.close();
-
                 retCursor = getBudgetWithMonth(uri, projection, sortOrder);
-
-                Log.v(LOG_TAG, "count from BUDGET_WITH_MONTH: " +retCursor.getCount());
                 break;
             }
             case BUDGET_WIDGET: {
@@ -244,6 +247,43 @@ public class DataProvider extends ContentProvider {
                         " where substr(a.date,5,2)*1 = ? ", new String[] {String.valueOf(month)}); // new String[] {String.valueOf(month)});
     }
 
+    private Cursor getStatsByTrimester(Uri uri, String[] projection, String sortOrder) {
+        //String category = DataContract.BudgetEntry.getBudgetCategory(uri);
+        int trimestre = DataContract.StatementEntry.getMonthFromUri(uri);
+        int year = Utility.getStatsNavYear(getContext());
+
+        Log.v(LOG_TAG, "inside getStatsTrimester trimester: " + trimestre + "; Year: " + year);
+
+        switch (trimestre){
+            case 1:
+                return mOpenHelper.getReadableDatabase().rawQuery(
+                        "select a.category, sum(a.amount) from statement a " +
+                                " where substr(a.date,5,2)*1 BETWEEN 1 AND 3 " +
+                                " AND substr(a.date,1,4)*1 =" + year +
+                                " group by a.category" , null);
+            case 2:
+                return mOpenHelper.getReadableDatabase().rawQuery(
+                        "select a.category, sum(a.amount) from statement a " +
+                                " where substr(a.date,5,2)*1 BETWEEN 4 AND 6 " +
+                                " AND substr(a.date,1,4)*1 =" + year +
+                                " group by a.category", null);
+            case 3:
+                return mOpenHelper.getReadableDatabase().rawQuery(
+                        "select a.category, sum(a.amount) from statement a " +
+                                " where substr(a.date,5,2)*1 BETWEEN 7 AND 9 " +
+                                " AND substr(a.date,1,4)*1 =" + year +
+                                " group by a.category", null);
+            case 4:
+                return mOpenHelper.getReadableDatabase().rawQuery(
+                        "select a.category, sum(a.amount) from statement a " +
+                                " where substr(a.date,5,2)*1 BETWEEN 10 AND 12 " +
+                                " AND substr(a.date,1,4)*1 =" + year +
+                                " group by a.category", null);
+            default:
+                return null;
+        }
+    }
+
 
     private Cursor getWidgetDataCursor(Uri uri, String[] projection, String sortOrder) {
 
@@ -276,19 +316,6 @@ public class DataProvider extends ContentProvider {
 
     }
 
-    private Cursor setNewBudget(Uri uri, String[] projection, String sortOrder) {
-
-        //String category = DataContract.BudgetEntry.getBudgetCategory(uri);
-        int month = DataContract.BudgetEntry.getBudgetMonth(uri);
-
-        return mOpenHelper.getReadableDatabase().rawQuery(
-                "select S._ID, S.month, S.year , S.category, S.amount, T.amount From budget as S inner join " +
-                        "(select substr(a.date,5,2)*1 as Month, sum(amount) amount, category from statement as a " +
-                        "group by category, substr(a.date,5,2)*1) as T ON " +
-                        "S.month = T.month and S.category = T.category " +
-                        "where S.month = ? ",new String[] {String.valueOf(month)});
-
-    }
 
     private Cursor checkCategory(Uri uri, String[] projection, String sortOrder) {
 
@@ -312,7 +339,7 @@ public class DataProvider extends ContentProvider {
                 "WHERE substr(t.date,5,2)*1 = "+ month + " AND trxcode >=6" +
                 " group by t.category, substr(t.date,5,2)*1) AS C ON " +
                 "A.desc_default = C.category " +
-                "ORDER BY A.desc_default";
+                "ORDER BY C.amount desc, A.desc_default";
 
         Log.v(LOG_TAG, "Query is: " + query );
 

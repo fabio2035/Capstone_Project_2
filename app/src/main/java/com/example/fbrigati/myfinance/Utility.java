@@ -106,4 +106,34 @@ public class Utility {
 
         return sequence;
     }
+
+    static public void setStatsNavYear(Context c, int i){
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
+        SharedPreferences.Editor spe = sp.edit();
+        spe.putInt(c.getString(R.string.pref_stats_year_status), i);
+        spe.apply();
+    }
+
+    static public void setStatsPieTrimester(Context c, int i){
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
+        SharedPreferences.Editor spe = sp.edit();
+        spe.putInt(c.getString(R.string.pref_stats_trimester_status), i);
+        spe.apply();
+    }
+
+    public static int getStatsTrimester(Context c) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(c);
+        return prefs.getInt(c.getString(R.string.pref_stats_trimester_status),
+                1);
+    }
+
+
+    public static int getStatsNavYear(Context c) {
+        final Calendar cal = Calendar.getInstance();
+        int year = cal.get(Calendar.YEAR);
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(c);
+        return prefs.getInt(c.getString(R.string.pref_stats_year_status),
+                year);
+    }
 }

@@ -61,6 +61,15 @@
         <item>DECEMBER</item>
     </string-array>
 
+
+    <!-- Months in a year -->
+    <string-array name="trimesters">
+        <item>1st</item>
+        <item>2nd</item>
+        <item>3rd</item>
+        <item>4th</item>
+    </string-array>
+
     <string name="pref_cur_key" translatable="false">cur_symbol</string>
     <string name="pref_cur_default" translatable="false">USD</string>
 
@@ -118,6 +127,9 @@
     <string name="toast_deleterecord_nosuccess">record was not deleted, please try again</string>
     <string name="pref_last_posting_date">postDate</string>
     <string name="pref_post_seq">postSequence</string>
+    <string name="pref_stats_year_status">stat_year</string>
+    <string name="pref_stats_trimester_status">stats_trimester</string>
+    <string name="piechartLegedTitle">Spendings p/ Semester</string>
 
 
 </resources>
