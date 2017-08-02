@@ -32,6 +32,7 @@ public class DataProvider extends ContentProvider {
     static final int STATEMENT_STATS_TRIMESTER = 103;
     static final int STATEMENT_STATS_MONTH = 104;
     static final int STATEMENT_WIDGET_DATA = 105;
+    static final int STATEMENT_LINEGRAPH_DATA = 106;
     static final int CATEGORY = 200;
     static final int CATEGORY_WITH_ACQUIRER = 201;
     static final int BUDGET = 300;
@@ -116,6 +117,7 @@ public class DataProvider extends ContentProvider {
         matcher.addURI(authority, DataContract.PATH_STATEMENT + "/*/#", STATEMENT_STATS_MONTH);
         matcher.addURI(authority, DataContract.PATH_STATEMENT + "/widget/data", STATEMENT_WIDGET_DATA);
         matcher.addURI(authority, DataContract.PATH_STATEMENT + "/*/*/#", STATEMENT_STATS_TRIMESTER);
+        matcher.addURI(authority, DataContract.PATH_STATEMENT + "/*/*/*/#", STATEMENT_LINEGRAPH_DATA);
 
 
         matcher.addURI(authority, DataContract.PATH_CATEGORY, CATEGORY);
@@ -164,8 +166,13 @@ public class DataProvider extends ContentProvider {
                 break;
             }
             case STATEMENT_STATS_TRIMESTER: {
-                retCursor = getStatsByTrimester(uri, projection, sortOrder);
+                retCursor = getStatsPieChartByTrimester(uri, projection, sortOrder);
                 Log.v(LOG_TAG, "Stats trimester data count: " + retCursor.getCount());
+                break;
+            }
+            case STATEMENT_LINEGRAPH_DATA: {
+                retCursor = getStatsLineGraphByTrimester(uri, projection, sortOrder);
+                Log.v(LOG_TAG, "Stats linegraph trimester data count: " + retCursor.getCount());
                 break;
             }
             // "statement"
@@ -247,7 +254,7 @@ public class DataProvider extends ContentProvider {
                         " where substr(a.date,5,2)*1 = ? ", new String[] {String.valueOf(month)}); // new String[] {String.valueOf(month)});
     }
 
-    private Cursor getStatsByTrimester(Uri uri, String[] projection, String sortOrder) {
+    private Cursor getStatsPieChartByTrimester(Uri uri, String[] projection, String sortOrder) {
         //String category = DataContract.BudgetEntry.getBudgetCategory(uri);
         int trimestre = DataContract.StatementEntry.getMonthFromUri(uri);
         int year = Utility.getStatsNavYear(getContext());
@@ -259,13 +266,13 @@ public class DataProvider extends ContentProvider {
                 return mOpenHelper.getReadableDatabase().rawQuery(
                         "select a.category, sum(a.amount) from statement a " +
                                 " where substr(a.date,5,2)*1 BETWEEN 1 AND 3 " +
-                                " AND substr(a.date,1,4)*1 =" + year +
+                                " and substr(a.date,1,4)*1 =" + year +
                                 " group by a.category" , null);
             case 2:
                 return mOpenHelper.getReadableDatabase().rawQuery(
                         "select a.category, sum(a.amount) from statement a " +
                                 " where substr(a.date,5,2)*1 BETWEEN 4 AND 6 " +
-                                " AND substr(a.date,1,4)*1 =" + year +
+                                " and substr(a.date,1,4)*1 =" + year +
                                 " group by a.category", null);
             case 3:
                 return mOpenHelper.getReadableDatabase().rawQuery(
@@ -284,6 +291,52 @@ public class DataProvider extends ContentProvider {
         }
     }
 
+    private Cursor getStatsLineGraphByTrimester(Uri uri, String[] projection, String sortOrder) {
+        //String category = DataContract.BudgetEntry.getBudgetCategory(uri);
+        int trimestre = DataContract.StatementEntry.getMonthFromUri(uri);
+        String cat = DataContract.StatementEntry.getCategoryFromUri(uri);
+        int year = Utility.getStatsNavYear(getContext());
+
+        Log.v(LOG_TAG, "inside getStatsTrimester trimester: " + trimestre +
+                "; Year: " + year + "; Category: " + cat);
+
+        switch (trimestre){
+            case 1:
+                return mOpenHelper.getReadableDatabase().rawQuery(
+                        "select a.date, sum(a.amount) from statement a " +
+                                " where substr(a.date,5,2)*1 BETWEEN 1 AND 3 " +
+                                " and substr(a.date,1,4)*1 =" + year +
+                                " and a.category ='" + cat + "'" +
+                                " group by a.date " +
+                                " order by a.date " , null);
+            case 2:
+                return mOpenHelper.getReadableDatabase().rawQuery(
+                        "select a.date, sum(a.amount) from statement a " +
+                                " where substr(a.date,5,2)*1 BETWEEN 4 AND 6 " +
+                                " and substr(a.date,1,4)*1 =" + year +
+                                " and a.category ='" + cat + "'" +
+                                " group by a.date " +
+                                " order by a.date ", null);
+            case 3:
+                return mOpenHelper.getReadableDatabase().rawQuery(
+                        "select a.date, sum(a.amount) from statement a " +
+                                " where substr(a.date,5,2)*1 BETWEEN 7 AND 9 " +
+                                " AND substr(a.date,1,4)*1 =" + year +
+                                " and a.category ='" + cat + "'" +
+                                " group by a.date " +
+                                " order by a.date ", null);
+            case 4:
+                return mOpenHelper.getReadableDatabase().rawQuery(
+                        "select a.date, sum(a.amount) from statement a " +
+                                " where substr(a.date,5,2)*1 BETWEEN 10 AND 12 " +
+                                " AND substr(a.date,1,4)*1 =" + year +
+                                " and a.category ='" + cat + "'" +
+                                " group by a.date " +
+                                " order by a.date ", null);
+            default:
+                return null;
+        }
+    }
 
     private Cursor getWidgetDataCursor(Uri uri, String[] projection, String sortOrder) {
 

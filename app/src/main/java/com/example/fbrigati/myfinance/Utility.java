@@ -121,10 +121,23 @@ public class Utility {
         spe.apply();
     }
 
+    static public void setStatsCategory(Context c, String cat){
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
+        SharedPreferences.Editor spe = sp.edit();
+        spe.putString(c.getString(R.string.pref_stats_category_status), cat);
+        spe.apply();
+    }
+
     public static int getStatsTrimester(Context c) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(c);
         return prefs.getInt(c.getString(R.string.pref_stats_trimester_status),
                 1);
+    }
+
+    public static String getStatsCategory(Context c) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(c);
+        return prefs.getString(c.getString(R.string.pref_stats_category_status),
+                "Transportation");
     }
 
 

@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -31,23 +32,36 @@ import com.example.fbrigati.myfinance.data.DataContract;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
 import com.google.android.gms.ads.AdView;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
+import static android.R.attr.switchMinWidth;
 import static android.R.attr.textColor;
+import static com.example.fbrigati.myfinance.Utility.getStatsCategory;
 import static com.example.fbrigati.myfinance.Utility.getStatsNavYear;
 import static com.example.fbrigati.myfinance.Utility.getStatsTrimester;
 
@@ -66,6 +80,12 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
 
     public static final int LINECHART_LOADER = 0;
 
+    public static final int CATEGORY_LOADER = 7;
+
+    private Cursor mCategoryCursor;
+
+    private Map<Integer, String> catMap;
+
     int maxCount;
 
     private int mTrimester;
@@ -73,18 +93,20 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
     private Uri mUri;
 
     private AdView mAdView;
-
     private PieChart mpieChart;
     private LineChart mlineChart;
     private Toolbar toolbarView;
     private GridLayout masterGrid;
-    private SeekBar seekBar;
-    LinearLayout mSeekLin;
+    private SeekBar seekBarPieChart;
+    private SeekBar seekBarLineChart;
+    LinearLayout mSeekLinPieChart;
+    LinearLayout mSeekLinLineChart;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState){
         getLoaderManager().initLoader(PIECHART_LOADER, null, this);
-        //getLoaderManager().initLoader(LINECHART_LOADER, null, this);
+        getLoaderManager().initLoader(LINECHART_LOADER, null, this);
+        getLoaderManager().initLoader(CATEGORY_LOADER, null, this);
         super.onActivityCreated(savedInstanceState);
     }
 
@@ -101,21 +123,43 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
         //Get the pieschart view
         mpieChart = (PieChart) rootView.findViewById(R.id.piechart);
 
-        //seekBarLabel = (TextView) rootView.findViewById(R.id.seekBarLabel);
+        seekBarPieChart = (SeekBar) rootView.findViewById(R.id.seekBarpie);
 
-        seekBar = (SeekBar) rootView.findViewById(R.id.seekBarpie);
+        mSeekLinPieChart = (LinearLayout) rootView.findViewById(R.id.seekBarLabelLayout);
 
-        seekBar.setOnSeekBarChangeListener(this);
+        //Get the linechart view
+        mlineChart = (LineChart) rootView.findViewById(R.id.linechart);
 
-        mSeekLin = (LinearLayout) rootView.findViewById(R.id.seekBarLabelLayout);
+        seekBarLineChart = (SeekBar) rootView.findViewById(R.id.seekBarLine);
 
-        maxCount = 4;
+        mSeekLinLineChart = (LinearLayout) rootView.findViewById(R.id.seekBarLabelLineLayout);
 
-        seekBar.setMax(maxCount - 1);
+        setupPieChartSeekBar();
 
-        mSeekLin.setOrientation(LinearLayout.HORIZONTAL);
+        setupPieChart();
 
-        mSeekLin.setPadding(10, 0, 10, 0);
+        toolbarView = (Toolbar) rootView.findViewById(R.id.toolbar);
+
+        toolbarView.setTitle(R.string.toolbar_stats_title);
+
+        setupLineChart();
+
+        catMap = new HashMap<Integer, String>();
+
+        //masterGrid = (GridLayout) rootView.findViewById(R.id.master_grid);
+
+        return rootView;
+    }
+
+    private void setupLineChartSeekBar() {
+
+        seekBarLineChart.setOnSeekBarChangeListener(this);
+
+        seekBarLineChart.setMax(mCategoryCursor.getCount() - 1);
+
+        mSeekLinLineChart.setOrientation(LinearLayout.HORIZONTAL);
+
+        mSeekLinLineChart.setPadding(10, 0, 10, 10);
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -124,24 +168,34 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
 
         params.setMargins(35, 0, 35, 0);
 
-        mSeekLin.setLayoutParams(params);
+        params.height = 400;
 
-        addLabelsBelowSeekBar();
+        mSeekLinLineChart.setLayoutParams(params);
 
-        setupPieChart();
+        addLabelsBelowLineSeekBar();
+    }
 
-        //Get the linechart view
-        mlineChart = (LineChart) rootView.findViewById(R.id.linechart);
+    private void setupPieChartSeekBar() {
+        seekBarPieChart.setOnSeekBarChangeListener(this);
 
-        toolbarView = (Toolbar) rootView.findViewById(R.id.toolbar);
+        maxCount = 4;
 
-        toolbarView.setTitle(R.string.toolbar_stats_title);
+        seekBarPieChart.setMax(maxCount - 1);
 
-        setupLineChart();
+        mSeekLinPieChart.setOrientation(LinearLayout.HORIZONTAL);
 
-        //masterGrid = (GridLayout) rootView.findViewById(R.id.master_grid);
+        mSeekLinPieChart.setPadding(10, 0, 10, 0);
 
-        return rootView;
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+
+        params.setMargins(35, 0, 35, 0);
+
+        mSeekLinPieChart.setLayoutParams(params);
+
+        addLabelsBelowPieChartSeekBar();
     }
 
     @Override
@@ -151,17 +205,38 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
             case PIECHART_LOADER:
                 loader = null;
                 break;
+            case LINECHART_LOADER:
+                loader = null;
+                break;
+            case CATEGORY_LOADER:
+                mCategoryCursor = null;
+                break;
         }
     }
 
-
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        Log.v(LOG_TAG, "Pie Data selected: " + seekBar.getProgress());
-        Utility.setStatsPieTrimester(getActivity(), seekBar.getProgress()+1);
-        //mTrimester = seekBar.getProgress()+1;
-        getLoaderManager().restartLoader(PIECHART_LOADER, null, this);
-        //setPieData(seekBar.getProgress());
+
+        switch (seekBar.getId()){
+            case R.id.seekBarpie:
+            {
+                Log.v(LOG_TAG, "Pie Data selected: " + seekBar.getProgress());
+                Utility.setStatsPieTrimester(getActivity(), seekBar.getProgress()+1);
+                getLoaderManager().restartLoader(PIECHART_LOADER, null, this);
+                //restart line graph aswell..
+                getLoaderManager().restartLoader(LINECHART_LOADER, null, this);
+                mlineChart.invalidate();
+
+                break;}
+            case R.id.seekBarLine:
+            {
+                Log.v(LOG_TAG, "Line Data selected: " + seekBar.getProgress());
+                Utility.setStatsCategory(getActivity(), catMap.get(seekBar.getProgress()));
+                getLoaderManager().restartLoader(LINECHART_LOADER, null, this);
+                //restart line graph aswell..
+                break;
+            }
+        }
     }
 
     @Override
@@ -174,15 +249,32 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
 
     }
 
-    private void addLabelsBelowSeekBar() {
+    private void addLabelsBelowPieChartSeekBar() {
         String[] trimester = getResources().getStringArray(R.array.trimesters);
         for (int count = 0; count < maxCount; count++) {
             TextView textView = new TextView(getContext());
             textView.setText(trimester[count]);
             textView.setTextColor(getResources().getColor(R.color.colorPrimary));
             textView.setGravity(Gravity.LEFT);
-            mSeekLin.addView(textView);
+            mSeekLinPieChart.addView(textView);
             textView.setLayoutParams((count == maxCount - 1) ? getLayoutParams(0.0f) : getLayoutParams(1.0f));
+        }
+    }
+
+    private void addLabelsBelowLineSeekBar() {
+
+        for (int count = 0; count < mCategoryCursor.getCount(); count++) {
+            TextView textView = new TextView(getContext());
+            textView.setText(mCategoryCursor.getString(DataContract.CategoryEntry.COL_CATEGORY_DEFAULT).substring(0,4));
+            textView.setTextColor(getResources().getColor(R.color.colorPrimary));
+            textView.setGravity(Gravity.CENTER_HORIZONTAL);
+            textView.setRotation(45);
+            textView.setPadding(0,10,0,0);
+            mSeekLinLineChart.addView(textView);
+            textView.setLayoutParams((count == maxCount - 1) ? getLayoutParams(0.0f) : getLayoutParams(1.0f));
+            //add to catMap for query retrieval..
+            catMap.put(count, mCategoryCursor.getString(DataContract.CategoryEntry.COL_CATEGORY_DEFAULT));
+            mCategoryCursor.moveToNext();
         }
     }
 
@@ -216,6 +308,10 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
         mpieChart.setRotationEnabled(true);
         mpieChart.setHighlightPerTapEnabled(true);
 
+        Description desc = new Description();
+        desc.setText(getResources().getString(R.string.piechartLegedTitle));
+
+        mpieChart.setDescription(desc);
 
         Legend l = mpieChart.getLegend();
         l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
@@ -225,6 +321,27 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
         l.setXEntrySpace(7f);
         l.setYEntrySpace(0f);
         l.setYOffset(0f);
+
+    }
+
+    private void setupLineChart() {
+
+        mlineChart.setDrawGridBackground(false);
+        // enable touch gestures
+        //mlineChart.setTouchEnabled(true);
+
+        // enable scaling and dragging
+        mlineChart.setDragEnabled(true);
+        mlineChart.setScaleEnabled(true);
+
+        mlineChart.setPinchZoom(true);
+
+        mlineChart.getAxisRight().setEnabled(false);
+
+        //mlineChart.setBackgroundColor(Color.GRAY);
+
+        // get the legend (only possible after setting data)
+        Legend l = mlineChart.getLegend();
 
     }
 
@@ -253,7 +370,7 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
             data.moveToNext();
         }
 
-        PieDataSet dataSet = new PieDataSet(entries, getResources().getString(R.string.piechartLegedTitle));
+        PieDataSet dataSet = new PieDataSet(entries, "");
         dataSet.setSliceSpace(3f);
         dataSet.setSelectionShift(5f);
 
@@ -290,134 +407,57 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
         // undo all highlights
         mpieChart.highlightValues(null);
 
+        mpieChart.notifyDataSetChanged();
         mpieChart.invalidate();
 
         data.close();
 
     }
 
-    private SpannableString generateCenterSpannableText() {
-
-        SpannableString s = new SpannableString(getString(R.string.piechartspannabletext));
-        s.setSpan(new RelativeSizeSpan(1.7f), 0, 14, 0);
-        s.setSpan(new StyleSpan(Typeface.NORMAL), 14, s.length() - 15, 0);
-        s.setSpan(new ForegroundColorSpan(Color.GRAY), 14, s.length() - 15, 0);
-        s.setSpan(new RelativeSizeSpan(.8f), 14, s.length() - 15, 0);
-        s.setSpan(new StyleSpan(Typeface.ITALIC), s.length() - 14, s.length(), 0);
-        s.setSpan(new ForegroundColorSpan(ColorTemplate.getHoloBlue()), s.length() - 14, s.length(), 0);
-        return s;
-    }
-
-    private void setupLineChart() {
-
-        mlineChart.setDrawGridBackground(false);
-        // enable touch gestures
-        mlineChart.setTouchEnabled(true);
-
-        // enable scaling and dragging
-        mlineChart.setDragEnabled(true);
-        mlineChart.setScaleEnabled(true);
-
-        mlineChart.setPinchZoom(true);
-
-        mlineChart.getAxisRight().setEnabled(false);
-
-        mlineChart.animateX(2500);
-
-        // get the legend (only possible after setting data)
-        Legend l = mlineChart.getLegend();
-
-    }
-
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        //Calendar c = Calendar.getInstance();
-
-        //int month = c.get(Calendar.MONTH)+1;
-
-        switch (id){
-            case PIECHART_LOADER:
-
-                Log.v(LOG_TAG, "getting linechart info for trimester: " + mTrimester);
-                return new CursorLoader(
-                        getActivity(),
-                        DataContract.StatementEntry.buildStatsTrimUri(getStatsTrimester(getActivity())),
-                        null,
-                        null,
-                        null,
-                        null);
-
-            case LINECHART_LOADER:
-            /*
-                Log.v(LOG_TAG, "getting piechart info for month: " + mTrimester);
-                return new CursorLoader(
-                        getActivity(),
-                        DataContract.BudgetEntry.buildBudgetMonth(mTrimester),
-                        null,
-                        null,
-                        null,
-                        null); */
-        }
-        return null;
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-
-        switch (loader.getId()) {
-            case LINECHART_LOADER:
-
-                Log.v(LOG_TAG, "onLoadFinish for pieChart loader called. data with: " + data.getCount());
-
-                if (data != null && data.moveToFirst() && data.getCount() > 0) {
-                    //Load piechart data
-                    setLineCharData(data);
-                }
-
-                break;
-
-            case PIECHART_LOADER:
-
-                Log.v(LOG_TAG, "onLoadFinish for pieChart loader called. data with: " + data.getCount());
-
-                if (data != null && data.moveToFirst() && data.getCount() > 0) {
-                    //Load piechart data
-                    setPieData(data);
-                }
-
-                break;
-        }
-    }
-
     private void setLineCharData(Cursor data) {
 
         ArrayList<Entry> values = new ArrayList<Entry>();
 
+        ArrayList<String> xValues = new ArrayList<String>();
+
         String dateRaw = "";
+
+        mlineChart.animateX(2500);
 
         for (int i = 0; i < data.getCount(); i++) {
 
-            dateRaw = String.valueOf(data.getInt(1));
-            Log.v(LOG_TAG, "Value for i: " + i + " , " + Integer.parseInt(dateRaw.substring(6/8)));
-            float val = (float) data.getDouble(2);
-            values.add(new Entry(Integer.parseInt(dateRaw.substring(6/8)), val));
+            dateRaw = String.valueOf(data.getInt(0));
+
+            float val = (float) data.getDouble(1);
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+            Date parsedDate = new Date();
+            try
+            {
+            parsedDate = dateFormat.parse(dateRaw.substring(0,8));
+            }catch (ParseException e){
+                Log.v(LOG_TAG, "error parsing date..");
+            }
+
+            Log.v(LOG_TAG, "Value for i: " + i + " , " +
+                    parsedDate.getTime() + " ;xValues: " + dateRaw.substring(6,8) + "/" + dateRaw.substring(4,6) +
+                    " ;Value: " + val);
+            values.add(new Entry(parsedDate.getTime(), val));
             data.moveToNext();
         }
 
         LineDataSet set1;
 
-        if (mlineChart.getData() != null &&
+        /*if (mlineChart.getData() != null &&
                 mlineChart.getData().getDataSetCount() > 0) {
             Log.v(LOG_TAG,"mlineChart is not null and bigger than 0");
             set1 = (LineDataSet) mlineChart.getData().getDataSetByIndex(0);
             set1.setValues(values);
             mlineChart.getData().notifyDataChanged();
             mlineChart.notifyDataSetChanged();
-        } else {
+        } else { */
             Log.v(LOG_TAG,"mlineChart is null creating dataset...");
             // create a dataset and give it a type
-            set1 = new LineDataSet(values, "Spendings in June");
+            set1 = new LineDataSet(values, "");
 
             // set the line to be drawn like this "- - - - - -"
             set1.enableDashedLine(10f, 5f, 0f);
@@ -443,8 +483,134 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
             // set data
             mlineChart.setData(datav);
 
+            //IAxisValueFormatter xAxisFormatter = new DateAxisValueFormatter();
+
+            XAxis xAxis = mlineChart.getXAxis();
+
+            xAxis.setValueFormatter(new DateAxisValueFormatter(null));
+
+            mlineChart.notifyDataSetChanged();
+
+            mlineChart.invalidate();
+
+            data.close();
+
+        //}
+    }
+
+    private SpannableString generateCenterSpannableText() {
+
+        SpannableString s = new SpannableString(getString(R.string.piechartspannabletext));
+        s.setSpan(new RelativeSizeSpan(1.7f), 0, 14, 0);
+        s.setSpan(new StyleSpan(Typeface.NORMAL), 14, s.length() - 15, 0);
+        s.setSpan(new ForegroundColorSpan(Color.GRAY), 14, s.length() - 15, 0);
+        s.setSpan(new RelativeSizeSpan(.8f), 14, s.length() - 15, 0);
+        s.setSpan(new StyleSpan(Typeface.ITALIC), s.length() - 14, s.length(), 0);
+        s.setSpan(new ForegroundColorSpan(ColorTemplate.getHoloBlue()), s.length() - 14, s.length(), 0);
+        return s;
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        //Calendar c = Calendar.getInstance();
+
+        //int month = c.get(Calendar.MONTH)+1;
+
+        switch (id){
+            case PIECHART_LOADER:
+
+                Log.v(LOG_TAG, "getting piechart info for trimester: " + mTrimester);
+                return new CursorLoader(
+                        getActivity(),
+                        DataContract.StatementEntry.buildStatsPieChartTrimUri(getStatsTrimester(getActivity())),
+                        null,
+                        null,
+                        null,
+                        null);
+
+            case LINECHART_LOADER:
+
+                Log.v(LOG_TAG, "getting linechart info for trimester: " + getStatsTrimester(getActivity()));
+                return new CursorLoader(
+                        getActivity(),
+                        DataContract.StatementEntry.buildStatsLineGraphChartTrimUri(getStatsTrimester(getActivity()),
+                                getStatsCategory(getActivity())),
+                        null,
+                        null,
+                        null,
+                        null);
+
+            case CATEGORY_LOADER: {
+                Log.v(LOG_TAG, "Category loader called");
+                //Todo: make category selection
+                return new CursorLoader(
+                        getActivity(),
+                        DataContract.CategoryEntry.CONTENT_URI,
+                        DataContract.CategoryEntry.CATEGORY_COLUMNS,
+                        null,
+                        null,
+                        null);
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+
+        switch (loader.getId()) {
+            case LINECHART_LOADER:
+
+                Log.v(LOG_TAG, "onLoadFinish for Line Chart loader called. data with: " + data.getCount());
+
+                if (data != null && data.moveToFirst() && data.getCount() > 0) {
+                    //Load piechart data
+                    setLineCharData(data);
+                }
+
+                break;
+
+            case PIECHART_LOADER:
+
+                Log.v(LOG_TAG, "onLoadFinish for pieChart loader called. data with: " + data.getCount());
+
+                if (data != null && data.moveToFirst() && data.getCount() > 0) {
+                    //Load piechart data
+                    setPieData(data);
+                }
+
+                break;
+            case CATEGORY_LOADER:
+                if (data != null && data.moveToFirst() && data.getCount() > 0) {
+                    mCategoryCursor = data;
+                    setupLineChartSeekBar();
+                }
+                break;
         }
     }
 
+
+    class DateAxisValueFormatter implements IAxisValueFormatter{
+
+        private String[] mValues;
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd");
+
+        public DateAxisValueFormatter(String[] values) {
+            this.mValues = values; }
+
+
+        @Override
+        public String getFormattedValue(float value, AxisBase axis) {
+
+            //long convertedNumber = (long) value;
+
+            //Log.v(LOG_TAG, "value inside getFormattedValue: " + convertedNumber);
+
+            //String strDate = String.valueOf(convertedNumber);
+
+            return sdf.format(new Date((long)value)); // + "/" + strDate.substring(4,6);
+
+        }
+    }
 
 }

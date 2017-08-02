@@ -84,8 +84,14 @@ public class DataContract {
                     .appendPath(String.valueOf(month)).build();
         }
 
-        public static Uri buildStatsTrimUri(int trimestre) {
+        public static Uri buildStatsPieChartTrimUri(int trimestre) {
             return CONTENT_URI.buildUpon().appendPath("stats").appendPath("trimester")
+                    .appendPath(String.valueOf(trimestre)).build();
+        }
+
+        public static Uri buildStatsLineGraphChartTrimUri(int trimestre, String category) {
+            return CONTENT_URI.buildUpon().appendPath("stats").appendPath("trimester")
+                    .appendPath(category)
                     .appendPath(String.valueOf(trimestre)).build();
         }
 
@@ -98,6 +104,10 @@ public class DataContract {
 
         public static int getMonthFromUri(Uri uri) {
             return Integer.parseInt(uri.getLastPathSegment());
+        }
+
+        public static String getCategoryFromUri(Uri uri) {
+            return uri.getPathSegments().get(3);
         }
 
         public static String getAccountFromUri(Uri uri) {

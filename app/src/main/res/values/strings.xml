@@ -129,7 +129,10 @@
     <string name="pref_post_seq">postSequence</string>
     <string name="pref_stats_year_status">stat_year</string>
     <string name="pref_stats_trimester_status">stats_trimester</string>
-    <string name="piechartLegedTitle">Spendings p/ Semester</string>
+    <string name="piechartLegedTitle">Spendings per Semester</string>
+    <string name="semester_label">Semester</string>
+    <string name="category_label">category</string>
+    <string name="pref_stats_category_status">stats_category</string>
 
 
 </resources>
