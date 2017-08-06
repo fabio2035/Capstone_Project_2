@@ -2,6 +2,10 @@ package com.example.fbrigati.myfinance.adapters;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.PorterDuff;
+import android.os.Build;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -100,6 +104,18 @@ public class BudgetAdapter extends CursorAdapter {
         viewHolder.textBudgetSpent.setText(String.valueOf(spent));
 
         viewHolder.progressBar.setProgress(percentage.intValue());
+
+        if(percentage<40){
+            viewHolder.progressBar.getProgressDrawable().setColorFilter(context.getResources().getColor(R.color.positive)
+                    , PorterDuff.Mode.SRC_IN);
+        }else if(percentage >= 40 && percentage < 60){
+            viewHolder.progressBar.getProgressDrawable().setColorFilter(context.getResources().getColor(R.color.midium)
+                    , PorterDuff.Mode.SRC_IN);
+        } else if(percentage >60){
+            viewHolder.progressBar.getProgressDrawable().setColorFilter(context.getResources().getColor(R.color.negative)
+                    , PorterDuff.Mode.SRC_IN);
+        }
+
 
         viewHolder.textPercentage.setText(percentageFormat.format(percentage/100));
 

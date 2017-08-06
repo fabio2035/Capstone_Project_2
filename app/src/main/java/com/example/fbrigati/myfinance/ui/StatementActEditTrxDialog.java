@@ -12,8 +12,10 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -71,6 +73,7 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
     private String mUsername;
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mStatementDatabaseReference;
+    private Toolbar toolbarView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -106,6 +109,22 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
         spinner_ctg = (Spinner) findViewById(R.id.category_spinner_id);
 
         spinner_trxType = (Spinner) findViewById(R.id.trxType_spinner_id);
+
+        spinner_trxType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(position == 1){
+                    spinner_ctg.setEnabled(false);
+                } else {
+                    spinner_ctg.setEnabled(true);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.trx_type, android.R.layout.simple_spinner_item);
@@ -163,6 +182,10 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
         if (detailUri == null) {
             setCurrentDateTimeButtons();
         }
+
+        toolbarView = (Toolbar) findViewById(R.id.toolbar);
+
+        toolbarView.setTitle(R.string.toolbar_trxedit_title);
 
         //Firebase stuff...
         //initialize object variables
@@ -393,13 +416,12 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
                     //Pick trx type
                     if (data.getInt(8) > 5) {
                         spinner_trxType.setSelection(0);
+                        spinner_ctg.setEnabled(true);
                     } else {
                         spinner_trxType.setSelection(1);
+                        spinner_ctg.setEnabled(false);
                     }
-
-
                 }
-
         }
     }
 

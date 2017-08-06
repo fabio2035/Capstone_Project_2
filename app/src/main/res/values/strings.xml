@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MyFinance</string>
+    <string name="app_name">Money Watch</string>
     <string name="action_settings">Settings</string>
 
     <!-- Empty Menu Items -->
@@ -94,7 +94,7 @@
     <string name="edit_trans_save_btn">Save</string>
     <string name="accessibility_saveTrans_btn">Save Transaction Details</string>
     <string name="edit_trans_close_btn">Close</string>
-    <string name="trans_edit_category_label">Category :</string>
+    <string name="trans_edit_category_label">Category</string>
     <string name="trans_edit_trxType_label">Transaction Type</string>
     <string name="empty_budget_list">Register Spendings to set budgets!</string>
     <string name="piechartspannabletext">Spendings</string>
@@ -133,6 +133,9 @@
     <string name="semester_label">Semester</string>
     <string name="category_label">category</string>
     <string name="pref_stats_category_status">stats_category</string>
+    <string name="toolbar_trxedit_title">Edit Transaction</string>
+    <string name="trans_edit_datetitle_label">Transaction Date</string>
+    <string name="trans_edit_timetitle_label">Transaction Time</string>
 
 
 </resources>

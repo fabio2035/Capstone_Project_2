@@ -1,127 +1,189 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginStart="@dimen/activity_horizontal_margin"
-    android:layout_marginLeft="@dimen/activity_horizontal_margin"
-    android:layout_marginTop="@dimen/activity_horizontal_margin"
-    android:layout_marginBottom="@dimen/activity_horizontal_margin"
-    android:layout_marginEnd="@dimen/activity_horizontal_margin">
+    >
 
-
-    <android.support.v7.widget.GridLayout
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:orientation="horizontal"
-        app:columnCount="2"
+        android:paddingLeft="@dimen/loose_margin"
+        android:paddingStart="@dimen/loose_margin"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/toolbar" />
+
+    </android.support.design.widget.AppBarLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/loose_margin"
+        android:layout_marginBottom="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
         >
 
-    <EditText
-        android:id="@+id/amount_id"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/trans_amt_edit_hint"
-        android:inputType="numberDecimal"
-        android:layout_marginTop="@dimen/activity_horizontal_margin"
-        android:layout_marginBottom="@dimen/activity_horizontal_margin"
-        app:layout_columnSpan="2"
-        />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/description_id"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/trans_desc_edit_hint"
-        android:inputType="textCapSentences"
-        android:layout_below="@+id/amount_id"
-        android:layout_marginTop="@dimen/activity_horizontal_margin"
-        android:layout_marginBottom="@dimen/activity_horizontal_margin"
-        app:layout_columnSpan="2"
-        />
-
-    <Button
-        android:id="@+id/date_picker_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_columnWeight="1"
-        android:text="@string/date_picker"
-        android:layout_below="@+id/description_id"
-        android:contentDescription="@string/accessibility_datepicker_btn"
-        />
-
-        <Button
-            android:id="@+id/time_picker_btn"
-            android:layout_width="wrap_content"
+        <android.support.v7.widget.GridLayout
+            android:id="@+id/grid_edit"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/time_picker"
-            app:layout_columnWeight="1"
-            android:contentDescription="@string/accessibility_timepicker_btn"
-            />
+            app:orientation="horizontal"
+            app:columnCount="2"
+            >
 
-        <TextView
+            <EditText
+                android:id="@+id/amount_id"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/trans_amt_edit_hint"
+                android:inputType="numberDecimal"
+                android:layout_marginTop="@dimen/activity_horizontal_margin"
+                android:layout_marginBottom="@dimen/activity_horizontal_margin"
+                app:layout_columnSpan="2"
+                />
+
+            <EditText
+                android:id="@+id/description_id"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/trans_desc_edit_hint"
+                android:inputType="textCapSentences"
+                android:layout_below="@+id/amount_id"
+                android:layout_marginTop="@dimen/activity_horizontal_margin"
+                android:layout_marginBottom="@dimen/activity_horizontal_margin"
+                app:layout_columnSpan="2"
+                />
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                app:layout_columnWeight="1"
+                android:text="@string/trans_edit_datetitle_label"
+                android:textAppearance="@style/EditTextStyle"/>
+
+            <Button
+                android:id="@+id/date_picker_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/activity_horizontal_margin"
+                app:layout_columnWeight="1"
+                android:text="@string/date_picker"
+                android:layout_below="@+id/description_id"
+                android:backgroundTint="@color/colorAccent"
+                android:contentDescription="@string/accessibility_datepicker_btn"
+                />
+
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                app:layout_columnWeight="1"
+                android:text="@string/trans_edit_timetitle_label"
+                android:textAppearance="@style/EditTextStyle" />
+
+
+            <Button
+                android:id="@+id/time_picker_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/activity_horizontal_margin"
+                android:text="@string/time_picker"
+                app:layout_columnWeight="1"
+                android:backgroundTint="@color/colorAccent"
+                android:contentDescription="@string/accessibility_timepicker_btn"
+                />
+
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                app:layout_columnWeight="1"
+                android:text="@string/trans_edit_trxType_label"
+                android:layout_marginTop="@dimen/activity_horizontal_margin"
+                android:layout_marginBottom="@dimen/activity_horizontal_margin"
+                android:textAppearance="@style/EditTextStyle"/>
+
+            <Spinner
+                android:id="@+id/trxType_spinner_id"
+                android:layout_width="125dp"
+                android:layout_height="wrap_content"
+                app:layout_columnWeight="1"
+                android:contentDescription="@string/accessibility_category_spinner"
+                android:layout_marginTop="@dimen/activity_horizontal_margin"
+                android:layout_marginBottom="@dimen/activity_horizontal_margin"/>
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                app:layout_columnWeight="1"
+                android:text="@string/trans_edit_category_label"
+                android:layout_marginTop="@dimen/activity_horizontal_margin"
+                android:layout_marginBottom="@dimen/activity_horizontal_margin"
+                android:textAppearance="@style/EditTextStyle"
+                />
+
+            <Spinner
+                android:id="@+id/category_spinner_id"
+                android:layout_width="125dp"
+                android:layout_height="wrap_content"
+                app:layout_columnWeight="1"
+                android:prompt="@string/category_spinner_prompt"
+                android:contentDescription="@string/accessibility_category_spinner"
+                android:layout_marginTop="@dimen/activity_horizontal_margin"
+                android:layout_marginBottom="@dimen/activity_horizontal_margin"/>
+
+            <Space
+                android:layout_height="50dp"
+                android:layout_width="wrap_content"
+                app:layout_columnSpan="2"
+                />
+
+
+
+        </android.support.v7.widget.GridLayout>
+
+        <android.support.v7.widget.GridLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            app:layout_columnWeight="1"
-            android:text="@string/trans_edit_trxType_label"
-            android:layout_marginTop="@dimen/activity_horizontal_margin"
-            android:layout_marginBottom="@dimen/activity_horizontal_margin"
-            />
+            android:layout_below="@+id/grid_edit"
+            app:columnCount="2">
 
-        <Spinner
-            android:id="@+id/trxType_spinner_id"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_columnWeight="1"
-            android:contentDescription="@string/accessibility_category_spinner"
-            android:layout_marginTop="@dimen/activity_horizontal_margin"
-            android:layout_marginBottom="@dimen/activity_horizontal_margin"/>
+                <Button
+                    android:id="@+id/edit_trans_save_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/edit_trans_save_btn"
+                    app:layout_columnWeight="1"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:contentDescription="@string/accessibility_saveTrans_btn"
+                    />
 
-        <TextView
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            app:layout_columnWeight="1"
-            android:text="@string/trans_edit_category_label"
-            android:layout_marginTop="@dimen/activity_horizontal_margin"
-            android:layout_marginBottom="@dimen/activity_horizontal_margin"
-            />
+                <Button
+                    android:id="@+id/edit_trans_close_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/edit_trans_close_btn"
+                    app:layout_columnWeight="1"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:contentDescription="@string/accessibility_timepicker_btn"
+                    />
 
-        <Spinner
-            android:id="@+id/category_spinner_id"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_columnWeight="1"
-            android:prompt="@string/category_spinner_prompt"
-            android:contentDescription="@string/accessibility_category_spinner"
-            android:layout_marginTop="@dimen/activity_horizontal_margin"
-            android:layout_marginBottom="@dimen/activity_horizontal_margin"/>
+        </android.support.v7.widget.GridLayout>
 
-        <Space
-            android:layout_height="120dp"
-            android:layout_width="wrap_content"
-            app:layout_columnSpan="2"
-            />
+        </RelativeLayout>
 
-        <Button
-            android:id="@+id/edit_trans_save_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_columnWeight="1"
-            android:text="@string/edit_trans_save_btn"
-            android:contentDescription="@string/accessibility_saveTrans_btn"
-            />
+    </ScrollView>
 
-        <Button
-            android:id="@+id/edit_trans_close_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/edit_trans_close_btn"
-            app:layout_columnWeight="1"
-            android:contentDescription="@string/accessibility_timepicker_btn"
-            />
-
-    </android.support.v7.widget.GridLayout>
-
-
-</ScrollView>
+</android.support.design.widget.CoordinatorLayout>

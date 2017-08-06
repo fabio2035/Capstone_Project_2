@@ -28,6 +28,7 @@
     <!-- FAB button settings -->
     <dimen name="fab_elevation">6dp</dimen>
 
+
     <dimen name="month_label_dimen">120dp</dimen>
 
 </resources>
