@@ -166,7 +166,6 @@
                     android:layout_height="wrap_content"
                     android:text="@string/edit_trans_save_btn"
                     app:layout_columnWeight="1"
-                    android:backgroundTint="@color/colorPrimary"
                     android:contentDescription="@string/accessibility_saveTrans_btn"
                     />
 
@@ -176,7 +175,6 @@
                     android:layout_height="wrap_content"
                     android:text="@string/edit_trans_close_btn"
                     app:layout_columnWeight="1"
-                    android:backgroundTint="@color/colorPrimary"
                     android:contentDescription="@string/accessibility_timepicker_btn"
                     />
 

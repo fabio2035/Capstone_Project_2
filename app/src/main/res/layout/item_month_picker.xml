@@ -31,7 +31,7 @@
         android:layout_height="wrap_content"
         android:layout_width="@dimen/month_label_dimen"
         android:textAppearance="@style/TextAppearance.AppCompat.Title"
-        android:textColor="@color/primary_light"
+        android:textColor="@color/icons"
         android:textAlignment="center"
         tools:text="DECEMBER"
         android:layout_gravity="center_vertical|center_horizontal"

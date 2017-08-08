@@ -1,9 +1,13 @@
 package com.example.fbrigati.myfinance;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.AppBarLayout;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -46,8 +50,14 @@ public class ItemListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_item_list);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setLogo(R.drawable.ic_logo);
+
         setSupportActionBar(toolbar);
-        toolbar.setTitle(getTitle());
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayUseLogoEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+//        getSupportActionBar().setIcon(R.drawable.ic_logo);
+        //toolbar.setTitle(getTitle());
 
 
         mAdView = (AdView) findViewById(R.id.ad_view);
@@ -61,6 +71,8 @@ public class ItemListActivity extends AppCompatActivity {
         View recyclerView = findViewById(R.id.item_list);
         assert recyclerView != null;
         setupRecyclerView((RecyclerView) recyclerView);
+
+        ((RecyclerView) recyclerView).setHasFixedSize(true);
 
         if (findViewById(R.id.item_detail_container) != null) {
             // The detail container view will be present only in the

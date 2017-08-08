@@ -338,11 +338,16 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
 
         mlineChart.getAxisRight().setEnabled(false);
 
-        //mlineChart.setBackgroundColor(Color.GRAY);
+        mlineChart.setBackgroundColor(Color.TRANSPARENT);
+
+        Description desc = new Description();
+        desc.setText(getResources().getString(R.string.linechartLegedTitle));
+
+        mlineChart.setDescription(desc);
 
         // get the legend (only possible after setting data)
         Legend l = mlineChart.getLegend();
-
+        l.setEnabled(false);
     }
 
     private void setPieData(Cursor data) {
@@ -359,7 +364,7 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
             data.moveToNext();
         }
 
-        Log.v(LOG_TAG, "Total category amounts: " + totalAmount);
+        //Log.v(LOG_TAG, "Total category amounts: " + totalAmount);
 
         data.moveToFirst();
 
@@ -380,8 +385,8 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
 
         for (int c : ColorTemplate.MATERIAL_COLORS)
             colors.add(c);
-        /*
-        for (int c : ColorTemplate.VORDIPLOM_COLORS)
+
+        /*for (int c : ColorTemplate.VORDIPLOM_COLORS)
             colors.add(c);
 
         for (int c : ColorTemplate.PASTEL_COLORS)
@@ -418,7 +423,7 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
 
         ArrayList<Entry> values = new ArrayList<Entry>();
 
-        ArrayList<String> xValues = new ArrayList<String>();
+        //ArrayList<String> xValues = new ArrayList<String>();
 
         String dateRaw = "";
 
@@ -435,42 +440,33 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
             {
             parsedDate = dateFormat.parse(dateRaw.substring(0,8));
             }catch (ParseException e){
-                Log.v(LOG_TAG, "error parsing date..");
+              //  Log.v(LOG_TAG, "error parsing date..");
             }
 
-            Log.v(LOG_TAG, "Value for i: " + i + " , " +
-                    parsedDate.getTime() + " ;xValues: " + dateRaw.substring(6,8) + "/" + dateRaw.substring(4,6) +
-                    " ;Value: " + val);
+            //Log.v(LOG_TAG, "Value for i: " + i + " , " +
+            //        parsedDate.getTime() + " ;xValues: " + dateRaw.substring(6,8) + "/" + dateRaw.substring(4,6) +
+            //        " ;Value: " + val);
             values.add(new Entry(parsedDate.getTime(), val));
             data.moveToNext();
         }
 
         LineDataSet set1;
 
-        /*if (mlineChart.getData() != null &&
-                mlineChart.getData().getDataSetCount() > 0) {
-            Log.v(LOG_TAG,"mlineChart is not null and bigger than 0");
-            set1 = (LineDataSet) mlineChart.getData().getDataSetByIndex(0);
-            set1.setValues(values);
-            mlineChart.getData().notifyDataChanged();
-            mlineChart.notifyDataSetChanged();
-        } else { */
-            Log.v(LOG_TAG,"mlineChart is null creating dataset...");
             // create a dataset and give it a type
             set1 = new LineDataSet(values, "");
 
             // set the line to be drawn like this "- - - - - -"
-            set1.enableDashedLine(10f, 5f, 0f);
-            set1.enableDashedHighlightLine(10f, 5f, 0f);
-            set1.setColor(Color.BLACK);
+            //set1.enableDashedLine(10f, 5f, 0f);
+            //set1.enableDashedHighlightLine(10f, 5f, 0f);
+            set1.setColor(Color.TRANSPARENT);
             set1.setCircleColor(Color.BLACK);
-            set1.setLineWidth(1f);
+            set1.setLineWidth(2f);
             set1.setCircleRadius(3f);
             set1.setDrawCircleHole(false);
             set1.setValueTextSize(9f);
             set1.setDrawFilled(true);
 
-            set1.setFillColor(Color.BLACK);
+            //set1.setFillColor(Color.GREEN);
 
             ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
             dataSets.add(set1); // add the datasets
@@ -489,37 +485,23 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
 
             xAxis.setValueFormatter(new DateAxisValueFormatter(null));
 
+            xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+
             mlineChart.notifyDataSetChanged();
 
             mlineChart.invalidate();
 
             data.close();
 
-        //}
-    }
-
-    private SpannableString generateCenterSpannableText() {
-
-        SpannableString s = new SpannableString(getString(R.string.piechartspannabletext));
-        s.setSpan(new RelativeSizeSpan(1.7f), 0, 14, 0);
-        s.setSpan(new StyleSpan(Typeface.NORMAL), 14, s.length() - 15, 0);
-        s.setSpan(new ForegroundColorSpan(Color.GRAY), 14, s.length() - 15, 0);
-        s.setSpan(new RelativeSizeSpan(.8f), 14, s.length() - 15, 0);
-        s.setSpan(new StyleSpan(Typeface.ITALIC), s.length() - 14, s.length(), 0);
-        s.setSpan(new ForegroundColorSpan(ColorTemplate.getHoloBlue()), s.length() - 14, s.length(), 0);
-        return s;
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        //Calendar c = Calendar.getInstance();
-
-        //int month = c.get(Calendar.MONTH)+1;
 
         switch (id){
             case PIECHART_LOADER:
 
-                Log.v(LOG_TAG, "getting piechart info for trimester: " + mTrimester);
+                //Log.v(LOG_TAG, "getting piechart info for trimester: " + mTrimester);
                 return new CursorLoader(
                         getActivity(),
                         DataContract.StatementEntry.buildStatsPieChartTrimUri(getStatsTrimester(getActivity())),
@@ -530,7 +512,7 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
 
             case LINECHART_LOADER:
 
-                Log.v(LOG_TAG, "getting linechart info for trimester: " + getStatsTrimester(getActivity()));
+                //Log.v(LOG_TAG, "getting linechart info for trimester: " + getStatsTrimester(getActivity()));
                 return new CursorLoader(
                         getActivity(),
                         DataContract.StatementEntry.buildStatsLineGraphChartTrimUri(getStatsTrimester(getActivity()),
@@ -541,7 +523,7 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
                         null);
 
             case CATEGORY_LOADER: {
-                Log.v(LOG_TAG, "Category loader called");
+                //Log.v(LOG_TAG, "Category loader called");
                 //Todo: make category selection
                 return new CursorLoader(
                         getActivity(),
@@ -561,7 +543,7 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
         switch (loader.getId()) {
             case LINECHART_LOADER:
 
-                Log.v(LOG_TAG, "onLoadFinish for Line Chart loader called. data with: " + data.getCount());
+                //Log.v(LOG_TAG, "onLoadFinish for Line Chart loader called. data with: " + data.getCount());
 
                 if (data != null && data.moveToFirst() && data.getCount() > 0) {
                     //Load piechart data
@@ -572,7 +554,7 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
 
             case PIECHART_LOADER:
 
-                Log.v(LOG_TAG, "onLoadFinish for pieChart loader called. data with: " + data.getCount());
+                //Log.v(LOG_TAG, "onLoadFinish for pieChart loader called. data with: " + data.getCount());
 
                 if (data != null && data.moveToFirst() && data.getCount() > 0) {
                     //Load piechart data
@@ -601,12 +583,6 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
 
         @Override
         public String getFormattedValue(float value, AxisBase axis) {
-
-            //long convertedNumber = (long) value;
-
-            //Log.v(LOG_TAG, "value inside getFormattedValue: " + convertedNumber);
-
-            //String strDate = String.valueOf(convertedNumber);
 
             return sdf.format(new Date((long)value)); // + "/" + strDate.substring(4,6);
 

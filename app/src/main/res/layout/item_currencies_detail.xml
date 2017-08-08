@@ -24,6 +24,7 @@
         android:id="@+id/rate_value"
         android:textAppearance="@style/RateTextStyle"
         android:layout_columnWeight="1"
+        android:textColor="@color/secondary_text"
         tools:text="70.041"
         tools:targetApi="lollipop" />
 

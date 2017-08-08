@@ -41,6 +41,9 @@
         <item>USD</item>
         <item>ZAR</item>
         <item>EUR</item>
+        <item>TZS</item>
+        <item>AOA</item>
+        <item>GHS</item>
         </string-array>
 
 
@@ -129,13 +132,14 @@
     <string name="pref_post_seq">postSequence</string>
     <string name="pref_stats_year_status">stat_year</string>
     <string name="pref_stats_trimester_status">stats_trimester</string>
-    <string name="piechartLegedTitle">Spendings per Semester</string>
-    <string name="semester_label">Semester</string>
+    <string name="piechartLegedTitle">Spendings per Quarter</string>
+    <string name="semester_label">Quarter</string>
     <string name="category_label">category</string>
     <string name="pref_stats_category_status">stats_category</string>
     <string name="toolbar_trxedit_title">Edit Transaction</string>
     <string name="trans_edit_datetitle_label">Transaction Date</string>
     <string name="trans_edit_timetitle_label">Transaction Time</string>
+    <string name="linechartLegedTitle">Spendings per quarter per category</string>
 
 
 </resources>
