@@ -24,6 +24,7 @@
         android:layout_gravity="end"
         android:src="@drawable/back_btn"
         android:background="?android:attr/selectableItemBackground"
+        android:contentDescription="@string/month_picker_back_btn"
         android:layout_columnWeight="1"/>
 
     <TextView
@@ -45,6 +46,7 @@
         android:layout_gravity="start"
         android:src="@drawable/frwrd_btn"
         android:background="?android:attr/selectableItemBackground"
+        android:contentDescription="@string/month_picker_frwd_btn"
         android:layout_columnWeight="1"/>
 
     </GridLayout>

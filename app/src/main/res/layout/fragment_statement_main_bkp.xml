@@ -65,7 +65,7 @@
             android:gravity="center_horizontal"
             app:layout_columnWeight="1"
             android:textColor="@color/secondary_text"
-            android:text="Balance : "
+            android:text="@string/statement_balance_lable"
             tools:text="Balance : "/>
         <TextView
             android:id="@+id/balance_value"
@@ -74,7 +74,6 @@
             android:gravity="center_horizontal"
             app:layout_columnWeight="1"
             android:textColor="@color/secondary_text"
-            android:text=" 0.00 MZN "
             tools:text=" 0.00 MZN "/>
     </android.support.v7.widget.GridLayout>
 

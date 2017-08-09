@@ -140,6 +140,10 @@
     <string name="trans_edit_datetitle_label">Transaction Date</string>
     <string name="trans_edit_timetitle_label">Transaction Time</string>
     <string name="linechartLegedTitle">Spendings per quarter per category</string>
+    <string name="month_picker_back_btn">Month picker back button</string>
+    <string name="main_app_logo">Money Watch Logo</string>
+    <string name="month_picker_frwd_btn">Month picker forward button</string>
+    <string name="statement_balance_lable">Balance :</string>
 
 
 </resources>
