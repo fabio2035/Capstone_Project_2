@@ -11,12 +11,20 @@
     android:paddingRight="@dimen/detail_horizontal_padding"
     android:paddingStart="@dimen/detail_horizontal_padding"
     android:paddingTop="@dimen/abc_list_item_padding_horizontal_material"
-    android:columnCount="2">
+    android:columnCount="3">
+
+    <ImageView
+        android:id="@+id/flag_icon"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_columnWeight="1"
+        android:layout_gravity="center_vertical"
+        />
 
     <TextView
         android:id="@+id/symbol_value"
         android:textAppearance="@style/SymbolTextStyle"
-        android:layout_columnWeight="2"
+        android:layout_columnWeight="1"
         tools:text="MZN/USD"
         tools:targetApi="lollipop" />
 

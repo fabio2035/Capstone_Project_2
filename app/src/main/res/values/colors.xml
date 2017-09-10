@@ -11,5 +11,6 @@
 <color name="negative">#B90000</color>
 <color name="positive">#008000</color>
 <color name="midium">#FF9800</color>
-    <color name="icon_background">#03A9F4</color>
+<color name="icon_background">#03A9F4</color>
+<color name="transparent">#80000000</color>
 </resources>

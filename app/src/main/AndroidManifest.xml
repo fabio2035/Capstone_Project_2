@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.fbrigati.myfinance">
+    package="com.personal.fbrigati.myfinance">
 
     <!-- This permission is necessary in order for MyFinance to perform network access. -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -41,7 +41,7 @@
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.fbrigati.myfinance.ItemListActivity" />
+                android:value=".ItemListActivity" />
         </activity>
         <activity
             android:name=".ui.StatementActEditTrxDialog"
@@ -50,7 +50,7 @@
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.fbrigati.myfinance.ui.StatementActivity" />
+                android:value=".ui.StatementActivity" />
         </activity>
         <activity
             android:name=".ui.BudgetActivity"
@@ -59,7 +59,7 @@
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.fbrigati.myfinance.ItemListActivity" />
+                android:value=".ItemListActivity" />
         </activity>
         <activity
             android:name=".ui.StatsActivity"
@@ -68,7 +68,7 @@
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.fbrigati.myfinance.ItemListActivity" />
+                android:value=".ItemListActivity" />
         </activity>
         <activity
             android:name=".ui.CurrenciesActivity"
@@ -77,7 +77,7 @@
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.fbrigati.myfinance.ItemListActivity" />
+                android:value=".ItemListActivity" />
         </activity>
 
         <!--Include the AdActivity configChanges and theme. -->
@@ -86,7 +86,7 @@
             android:theme="@android:style/Theme.Translucent" />
 
         <provider
-            android:authorities="@string/content_authority"
+            android:authorities="com.personal.fbrigati.myfinance"
             android:name=".data.DataProvider"
             android:exported="false"
             android:syncable="true" />
@@ -117,7 +117,7 @@
 
         <!-- elements for widget functionality START -->
         <service
-            android:name="com.example.fbrigati.myfinance.widget.FMRemoteViewProvider"
+            android:name=".widget.FMRemoteViewProvider"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
         <receiver android:name=".widget.FMWidgetProvider" >
             <intent-filter>

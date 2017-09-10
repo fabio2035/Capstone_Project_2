@@ -4,5 +4,5 @@
     android:id="@+id/activity_stats_detail"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.fbrigati.myfinance.ui.StatsActivity">
+    tools:context="com.personal.fbrigati.myfinance.ui.StatsActivity">
 </RelativeLayout>

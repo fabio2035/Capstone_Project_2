@@ -9,10 +9,10 @@
     app:layout_scrollFlags="scroll|enterAlways"
     android:fitsSystemWindows="true">
 
-    <GridLayout
+    <android.support.v7.widget.GridLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        app:orientation="horizontal"
         android:layout_marginEnd="70dp"
         android:layout_marginRight="70dp"
         app:columnCount="3">
@@ -21,11 +21,12 @@
         android:id="@+id/bkbtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="end"
+        app:layout_gravity="end"
         android:src="@drawable/back_btn"
         android:background="?android:attr/selectableItemBackground"
         android:contentDescription="@string/month_picker_back_btn"
-        android:layout_columnWeight="1"/>
+        app:layout_columnWeight="1"
+        />
 
     <TextView
         android:id="@+id/monthlbl"
@@ -35,20 +36,19 @@
         android:textColor="@color/icons"
         android:textAlignment="center"
         tools:text="DECEMBER"
-        android:layout_gravity="center_vertical|center_horizontal"
-
-        android:layout_columnWeight="1"/>
+        app:layout_gravity="center_vertical|center_horizontal"
+        app:layout_columnWeight="1"/>
 
     <ImageButton
         android:id="@+id/fwdbtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="start"
+        app:layout_gravity="start"
         android:src="@drawable/frwrd_btn"
         android:background="?android:attr/selectableItemBackground"
         android:contentDescription="@string/month_picker_frwd_btn"
-        android:layout_columnWeight="1"/>
+        app:layout_columnWeight="1"/>
 
-    </GridLayout>
+    </android.support.v7.widget.GridLayout>
 
     </android.support.v7.widget.Toolbar>

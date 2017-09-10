@@ -57,7 +57,6 @@
         android:paddingLeft="10dp"
         app:layout_columnWeight="1"
         android:layout_marginTop="@dimen/element_top_margin"
-        android:textAlignment="viewStart"
         app:layout_gravity="start"/>
 
     <TextView
@@ -69,7 +68,7 @@
         android:layout_marginTop="@dimen/element_top_margin"
         android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:gravity="center"
-        android:textAlignment="textEnd"
+        app:layout_gravity="end"
         android:paddingRight="20dp" />
 
     <TextView
@@ -89,7 +88,6 @@
         android:gravity="center"
         android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:paddingTop="10dp"
-        android:textAlignment="textEnd"
         app:layout_gravity="end"
         android:paddingRight="20dp" />
 

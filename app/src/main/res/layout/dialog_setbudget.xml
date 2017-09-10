@@ -14,4 +14,10 @@
         android:layout_marginBottom="4dp"
         android:hint="@string/edit_amount" />
 
+    <CheckBox
+        android:id="@+id/budget_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/dialog_budget_set_year"/>
+
 </LinearLayout>

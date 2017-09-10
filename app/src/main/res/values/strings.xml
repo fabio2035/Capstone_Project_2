@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Money Watch</string>
+    <string name="app_name" translatable="false">Money Watch</string>
     <string name="action_settings">Settings</string>
 
     <!-- Empty Menu Items -->
@@ -15,15 +15,15 @@
     <string name="title_StatementActivity_detail">Statement</string>
 
 
-    <string name="content_authority">com.example.fbrigati.myfinance</string>
+    <string name="content_authority" translatable="false">com.personal.fbrigati.myfinance</string>
     <string name="empty_statement_list">Register your first transaction!</string>
     <string name="no_items_in_list">Set your first budget!</string>
     <string name="title_BudgetActivity_detail">Budget</string>
     <string name="budget_goal_label">Goal</string>
     <string name="budget_spent_label">Amount spent</string>
     <string name="title_StatsActivity_detail">Stats</string>
-    <string name="sync_account_type">myfinance.exampl.com</string>
-    <string name="empty_currencies_list">There are no available currencies, try again later!</string>
+    <string name="sync_account_type" translatable="false">myfinance.exampl.com</string>
+    <string name="empty_currencies_list">There are no available exchange rates, try another currency!</string>
     <string name="title_Currencies_detail">Currencies</string>
     <string name="cur_base_date_label">Info. Date:</string>
     <string name="cur_base_symbol_label">Base Currency:</string>
@@ -73,6 +73,17 @@
         <item>4th</item>
     </string-array>
 
+    <!-- Days in a week -->
+    <string-array name="dow">
+        <item>Sunday</item>
+        <item>Monday</item>
+        <item>Tuesday</item>
+        <item>Wednesday</item>
+        <item>Thursday</item>
+        <item>Friday</item>
+        <item>Saturday</item>
+    </string-array>
+
     <string name="pref_cur_key" translatable="false">cur_symbol</string>
     <string name="pref_cur_default" translatable="false">USD</string>
 
@@ -85,12 +96,12 @@
     <string name="trans_amt_edit_hint">Amount</string>
     <string name="trans_desc_edit_hint">Description</string>
     <string name="title_trxEdit_detail">Transaction Details</string>
-    <string name="date_picker">1/1/1979</string>
+    <string name="date_picker" translatable="false">1/1/1979</string>
     <string name="accessibility_datepicker_btn">Date Picker</string>
     <string name="accessibility_timepicker_btn">Time Picker</string>
     <string name="edit_amount">Edit Amount</string>
     <string name="edit_description">Transaction Description</string>
-    <string name="time_picker">10:48</string>
+    <string name="time_picker" translatable="false">10:48</string>
 
     <string name="category_spinner_prompt">Choose Category</string>
     <string name="accessibility_category_spinner">Choose Transaction Category</string>
@@ -144,6 +155,22 @@
     <string name="main_app_logo">Money Watch Logo</string>
     <string name="month_picker_frwd_btn">Month picker forward button</string>
     <string name="statement_balance_lable">Balance :</string>
+    <string name="dialog_budget_set_year">set for whole year</string>
+    <string name="pref_year_status">year-status</string>
+    <string name="dialog_instruction_show">do not show this again</string>
+    <string name="OK">OK</string>
+    <string name="pref_instruct_show_statement">instruct-show-statement</string>
+    <string name="pref_instruct_show_budget">instruct-show-budget</string>
+    <string name="pref_instruct_show_stats">instruct-show-stats</string>
+    <string name="pref_instruct_show_currencies">instruct-show-currencies</string>
+    <string name="dialog_instruction_title_budget">Budget Settings</string>
+    <string name="dialog_instruction_text_budget">this is the instructions</string>
+    <string name="dialog_instruction_title_statement">Statement</string>
+    <string name="dialog_instruction_text_statement">This is the instructions for statement screen</string>
+    <string name="dialog_instruction_title_stats">Stats</string>
+    <string name="dialog_instruction_text_stats">This is the instructions for stats</string>
+    <string name="dialog_instruction_title_currencies">Currenceis</string>
+    <string name="dialog_instruction_text_currencies">This is the instructions for currencies</string>
 
 
 </resources>
