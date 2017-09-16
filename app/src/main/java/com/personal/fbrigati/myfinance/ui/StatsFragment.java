@@ -46,9 +46,13 @@ import com.google.android.gms.ads.AdView;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import static com.personal.fbrigati.myfinance.Utility.getStatsCategory;
 import static com.personal.fbrigati.myfinance.Utility.getStatsTrimester;
@@ -70,9 +74,15 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
 
     public static final int CATEGORY_LOADER = 7;
 
+    private ArrayList<Integer> colors;
+
     private Cursor mCategoryCursor;
 
+    private int loadedCategories;
+
     private Map<Integer, String> catMap;
+
+    private Map<String, Integer> colorMap;
 
     int maxCount;
 
@@ -89,6 +99,20 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
     private SeekBar seekBarLineChart;
     LinearLayout mSeekLinPieChart;
     LinearLayout mSeekLinLineChart;
+
+    private int[] mColors = new int[] {
+            ColorTemplate.MATERIAL_COLORS[0],
+            ColorTemplate.MATERIAL_COLORS[1],
+            ColorTemplate.MATERIAL_COLORS[2],
+            ColorTemplate.MATERIAL_COLORS[3],
+            ColorTemplate.PASTEL_COLORS[0],
+            ColorTemplate.PASTEL_COLORS[1],
+            ColorTemplate.PASTEL_COLORS[2],
+            ColorTemplate.PASTEL_COLORS[3],
+            ColorTemplate.PASTEL_COLORS[4],
+    };
+
+
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState){
@@ -134,7 +158,14 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
 
         catMap = new HashMap<Integer, String>();
 
+        setInitialTrimester();
+
         //masterGrid = (GridLayout) rootView.findViewById(R.id.master_grid);
+
+        //colors = new ArrayList<Integer>();
+
+        //for (int c : ColorTemplate.MATERIAL_COLORS)
+        //    colors.add(c);
 
         return rootView;
     }
@@ -202,6 +233,27 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
         }
     }
 
+    private void setInitialTrimester(){
+        final Calendar cal = Calendar.getInstance();
+        int month = cal.get(Calendar.MONTH);
+
+        Log.v(LOG_TAG, "Month number is " + month);
+
+        if(month >0 && month <=2){
+            Utility.setStatsPieTrimester(getActivity(), 1);
+            seekBarPieChart.setProgress(1);
+        }else if (month >=3 && month <=5){
+            Utility.setStatsPieTrimester(getActivity(), 2);
+            seekBarPieChart.setProgress(2);
+        }else if (month >=6 && month <=8){
+            Utility.setStatsPieTrimester(getActivity(), 3);
+            seekBarPieChart.setProgress(3);
+        }else if (month >=9 && month <=11){
+            Utility.setStatsPieTrimester(getActivity(), 4);
+            seekBarPieChart.setProgress(4);
+        }
+    }
+
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 
@@ -250,8 +302,10 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     private void addLabelsBelowLineSeekBar() {
+        //first value is all categories in same line graph
+        catMap.put(0, "All");
 
-        for (int count = 0; count < mCategoryCursor.getCount(); count++) {
+        for (int count = 1; count < mCategoryCursor.getCount()+1; count++) {
             TextView textView = new TextView(getContext());
             textView.setText(mCategoryCursor.getString(DataContract.CategoryEntry.COL_CATEGORY_DEFAULT).substring(0,4));
             textView.setTextColor(getResources().getColor(R.color.colorPrimary));
@@ -261,6 +315,8 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
             mSeekLinLineChart.addView(textView);
             textView.setLayoutParams((count == maxCount - 1) ? getLayoutParams(0.0f) : getLayoutParams(1.0f));
             //add to catMap for query retrieval..
+            Log.v(LOG_TAG, "adding " + mCategoryCursor.getString(DataContract.CategoryEntry.COL_CATEGORY_DEFAULT)
+                           + " , to position " + count);
             catMap.put(count, mCategoryCursor.getString(DataContract.CategoryEntry.COL_CATEGORY_DEFAULT));
             mCategoryCursor.moveToNext();
         }
@@ -310,6 +366,10 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
         l.setYEntrySpace(0f);
         l.setYOffset(0f);
 
+        //pie chart colours
+        colors = new ArrayList<Integer>();
+        for(int c : mColors) colors.add(c);
+
     }
 
     private void setupLineChart() {
@@ -336,6 +396,13 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
         // get the legend (only possible after setting data)
         Legend l = mlineChart.getLegend();
         l.setEnabled(false);
+
+        XAxis xAxis = mlineChart.getXAxis();
+
+        xAxis.setValueFormatter(new DateAxisValueFormatter(null));
+
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+
     }
 
     private void setPieData(Cursor data) {
@@ -343,6 +410,8 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
         mpieChart.animateY(1400, Easing.EasingOption.EaseInOutQuad);
 
         ArrayList<PieEntry> entries = new ArrayList<PieEntry>();
+
+        //ArrayList<PieDataSet> dataSets = new ArrayList<PieDataSet>();
 
         Double totalAmount = 0.0;
 
@@ -360,6 +429,7 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
         // the chart.
         for (int i = 0; i < data.getCount() ; i++) {
             entries.add(new PieEntry((float) (data.getDouble(1) / totalAmount), data.getString(0) ));
+            Log.v(LOG_TAG, "Pie data Category: " + data.getString(0));
             data.moveToNext();
         }
 
@@ -367,29 +437,7 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
         dataSet.setSliceSpace(3f);
         dataSet.setSelectionShift(5f);
 
-        // add a lot of colors
-
-        ArrayList<Integer> colors = new ArrayList<Integer>();
-
-        for (int c : ColorTemplate.MATERIAL_COLORS)
-            colors.add(c);
-
-        /*for (int c : ColorTemplate.VORDIPLOM_COLORS)
-            colors.add(c);
-
-        for (int c : ColorTemplate.PASTEL_COLORS)
-            colors.add(c);
-
-        for (int c : ColorTemplate.LIBERTY_COLORS)
-            colors.add(c);
-
-        for (int c : ColorTemplate.PASTEL_COLORS)
-            colors.add(c); */
-
-        colors.add(ColorTemplate.getHoloBlue());
-
         dataSet.setColors(colors);
-        //dataSet.setSelectionShift(0f);
 
         PieData piedata = new PieData(dataSet);
         piedata.setValueFormatter(new PercentFormatter());
@@ -400,7 +448,7 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
         // undo all highlights
         mpieChart.highlightValues(null);
 
-        mpieChart.notifyDataSetChanged();
+        //mpieChart.notifyDataSetChanged();
         mpieChart.invalidate();
 
         data.close();
@@ -409,77 +457,80 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
 
     private void setLineCharData(Cursor data) {
 
-        ArrayList<Entry> values = new ArrayList<Entry>();
+        Calendar cal = new GregorianCalendar();
 
-        //ArrayList<String> xValues = new ArrayList<String>();
+        ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
+
+        int Catcounter = 0;
 
         String dateRaw = "";
 
+        String category = "";
+
         mlineChart.animateX(2500);
 
-        for (int i = 0; i < data.getCount(); i++) {
+        SimpleDateFormat mFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.US);
 
-            dateRaw = String.valueOf(data.getInt(0));
+        int i = 0;
+        //for (int i = 0; i < data.getCount(); i++) {
+        do{
 
-            float val = (float) data.getDouble(1);
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
-            Date parsedDate = new Date();
-            try
-            {
-            parsedDate = dateFormat.parse(dateRaw.substring(0,8));
-            }catch (ParseException e){
-              //  Log.v(LOG_TAG, "error parsing date..");
-            }
+            ArrayList<Entry> values = new ArrayList<Entry>();
+            category = data.getString(0).trim();
 
-            //Log.v(LOG_TAG, "Value for i: " + i + " , " +
-            //        parsedDate.getTime() + " ;xValues: " + dateRaw.substring(6,8) + "/" + dateRaw.substring(4,6) +
-            //        " ;Value: " + val);
-            values.add(new Entry(parsedDate.getTime(), val));
-            data.moveToNext();
-        }
+                //Category loop
+                while(data.getString(0).trim().equals(category) && i < data.getCount()) {
+                    //counter++;
+                    Log.v(LOG_TAG, "cat: " + category +
+                                   " ; date: " + String.valueOf(data.getInt(1)) +
+                                   " ; value: " + data.getDouble(2) +
+                                   " ; data counter: " + i +
+                                   " ; Category coutner: " + Catcounter);
+                    //For every category group values into datasets
+                    float amtRaw = (float) data.getDouble(2);
+                    //get date and format
+                    dateRaw = String.valueOf(data.getInt(1));
+                    //format date from integer back to date
+                    //and then pass it to date format to get the formatted date
+                    StringBuilder dateBuild = new StringBuilder().append(dateRaw.substring(6, 8)).append("/").append(dateRaw.substring(4, 6)).append("/").append(dateRaw.substring(0, 4));
 
-        LineDataSet set1;
+                    try{
+                        Date date = new SimpleDateFormat("dd/MM/yyyy", Locale.US).parse(dateBuild.toString());
+                        cal.setTime(date);
+                        Long timeinmillis = cal.getTimeInMillis();
+                        Log.v(LOG_TAG, "date value: " + date + "; cal set time: "
+                                + "; time in millis cal: " + timeinmillis);
+                        values.add(new Entry(timeinmillis, amtRaw));
+                    } catch (ParseException e) {
+                        //  Log.v(LOG_TAG, "error parsing date..");
+                    }
 
-            // create a dataset and give it a type
-            set1 = new LineDataSet(values, "");
+                    if(data.isLast()) break;
 
-            // set the line to be drawn like this "- - - - - -"
-            //set1.enableDashedLine(10f, 5f, 0f);
-            //set1.enableDashedHighlightLine(10f, 5f, 0f);
-            set1.setColor(Color.TRANSPARENT);
-            set1.setCircleColor(Color.BLACK);
-            set1.setLineWidth(2f);
-            set1.setCircleRadius(3f);
-            set1.setDrawCircleHole(false);
-            set1.setValueTextSize(9f);
-            set1.setDrawFilled(true);
+                    data.moveToNext();
+                    i++;
+                }
 
-            //set1.setFillColor(Color.GREEN);
+                //configure the line for the particular category
+                LineDataSet d = new LineDataSet(values, data.getString(0));
+                d.setLineWidth(2.5f);
+                //set colors
+                d.setColor(colors.get(Catcounter));
+                d.setCircleColor(colors.get(Catcounter));
 
-            ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
-            dataSets.add(set1); // add the datasets
+                dataSets.add(d);
 
-            set1.setValues(values);
+                data.moveToNext();
+                //category counter ++
+                Catcounter++;
+                //cursor data counter ++
+                i++;
+            }while(i < data.getCount());
 
-            // create a data object with the datasets
-            LineData datav = new LineData(dataSets);
+        LineData linedata = new LineData(dataSets);
 
-            // set data
-            mlineChart.setData(datav);
-
-            //IAxisValueFormatter xAxisFormatter = new DateAxisValueFormatter();
-
-            XAxis xAxis = mlineChart.getXAxis();
-
-            xAxis.setValueFormatter(new DateAxisValueFormatter(null));
-
-            xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-
-            mlineChart.notifyDataSetChanged();
-
-            mlineChart.invalidate();
-
-            data.close();
+        mlineChart.setData(linedata);
+        mlineChart.invalidate();
 
     }
 
@@ -563,7 +614,7 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
     class DateAxisValueFormatter implements IAxisValueFormatter{
 
         private String[] mValues;
-        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd");
+        SimpleDateFormat mFormat = new SimpleDateFormat("dd/MM");
 
         public DateAxisValueFormatter(String[] values) {
             this.mValues = values; }
@@ -572,9 +623,11 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
         @Override
         public String getFormattedValue(float value, AxisBase axis) {
 
-            return sdf.format(new Date((long)value)); // + "/" + strDate.substring(4,6);
-
+            long millisVal = Double.valueOf(value).longValue();
+            //long millis = TimeUnit.DAYS.toMillis((long) value);
+            //Log.v(LOG_TAG, "formatted date (millis): " + millisVal);
+            //Log.v(LOG_TAG, "formatted date: " + mFormat.format(new Date(millisVal)));
+            return mFormat.format(new Date(millisVal));
         }
     }
-
 }

@@ -52,11 +52,18 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="StatementTextStyle">
-        <item name="android:textSize">16sp</item>
+    <style name="RegularBodyTextStyle" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textSize">15sp</item>
         <item name="android:textColor">@color/primary_text</item>
-        <item name="android:fontFamily">sans-serif-light</item>
+        <item name="android:fontFamily">regular</item>
     </style>
+
+    <style name="SubheadTextStyle">
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">@color/primary_text</item>
+        <item name="android:fontFamily">regular</item>
+    </style>
+
 
     <style name="RateTextStyle">
         <item name="android:textSize">25sp</item>
@@ -100,6 +107,7 @@
         <item name="android:textColor">@color/primary_text</item>
         <item name="android:textAllCaps">true</item>
         <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">medium</item>
     </style>
 
 

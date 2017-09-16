@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.personal.fbrigati.myfinance.R;
+import com.personal.fbrigati.myfinance.Utility;
 import com.personal.fbrigati.myfinance.data.DataContract;
 
 import java.text.DateFormat;
@@ -74,7 +75,7 @@ public class StatementAdapter extends CursorAdapter {
             Date date = new SimpleDateFormat("dd/MM/yyyy", Locale.US).parse(dateBuild.toString());
             cal.setTime(date);
             Log.v(LOG_TAG, "raw: " + dateBuild.toString() + " ; date: " + date + " ; formatted:" + cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.US) );
-            viewHolder.textDate.setText(getDayOfWeek(cal.get(Calendar.DAY_OF_WEEK)) + ", " + dateRaw.substring(6, 8));
+            viewHolder.textDate.setText(Utility.getDayOfWeek(ctx, cal.get(Calendar.DAY_OF_WEEK)) + ", " + dateRaw.substring(6, 8));
         } catch (Exception e) {
             //if there's a parse error..
             Log.e(LOG_TAG, "error: " + e);
@@ -156,12 +157,5 @@ public class StatementAdapter extends CursorAdapter {
         }
 
     }
-
-    private String getDayOfWeek(int value) {
-        Log.v(LOG_TAG, "received day value: " + value);
-        String[] dayofweek = ctx.getResources().getStringArray(R.array.dow);
-        return dayofweek[value-1];
-    }
-
 
 }

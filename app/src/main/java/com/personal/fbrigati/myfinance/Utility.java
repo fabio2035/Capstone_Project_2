@@ -3,6 +3,7 @@ package com.personal.fbrigati.myfinance;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.personal.fbrigati.myfinance.sync.MFSyncJob;
 
@@ -144,15 +145,29 @@ public class Utility {
     }
 
     public static int getStatsTrimester(Context c) {
+        final Calendar cal = Calendar.getInstance();
+        int month = cal.get(Calendar.MONTH);
+        int quarter = 1;
+
+        if(month >=0 && month <=2){
+            //is first quarter
+        }else if (month >=3 && month <=5){
+            quarter =2;
+        }else if (month >=6 && month <=8){
+            quarter =3;
+        }else if (month >=9 && month <=11){
+            quarter =4;
+        }
+
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(c);
         return prefs.getInt(c.getString(R.string.pref_stats_trimester_status),
-                1);
+                quarter);
     }
 
     public static String getStatsCategory(Context c) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(c);
         return prefs.getString(c.getString(R.string.pref_stats_category_status),
-                "Transportation");
+                "All");
     }
 
     public static int getStatsNavYear(Context c) {
@@ -200,6 +215,11 @@ public class Utility {
                     break;
         }
         spe.apply();
+    }
+
+    public static String getDayOfWeek(Context c, int value) {
+        String[] dayofweek = c.getResources().getStringArray(R.array.dow);
+        return dayofweek[value-1];
     }
 
 }

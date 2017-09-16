@@ -301,37 +301,73 @@ public class DataProvider extends ContentProvider {
 
         switch (trimestre){
             case 1:
+                if(cat.trim().equals("All")){
+                    return mOpenHelper.getReadableDatabase().rawQuery(
+                            "select a.category, a.date, sum(a.amount) from statement a " +
+                                    " where substr(a.date,5,2)*1 BETWEEN 1 AND 3 " +
+                                    " and substr(a.date,1,4)*1 =" + year +
+                                    " group by a.date, a.category " +
+                                    " order by a.category, a.date " , null);
+                }else{
                 return mOpenHelper.getReadableDatabase().rawQuery(
                         "select a.date, sum(a.amount) from statement a " +
                                 " where substr(a.date,5,2)*1 BETWEEN 1 AND 3 " +
                                 " and substr(a.date,1,4)*1 =" + year +
                                 " and a.category ='" + cat + "'" +
                                 " group by a.date " +
-                                " order by a.date " , null);
+                                " order by a.date " , null);}
             case 2:
+                if(cat.trim().equals("All")){
                 return mOpenHelper.getReadableDatabase().rawQuery(
-                        "select a.date, sum(a.amount) from statement a " +
+                        "select a.category, a.date, sum(a.amount) from statement a " +
                                 " where substr(a.date,5,2)*1 BETWEEN 4 AND 6 " +
                                 " and substr(a.date,1,4)*1 =" + year +
-                                " and a.category ='" + cat + "'" +
-                                " group by a.date " +
-                                " order by a.date ", null);
+                                " group by a.date, a.category " +
+                                " order by a.category, a.date ", null);}
+                else{
+                    return mOpenHelper.getReadableDatabase().rawQuery(
+                            "select a.date, sum(a.amount) from statement a " +
+                                    " where substr(a.date,5,2)*1 BETWEEN 4 AND 6 " +
+                                    " and substr(a.date,1,4)*1 =" + year +
+                                    " and a.category ='" + cat + "'" +
+                                    " group by a.date " +
+                                    " order by a.date ", null);
+                }
             case 3:
+                if(cat.trim().equals("All")){
+                    Log.v(LOG_TAG, "inside 'All' categories.. " + cat);
+                    return mOpenHelper.getReadableDatabase().rawQuery(
+                            "select a.category, a.date, sum(a.amount) from statement a " +
+                                    " where substr(a.date,5,2)*1 BETWEEN 7 AND 9 " +
+                                    " AND substr(a.date,1,4)*1 =" + year +
+                                    " group by a.date, a.category " +
+                                    " order by a.category, a.date ", null);
+                }else{
+                    Log.v(LOG_TAG, "inside specific category.. " + cat );
                 return mOpenHelper.getReadableDatabase().rawQuery(
                         "select a.date, sum(a.amount) from statement a " +
                                 " where substr(a.date,5,2)*1 BETWEEN 7 AND 9 " +
                                 " AND substr(a.date,1,4)*1 =" + year +
                                 " and a.category ='" + cat + "'" +
                                 " group by a.date " +
-                                " order by a.date ", null);
+                                " order by a.date ", null);}
             case 4:
+                if(cat.trim().equals("All")){
                 return mOpenHelper.getReadableDatabase().rawQuery(
-                        "select a.date, sum(a.amount) from statement a " +
+                        "select a.category, a.date, sum(a.amount) from statement a " +
                                 " where substr(a.date,5,2)*1 BETWEEN 10 AND 12 " +
                                 " AND substr(a.date,1,4)*1 =" + year +
-                                " and a.category ='" + cat + "'" +
-                                " group by a.date " +
-                                " order by a.date ", null);
+                                " group by a.date, a.category " +
+                                " order by a.category, a.date ", null);
+                }else{
+                    return mOpenHelper.getReadableDatabase().rawQuery(
+                            "select a.date, sum(a.amount) from statement a " +
+                                    " where substr(a.date,5,2)*1 BETWEEN 10 AND 12 " +
+                                    " AND substr(a.date,1,4)*1 =" + year +
+                                    " and a.category ='" + cat + "'" +
+                                    " group by a.date " +
+                                    " order by a.date ", null);
+                }
             default:
                 return null;
         }

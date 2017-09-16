@@ -95,6 +95,11 @@ public class DataContract {
                     .appendPath(String.valueOf(trimestre)).build();
         }
 
+        public static Uri buildStatsLineGraphChartAllTrimUri(int trimestre, String category) {
+            return CONTENT_URI.buildUpon().appendPath("stats").appendPath("trimester")
+                    .appendPath(category)
+                    .appendPath(String.valueOf(trimestre)).build();
+        }
 
         public static Uri buildWidgetDataUri() {
             return CONTENT_URI.buildUpon().appendPath("widget")
