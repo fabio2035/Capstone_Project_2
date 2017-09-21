@@ -76,6 +76,8 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
 
     private ArrayList<Integer> colors;
 
+    private ArrayList<String> categories;
+
     private Cursor mCategoryCursor;
 
     private int loadedCategories;
@@ -142,9 +144,9 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
         //Get the linechart view
         mlineChart = (LineChart) rootView.findViewById(R.id.linechart);
 
-        seekBarLineChart = (SeekBar) rootView.findViewById(R.id.seekBarLine);
+        //seekBarLineChart = (SeekBar) rootView.findViewById(R.id.seekBarLine);
 
-        mSeekLinLineChart = (LinearLayout) rootView.findViewById(R.id.seekBarLabelLineLayout);
+        //mSeekLinLineChart = (LinearLayout) rootView.findViewById(R.id.seekBarLabelLineLayout);
 
         setupPieChartSeekBar();
 
@@ -160,21 +162,31 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
 
         setInitialTrimester();
 
-        //masterGrid = (GridLayout) rootView.findViewById(R.id.master_grid);
-
-        //colors = new ArrayList<Integer>();
-
-        //for (int c : ColorTemplate.MATERIAL_COLORS)
-        //    colors.add(c);
-
         return rootView;
     }
 
-    private void setupLineChartSeekBar() {
+    private void setupLineChartSeekBar(Cursor data) {
 
-        seekBarLineChart.setOnSeekBarChangeListener(this);
+        categories = new ArrayList<String>();
 
-        seekBarLineChart.setMax(mCategoryCursor.getCount() - 1);
+        String tempCat = "";
+
+        if(data.moveToFirst()) {
+            while(!data.isLast()) {
+                Log.v(LOG_TAG, "Loading category for seek bar: " + data.getString(0));
+                tempCat = data.getString(0);
+                categories.add(tempCat.trim());
+                while (tempCat.trim().equals(data.getString(0)) && !data.isLast()) {
+                    if (data.isLast()) break;
+                    data.moveToNext();
+                }
+            }
+        }
+
+
+        //seekBarLineChart.setOnSeekBarChangeListener(this);
+
+        //seekBarLineChart.setMax(categories.size() + 1);
 
         mSeekLinLineChart.setOrientation(LinearLayout.HORIZONTAL);
 
@@ -226,10 +238,11 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
                 break;
             case LINECHART_LOADER:
                 loader = null;
+                categories = null;
                 break;
-            case CATEGORY_LOADER:
-                mCategoryCursor = null;
-                break;
+            //case CATEGORY_LOADER:
+            //    mCategoryCursor = null;
+            //    break;
         }
     }
 
@@ -241,16 +254,16 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
 
         if(month >0 && month <=2){
             Utility.setStatsPieTrimester(getActivity(), 1);
-            seekBarPieChart.setProgress(1);
+            seekBarPieChart.setProgress(0);
         }else if (month >=3 && month <=5){
             Utility.setStatsPieTrimester(getActivity(), 2);
-            seekBarPieChart.setProgress(2);
+            seekBarPieChart.setProgress(1);
         }else if (month >=6 && month <=8){
             Utility.setStatsPieTrimester(getActivity(), 3);
-            seekBarPieChart.setProgress(3);
+            seekBarPieChart.setProgress(2);
         }else if (month >=9 && month <=11){
             Utility.setStatsPieTrimester(getActivity(), 4);
-            seekBarPieChart.setProgress(4);
+            seekBarPieChart.setProgress(3);
         }
     }
 
@@ -268,14 +281,14 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
                 mlineChart.invalidate();
 
                 break;}
-            case R.id.seekBarLine:
+           /* case R.id.seekBarLine:
             {
                 Log.v(LOG_TAG, "Line Data selected: " + seekBar.getProgress());
                 Utility.setStatsCategory(getActivity(), catMap.get(seekBar.getProgress()));
                 getLoaderManager().restartLoader(LINECHART_LOADER, null, this);
                 //restart line graph aswell..
                 break;
-            }
+            }*/
         }
     }
 
@@ -302,23 +315,28 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     private void addLabelsBelowLineSeekBar() {
-        //first value is all categories in same line graph
-        catMap.put(0, "All");
 
-        for (int count = 1; count < mCategoryCursor.getCount()+1; count++) {
+        //reset seek bar labale
+        mSeekLinLineChart.removeAllViews();
+
+        for (int count = 0; count < categories.size(); count++) {
             TextView textView = new TextView(getContext());
-            textView.setText(mCategoryCursor.getString(DataContract.CategoryEntry.COL_CATEGORY_DEFAULT).substring(0,4));
+            if(count == 0) {
+                //first value is all categories in same line graph
+                textView.setText("All");
+                catMap.put(count, "All");
+            }else{
+                textView.setText(categories.get(count).substring(0, 4));
+                catMap.put(count, categories.get(count));
+            }
+            Log.v(LOG_TAG, "category label: " + catMap.get(count));
+
             textView.setTextColor(getResources().getColor(R.color.colorPrimary));
             textView.setGravity(Gravity.CENTER_HORIZONTAL);
             textView.setRotation(45);
             textView.setPadding(0,10,0,0);
             mSeekLinLineChart.addView(textView);
-            textView.setLayoutParams((count == maxCount - 1) ? getLayoutParams(0.0f) : getLayoutParams(1.0f));
-            //add to catMap for query retrieval..
-            Log.v(LOG_TAG, "adding " + mCategoryCursor.getString(DataContract.CategoryEntry.COL_CATEGORY_DEFAULT)
-                           + " , to position " + count);
-            catMap.put(count, mCategoryCursor.getString(DataContract.CategoryEntry.COL_CATEGORY_DEFAULT));
-            mCategoryCursor.moveToNext();
+            textView.setLayoutParams((count == categories.size() - 1) ? getLayoutParams(0.0f) : getLayoutParams(1.0f));
         }
     }
 
@@ -358,9 +376,9 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
         mpieChart.setDescription(desc);
 
         Legend l = mpieChart.getLegend();
-        l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
-        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
-        l.setOrientation(Legend.LegendOrientation.VERTICAL);
+        l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
+        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
+        l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
         l.setDrawInside(false);
         l.setXEntrySpace(7f);
         l.setYEntrySpace(0f);
@@ -472,20 +490,26 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
         SimpleDateFormat mFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.US);
 
         int i = 0;
-        //for (int i = 0; i < data.getCount(); i++) {
-        do{
 
-            ArrayList<Entry> values = new ArrayList<Entry>();
-            category = data.getString(0).trim();
+        if(data.moveToFirst()) {
+            while(!data.isAfterLast()) {
+
+                ArrayList<Entry> values = new ArrayList<Entry>();
+                category = data.getString(0);
+                Log.v(LOG_TAG, "cursor position: " + data.getPosition() +
+                                "text category: " + category +
+                                "cursor category: " + data.getString(0));
 
                 //Category loop
-                while(data.getString(0).trim().equals(category) && i < data.getCount()) {
+                do{
+                    if(!category.equals(data.getString(0))) break;
+
                     //counter++;
                     Log.v(LOG_TAG, "cat: " + category +
-                                   " ; date: " + String.valueOf(data.getInt(1)) +
-                                   " ; value: " + data.getDouble(2) +
-                                   " ; data counter: " + i +
-                                   " ; Category coutner: " + Catcounter);
+                            " ; date: " + String.valueOf(data.getInt(1)) +
+                            " ; value: " + data.getDouble(2) +
+                            " ; data counter: " + i +
+                            " ; Category coutner: " + Catcounter);
                     //For every category group values into datasets
                     float amtRaw = (float) data.getDouble(2);
                     //get date and format
@@ -494,7 +518,7 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
                     //and then pass it to date format to get the formatted date
                     StringBuilder dateBuild = new StringBuilder().append(dateRaw.substring(6, 8)).append("/").append(dateRaw.substring(4, 6)).append("/").append(dateRaw.substring(0, 4));
 
-                    try{
+                    try {
                         Date date = new SimpleDateFormat("dd/MM/yyyy", Locale.US).parse(dateBuild.toString());
                         cal.setTime(date);
                         Long timeinmillis = cal.getTimeInMillis();
@@ -505,33 +529,28 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
                         //  Log.v(LOG_TAG, "error parsing date..");
                     }
 
-                    if(data.isLast()) break;
-
-                    data.moveToNext();
-                    i++;
-                }
+                    }while(data.moveToNext());
 
                 //configure the line for the particular category
-                LineDataSet d = new LineDataSet(values, data.getString(0));
+                LineDataSet d = new LineDataSet(values, category);
                 d.setLineWidth(2.5f);
+                d.setCircleRadius(4f);
                 //set colors
                 d.setColor(colors.get(Catcounter));
                 d.setCircleColor(colors.get(Catcounter));
 
                 dataSets.add(d);
-
-                data.moveToNext();
-                //category counter ++
                 Catcounter++;
-                //cursor data counter ++
-                i++;
-            }while(i < data.getCount());
+
+            }
+        }
 
         LineData linedata = new LineData(dataSets);
 
         mlineChart.setData(linedata);
         mlineChart.invalidate();
 
+        data.close();
     }
 
     @Override
@@ -561,17 +580,6 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
                         null,
                         null);
 
-            case CATEGORY_LOADER: {
-                //Log.v(LOG_TAG, "Category loader called");
-                //Todo: make category selection
-                return new CursorLoader(
-                        getActivity(),
-                        DataContract.CategoryEntry.CONTENT_URI,
-                        DataContract.CategoryEntry.CATEGORY_COLUMNS,
-                        null,
-                        null,
-                        null);
-            }
         }
         return null;
     }
@@ -585,6 +593,8 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
                 //Log.v(LOG_TAG, "onLoadFinish for Line Chart loader called. data with: " + data.getCount());
 
                 if (data != null && data.moveToFirst() && data.getCount() > 0) {
+                    // Load available categories
+                    //setupLineChartSeekBar(data);
                     //Load piechart data
                     setLineCharData(data);
                 }
@@ -600,12 +610,6 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
                     setPieData(data);
                 }
 
-                break;
-            case CATEGORY_LOADER:
-                if (data != null && data.moveToFirst() && data.getCount() > 0) {
-                    mCategoryCursor = data;
-                    setupLineChartSeekBar();
-                }
                 break;
         }
     }

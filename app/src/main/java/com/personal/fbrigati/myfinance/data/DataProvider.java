@@ -132,7 +132,6 @@ public class DataProvider extends ContentProvider {
         return matcher;
     }
 
-
     @Override
     public boolean onCreate() {
         mOpenHelper = new DataDBHelper(getContext());
@@ -266,24 +265,28 @@ public class DataProvider extends ContentProvider {
                         "select a.category, sum(a.amount) from statement a " +
                                 " where substr(a.date,5,2)*1 BETWEEN 1 AND 3 " +
                                 " and substr(a.date,1,4)*1 =" + year +
+                                " and a.trxcode >=6 " +
                                 " group by a.category" , null);
             case 2:
                 return mOpenHelper.getReadableDatabase().rawQuery(
                         "select a.category, sum(a.amount) from statement a " +
                                 " where substr(a.date,5,2)*1 BETWEEN 4 AND 6 " +
                                 " and substr(a.date,1,4)*1 =" + year +
+                                " and a.trxcode >=6 " +
                                 " group by a.category", null);
             case 3:
                 return mOpenHelper.getReadableDatabase().rawQuery(
                         "select a.category, sum(a.amount) from statement a " +
                                 " where substr(a.date,5,2)*1 BETWEEN 7 AND 9 " +
                                 " AND substr(a.date,1,4)*1 =" + year +
+                                " and a.trxcode >=6 " +
                                 " group by a.category", null);
             case 4:
                 return mOpenHelper.getReadableDatabase().rawQuery(
                         "select a.category, sum(a.amount) from statement a " +
                                 " where substr(a.date,5,2)*1 BETWEEN 10 AND 12 " +
                                 " AND substr(a.date,1,4)*1 =" + year +
+                                " and a.trxcode >=6 " +
                                 " group by a.category", null);
             default:
                 return null;
@@ -306,15 +309,17 @@ public class DataProvider extends ContentProvider {
                             "select a.category, a.date, sum(a.amount) from statement a " +
                                     " where substr(a.date,5,2)*1 BETWEEN 1 AND 3 " +
                                     " and substr(a.date,1,4)*1 =" + year +
+                                    " and a.trxcode >=6 " +
                                     " group by a.date, a.category " +
                                     " order by a.category, a.date " , null);
                 }else{
                 return mOpenHelper.getReadableDatabase().rawQuery(
-                        "select a.date, sum(a.amount) from statement a " +
+                        "select a.category, a.date, sum(a.amount) from statement a " +
                                 " where substr(a.date,5,2)*1 BETWEEN 1 AND 3 " +
                                 " and substr(a.date,1,4)*1 =" + year +
                                 " and a.category ='" + cat + "'" +
-                                " group by a.date " +
+                                " and a.trxcode >=6 " +
+                                " group by a.date, a.category " +
                                 " order by a.date " , null);}
             case 2:
                 if(cat.trim().equals("All")){
@@ -322,15 +327,17 @@ public class DataProvider extends ContentProvider {
                         "select a.category, a.date, sum(a.amount) from statement a " +
                                 " where substr(a.date,5,2)*1 BETWEEN 4 AND 6 " +
                                 " and substr(a.date,1,4)*1 =" + year +
+                                " and a.trxcode >=6 " +
                                 " group by a.date, a.category " +
                                 " order by a.category, a.date ", null);}
                 else{
                     return mOpenHelper.getReadableDatabase().rawQuery(
-                            "select a.date, sum(a.amount) from statement a " +
+                            "select a.category, a.date, sum(a.amount) from statement a " +
                                     " where substr(a.date,5,2)*1 BETWEEN 4 AND 6 " +
                                     " and substr(a.date,1,4)*1 =" + year +
                                     " and a.category ='" + cat + "'" +
-                                    " group by a.date " +
+                                    " and a.trxcode >=6 " +
+                                    " group by a.date, a.category " +
                                     " order by a.date ", null);
                 }
             case 3:
@@ -340,16 +347,18 @@ public class DataProvider extends ContentProvider {
                             "select a.category, a.date, sum(a.amount) from statement a " +
                                     " where substr(a.date,5,2)*1 BETWEEN 7 AND 9 " +
                                     " AND substr(a.date,1,4)*1 =" + year +
+                                    " and a.trxcode >=6 " +
                                     " group by a.date, a.category " +
                                     " order by a.category, a.date ", null);
                 }else{
                     Log.v(LOG_TAG, "inside specific category.. " + cat );
                 return mOpenHelper.getReadableDatabase().rawQuery(
-                        "select a.date, sum(a.amount) from statement a " +
+                        "select a.category, a.date, sum(a.amount) from statement a " +
                                 " where substr(a.date,5,2)*1 BETWEEN 7 AND 9 " +
                                 " AND substr(a.date,1,4)*1 =" + year +
                                 " and a.category ='" + cat + "'" +
-                                " group by a.date " +
+                                " and a.trxcode >=6 " +
+                                " group by a.date, a.category " +
                                 " order by a.date ", null);}
             case 4:
                 if(cat.trim().equals("All")){
@@ -357,15 +366,17 @@ public class DataProvider extends ContentProvider {
                         "select a.category, a.date, sum(a.amount) from statement a " +
                                 " where substr(a.date,5,2)*1 BETWEEN 10 AND 12 " +
                                 " AND substr(a.date,1,4)*1 =" + year +
+                                " and a.trxcode >=6 " +
                                 " group by a.date, a.category " +
                                 " order by a.category, a.date ", null);
                 }else{
                     return mOpenHelper.getReadableDatabase().rawQuery(
-                            "select a.date, sum(a.amount) from statement a " +
+                            "select a.category, a.date, sum(a.amount) from statement a " +
                                     " where substr(a.date,5,2)*1 BETWEEN 10 AND 12 " +
                                     " AND substr(a.date,1,4)*1 =" + year +
                                     " and a.category ='" + cat + "'" +
-                                    " group by a.date " +
+                                    " and a.trxcode >=6 " +
+                                    " group by a.date, a.category " +
                                     " order by a.date ", null);
                 }
             default:
@@ -379,15 +390,18 @@ public class DataProvider extends ContentProvider {
                         "ifnull(" +
                         "(SELECT amount FROM statement as a " +
                         "WHERE a.date = cast(date('now', '%Y%m%d') as INT) " +
+                        " and a.trxcode >=6 " +
                         "), 0) " +
                         "UNION " +
                         "ifnull(SELECT date, amount, 'week' as period FROM statement as b " +
                         "WHERE b.date >= DATE('now', 'weekday 0', '-7 days') " +
+                        " and a.trxcode >=6 " +
                         "), 0) " +
                         "UNION " +
                         "ifnull(" +
                         "(SELECT date, amount, 'month' as period FROM statement as c " +
                         "WHERE substr(c.date,5,2)*1 = date('now', %m)*1 " +
+                        " and a.trxcode >=6 " +
                         "), 0)",null);
     }
 
@@ -404,7 +418,6 @@ public class DataProvider extends ContentProvider {
 
     }
 
-
     private Cursor checkCategory(Uri uri, String[] projection, String sortOrder) {
 
         String query = "SELECT * FROM category ";
@@ -412,7 +425,6 @@ public class DataProvider extends ContentProvider {
         return mOpenHelper.getReadableDatabase().rawQuery(
                 query , null);//, String.valueOf(month)});
     }
-
 
     private Cursor getBudgetWithMonth(Uri uri, String[] projection, String sortOrder) {
 

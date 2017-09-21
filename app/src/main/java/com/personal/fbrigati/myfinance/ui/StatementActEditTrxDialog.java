@@ -187,9 +187,9 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
 
         //Firebase stuff...
         //initialize object variables
-        mFirebaseDatabase = FirebaseDatabase.getInstance();
-        mUsername = ANONYMOUS;
-        mStatementDatabaseReference = mFirebaseDatabase.getReference().child("statement");
+        //mFirebaseDatabase = FirebaseDatabase.getInstance();
+        //mUsername = ANONYMOUS;
+        //mStatementDatabaseReference = mFirebaseDatabase.getReference().child("statement");
     }
 
 
@@ -219,8 +219,10 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
 
         if (spinner_trxType.getSelectedItem().equals("Debit")){
             trxType = 6;
+            cv.put(DataContract.StatementEntry.COLUMN_CATEGORY_KEY, spinner_ctg.getSelectedItem().toString());
         }else{
             trxType = 0;
+            cv.put(DataContract.StatementEntry.COLUMN_CATEGORY_KEY, "Credit");
         }
 
         cv.put(DataContract.StatementEntry.COLUMN_ACCOUNT_NUMBER, "0529925801");
@@ -232,7 +234,7 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
         cv.put(DataContract.StatementEntry.COLUMN_AMOUNT, Double.valueOf(amountText.getText().toString()));
         cv.put(DataContract.StatementEntry.COLUMN_TRANSACTION_CODE, trxType);
         cv.put(DataContract.StatementEntry.COLUMN_ACQUIRER_ID, "0");
-        cv.put(DataContract.StatementEntry.COLUMN_CATEGORY_KEY, spinner_ctg.getSelectedItem().toString());
+
 
         Uri uri = getContentResolver().insert(DataContract.StatementEntry.CONTENT_URI, cv);
 
@@ -244,6 +246,7 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
             Log.v(LOG_TAG, "SENDING BROADCAST FOR WIDGET UPDATE!!");
             updateWidgets();
 
+            /*
             //if successfully saved to DB we can Save to Firbase aswell...
             Statement statementData = new Statement(DataContract.StatementEntry.getIDFromUri(uri),
                     "0529925801",
@@ -257,7 +260,7 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
                     "0",
                     spinner_ctg.getSelectedItem().toString());
 
-            mStatementDatabaseReference.push().setValue(statementData);
+            mStatementDatabaseReference.push().setValue(statementData); */
         }
 
         finish();
@@ -376,13 +379,6 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
             case STATEMENT_LOADER_ID:
                 if (data != null && data.moveToFirst() && data.getCount() > 0) {
 
-                    Log.v(LOG_TAG, "Amount: " + String.valueOf(data.getDouble(6)));
-
-                    Log.v(LOG_TAG, "| description: " + data.getString(3));
-                    Log.v(LOG_TAG, "| date: " + data.getInt(4));
-                    Log.v(LOG_TAG, "| time: " + data.getString(5));
-                    Log.v(LOG_TAG, "| Category: " + data.getString(7));
-
                     amountText.setText(String.valueOf(data.getDouble(6)));
 
                     descText.setText(data.getString(3));
@@ -392,8 +388,6 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
                     String time = data.getString(5);
 
                     String dateStr = date.toString();
-
-                    String category = data.getString(7).trim();
 
                     StringBuilder dateBuild = new StringBuilder().append(dateStr.substring(6, 8)).append("/").append(dateStr.substring(4, 6)).append("/").append(dateStr.substring(0, 4));
 

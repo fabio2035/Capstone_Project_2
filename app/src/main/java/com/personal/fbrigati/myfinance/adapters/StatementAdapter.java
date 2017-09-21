@@ -115,6 +115,10 @@ public class StatementAdapter extends CursorAdapter {
                 viewHolder.iconView.setImageResource(R.drawable.rent_icon);
                 break;
             }
+            case "Credit" : {
+                viewHolder.iconView.setImageResource(R.drawable.credit_icon);
+                break;
+            }
         }
 
         viewHolder.iconView.setBackgroundColor(context.getResources().getColor(R.color.colorAccent));

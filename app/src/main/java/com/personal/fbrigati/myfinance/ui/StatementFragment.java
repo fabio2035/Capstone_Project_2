@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.GridLayout;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,10 +17,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
 import com.personal.fbrigati.myfinance.adapters.StatementAdapter;
 import com.personal.fbrigati.myfinance.data.DataContract;
 
@@ -81,6 +85,9 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
     private ImageButton bakBtn;
     private ImageButton fwdBtn;
     private TextView monthLabel;
+    private AdView advertising;
+    private RelativeLayout empty_viewLL;
+    private GridLayout balanceGrid;
 
     private final DecimalFormat currencyFormatWithPlus;
     private final DecimalFormat currencyFormatWithMinus;
@@ -178,6 +185,20 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
         empty_view = (TextView) rootView.findViewById(R.id.empty_statement);
 
         textBalance = (TextView) rootView.findViewById(R.id.balance_value);
+
+        balanceGrid = (GridLayout) rootView.findViewById(R.id.grid_balance);
+
+        advertising = (AdView) rootView.findViewById(R.id.ad_view_statement);
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)        // All emulators
+                .addTestDevice("53F4B94474E00A7E14FD516F7AD2ACDF")  // My Galaxy Nexus test phone
+                .build();
+
+        advertising.loadAd(adRequest);
+
+//        advertising = (AdView) rootView.findViewById(R.id.ad_view_statement);
+
+        empty_viewLL = (RelativeLayout) rootView.findViewById(R.id.empty_view);
 
         return rootView;
 
@@ -328,11 +349,17 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
         if(flag == 1){
             onResumeflag =true;
             statement_details.setVisibility(View.VISIBLE);
-            empty_view.setVisibility(View.GONE);
+            empty_viewLL.setVisibility(View.GONE);
+            balanceGrid.setVisibility(View.VISIBLE);
+            //empty_view.setVisibility(View.GONE);
+            //advertising.setVisibility(View.GONE);
         //No data found to be displayed
         }else{ //if(flag == 0){
             statement_details.setVisibility(View.GONE);
-            empty_view.setVisibility(View.VISIBLE);
+            empty_viewLL.setVisibility(View.VISIBLE);
+            balanceGrid.setVisibility(View.GONE);
+            //empty_view.setVisibility(View.VISIBLE);
+            //advertising.setVisibility(View.VISIBLE);
         }
     }
 
