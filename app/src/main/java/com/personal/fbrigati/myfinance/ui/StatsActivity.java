@@ -3,7 +3,6 @@ package com.personal.fbrigati.myfinance.ui;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import com.personal.fbrigati.myfinance.R;
 import com.personal.fbrigati.myfinance.Utility;

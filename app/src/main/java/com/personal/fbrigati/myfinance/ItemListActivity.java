@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,10 +40,10 @@ public class ItemListActivity extends AppCompatActivity {
 
     private AdView mAdView;
 
-    private boolean showInstr_Statement = true;
-    private boolean showInstr_Budget = true;
-    private boolean showInstr_Stats = true;
-    private boolean showInstr_Currencies = true;
+    private boolean showInstr_Statement = false;
+    private boolean showInstr_Budget = false;
+    private boolean showInstr_Stats = false;
+    private boolean showInstr_Currencies = false;
 
 
     @Override
@@ -62,10 +63,10 @@ public class ItemListActivity extends AppCompatActivity {
 
 
         mAdView = (AdView) findViewById(R.id.ad_view);
-        AdRequest adRequest = new AdRequest.Builder()
-                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)        // All emulators
-                .addTestDevice("53F4B94474E00A7E14FD516F7AD2ACDF")  // My Galaxy Nexus test phone
-                .build();
+        AdRequest adRequest = new AdRequest.Builder().build();
+        //        .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)        // All emulators
+        //        .addTestDevice("53F4B94474E00A7E14FD516F7AD2ACDF")  // My Galaxy Nexus test phone
+        //        .build();
         mAdView.loadAd(adRequest);
 
 
@@ -109,8 +110,8 @@ public class ItemListActivity extends AppCompatActivity {
         public void onBindViewHolder(final ViewHolder holder, int position) {
             holder.mItem = mValues.get(position);
             //holder.mIdView.setText(mValues.get(position).id);
-            holder.mContentView.setText(mValues.get(position).content);
-            holder.mContentView.setContentDescription(mValues.get(position).content);
+            holder.mContentView.setText(getResources().getString(mValues.get(position).content));
+            holder.mContentView.setContentDescription(getResources().getString(mValues.get(position).content));
             holder.mIcon.setImageResource(mValues.get(position).icon);
 
             holder.mView.setOnClickListener(new View.OnClickListener() {

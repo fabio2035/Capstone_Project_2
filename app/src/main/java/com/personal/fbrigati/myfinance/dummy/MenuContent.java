@@ -1,5 +1,7 @@
 package com.personal.fbrigati.myfinance.dummy;
 
+import android.content.Context;
+
 import com.personal.fbrigati.myfinance.R;
 
 import java.util.ArrayList;
@@ -25,10 +27,12 @@ public class MenuContent {
      */
     public static final Map<String, MenuItem> ITEM_MAP = new HashMap<String, MenuItem>();
 
-    public static final String[] menu_items = {"Statement", "Budget", "Stats", "Currencies"};
+    public static int[] menu_items = {R.string.menu_statement,
+                               R.string.menu_budget,
+                               R.string.menu_stats,
+                               R.string.menu_currencies};
 
     public static final int[] icon_items = {R.drawable.menu_icon_statement,R.drawable.menu_icon_budget, R.drawable.menu_icon_stats, R.drawable.menu_icon_curex };
-
 
     private static final int COUNT = 3;
 
@@ -45,7 +49,10 @@ public class MenuContent {
     }
 
     private static MenuItem createDummyItem(int position) {
-        return new MenuItem(String.valueOf(position), menu_items[position], makeDetails(position), icon_items[position]);
+        return new MenuItem(String.valueOf(position),
+                menu_items[position],
+                makeDetails(position),
+                icon_items[position]);
     }
 
     private static String makeDetails(int position) {
@@ -62,20 +69,20 @@ public class MenuContent {
      */
     public static class MenuItem {
         public final String id;
-        public final String content;
+        public final int content;
         public final String details;
         public final int icon;
 
-        public MenuItem(String id, String content, String details, int icon) {
+        public MenuItem(String id, int content, String details, int icon) {
             this.id = id;
             this.content = content;
             this.details = details;
             this.icon = icon;
         }
 
-        @Override
+        /*@Override
         public String toString() {
             return content;
-        }
+        }*/
     }
 }

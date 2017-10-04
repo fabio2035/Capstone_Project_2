@@ -5,7 +5,6 @@ package com.personal.fbrigati.myfinance.ui;
  */
 
 import android.content.Context;
-import android.util.Log;
 import android.view.Gravity;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
@@ -49,7 +48,6 @@ public class CustomSeekBar {
 
         } else {
 
-            Log.e("CustomSeekBar", " Parent is not a LinearLayout");
 
         }
 

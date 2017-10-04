@@ -15,7 +15,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.IntDef;
-import android.util.Log;
 
 import com.personal.fbrigati.myfinance.R;
 import com.personal.fbrigati.myfinance.data.DataContract;
@@ -27,7 +26,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -87,8 +85,6 @@ public class MFSyncJob extends AbstractThreadedSyncAdapter {
 
         String base_cur = sp.getString(context.getString(R.string.pref_cur_key), context.getString(R.string.pref_cur_default)).trim();
 
-        Log.v(LOG_TAG, "checking cur preference: " + base_cur);
-
         String yql_query = "select * from yahoo.finance.xchange where pair in ";
 
         StringBuilder currencies_group = new StringBuilder();
@@ -109,11 +105,9 @@ public class MFSyncJob extends AbstractThreadedSyncAdapter {
         currencies_group.append(")");
 
 
-        Log.v(LOG_TAG, "defaultCur: " + currencies_group);
         String source = "store://datatables.org/alltableswithkeys";
         String joint = yql_query + currencies_group;
 
-        Log.v(LOG_TAG, "Inside onPerformSync.. trying to fetch csv");
 
         try {
             final String BASE_URL = "http://query.yahooapis.com/v1/public/yql?";
@@ -126,8 +120,6 @@ public class MFSyncJob extends AbstractThreadedSyncAdapter {
                     .build();
 
             URL url = new URL(builtUri.toString());
-
-            Log.v(LOG_TAG, "Connecting with URL: " + url.toString());
 
             // Create the request to Yahoo Fiinance, and open the connection
             urlConnection = (HttpURLConnection) url.openConnection();
@@ -143,15 +135,12 @@ public class MFSyncJob extends AbstractThreadedSyncAdapter {
 //            Log.v(LOG_TAG, "Buffered: " + reader.toString());
             String line;
             while ((line = reader.readLine()) != null) {
-                Log.v(LOG_TAG, "Current csv Line: " + line);
                 buffer.append(line + "\n");
             }
 
             getDataFromBuffer(buffer.toString());
 
-            Log.v(LOG_TAG, "Buffered: " + buffer.toString());
         } catch (IOException e) {
-            Log.e(LOG_TAG, "Error ", e);
             //other generic errors will have to be thrown visually
             setCurrencyFetchStatus(context, MFSyncJob.CURRENCYFETCH_STATUS_INVALID);
             context.getContentResolver().notifyChange(invalid_currencyFetch_uri, null, false);
@@ -185,7 +174,6 @@ public class MFSyncJob extends AbstractThreadedSyncAdapter {
         Document doc = dBuilder.parse(new InputSource(new StringReader(buffer)));
             doc.getDocumentElement().normalize();
             NodeList nList = doc.getElementsByTagName("rate");
-            Log.v(LOG_TAG, "root element :" + doc.getDocumentElement().getNodeName());
             for(int i = 0; i < nList.getLength(); i++){
                 Node nNode = nList.item(i);
                 if (nNode.getNodeType() == Node.ELEMENT_NODE)
@@ -193,15 +181,10 @@ public class MFSyncJob extends AbstractThreadedSyncAdapter {
                     ContentValues currCV = new ContentValues();
 
                     Element eElement = (Element) nNode;
-                    Log.v(LOG_TAG, "element id :" + eElement.getAttribute("id"));
-                    Log.v(LOG_TAG, "------------");
-                    Log.v(LOG_TAG, "Name: " + eElement.getElementsByTagName("Name").item(0).getTextContent());
                     symbol = eElement.getElementsByTagName("Name").item(0).getTextContent();
                     currCV.put(DataContract.CurrencyExEntry.COLUMN_SYMBOL, symbol);
-                    Log.v(LOG_TAG, "Rate: " + eElement.getElementsByTagName("Rate").item(0).getTextContent());
                     rate = Double.parseDouble(eElement.getElementsByTagName("Rate").item(0).getTextContent());
                     currCV.put(DataContract.CurrencyExEntry.COLUMN_RATE, rate);
-                    Log.v(LOG_TAG, "Date: " + eElement.getElementsByTagName("Date").item(0).getTextContent());
                     date = eElement.getElementsByTagName("Date").item(0).getTextContent();
                     currCV.put(DataContract.CurrencyExEntry.COLUMN_DATE, date);
 
@@ -214,7 +197,7 @@ public class MFSyncJob extends AbstractThreadedSyncAdapter {
                             DataContract.CurrencyExEntry.CONTENT_URI,
                             currCVs.toArray(new ContentValues[currCVs.size()]));
     } catch (Exception e){
-            Log.v(LOG_TAG, "there was an error: " + e.toString());
+            //Log.v(LOG_TAG, "there was an error: " + e.toString());
         }
     }
 

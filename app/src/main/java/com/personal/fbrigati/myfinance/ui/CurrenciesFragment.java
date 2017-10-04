@@ -12,7 +12,6 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -124,7 +123,6 @@ public class CurrenciesFragment extends Fragment implements LoaderManager.Loader
                 super.onChange(selfChange);
 
                 @MFSyncJob.CurrencyFetchStatus int status = Utility.getCurrencyFetchStatus(getActivity());
-                Log.v(LOG_TAG,"change heard by content observer.. with status: " + status);
                 switch(status){
                     case MFSyncJob.CURRENCYFETCH_STATUS_OK:
                     {
@@ -154,7 +152,7 @@ public class CurrenciesFragment extends Fragment implements LoaderManager.Loader
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
                 SharedPreferences.Editor prefsEditor = prefs.edit();
                 prefsEditor.apply();
-                Log.v(LOG_TAG, "symbol chosen: " + symbol.toString());
+                //Log.v(LOG_TAG, "symbol chosen: " + symbol.toString());
                 Utility.setPrefferecSymbol(getActivity(), symbol.toString());
                 MFSyncJob.syncImmediately(getActivity());
                 //restarLoader();
@@ -164,10 +162,10 @@ public class CurrenciesFragment extends Fragment implements LoaderManager.Loader
         });
 
         mAdView = (AdView) rootView.findViewById(R.id.ad_view);
-        AdRequest adRequest = new AdRequest.Builder()
-                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)        // All emulators
-                .addTestDevice("53F4B94474E00A7E14FD516F7AD2ACDF")  // My Galaxy Nexus test phone
-                .build();
+        AdRequest adRequest = new AdRequest.Builder().build();
+        //        .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)        // All emulators
+        //        .addTestDevice("53F4B94474E00A7E14FD516F7AD2ACDF")  // My Galaxy Nexus test phone
+        //        .build();
         mAdView.loadAd(adRequest);
 
         return rootView;
@@ -190,10 +188,10 @@ public class CurrenciesFragment extends Fragment implements LoaderManager.Loader
         if(SP!=null){
             String selected = SP.getString(getContext().getString(R.string.pref_cur_key), getContext().getString(R.string.pref_cur_default));
             getActivity().getContentResolver().registerContentObserver(DataContract.CurrencyExEntry.buildCurrencyUri(selected), false, mObserver);
-            Log.v(LOG_TAG, "Retrieved selected position: " + selected);
+
             String[] symbolArray = getResources().getStringArray(R.array.cur_symbols);
             int pos = Arrays.asList(symbolArray).indexOf(selected.trim());
-            Log.v(LOG_TAG, "Retrieved selected position in: " + pos);
+
             spinner_view.setSelection(pos);
         }
         super.onResume();
@@ -216,7 +214,6 @@ public class CurrenciesFragment extends Fragment implements LoaderManager.Loader
 
         switch (id){
             case CURRENCIES_LOADER:
-                Log.v(LOG_TAG, "statement cursor loader called with uri:" + currencies_uri );
                 SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(getActivity());
                 String symbol = SP.getString(getContext().getString(R.string.pref_cur_key), getContext().getString(R.string.pref_cur_default));
                 return new CursorLoader(
@@ -256,7 +253,6 @@ public class CurrenciesFragment extends Fragment implements LoaderManager.Loader
         }
 
     private void updateEmptyView() {
-        Log.v(LOG_TAG, "items in currency list adapter: " + currencyList.getCount());
         if(currencyList.getCount() > 0){
             currencyList.setVisibility(View.VISIBLE);
             empty_view.setVisibility(View.GONE);

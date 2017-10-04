@@ -6,7 +6,6 @@ import android.content.Context;
 import java.util.Calendar;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.util.Log;
 import android.widget.DatePicker;
 
 /**
@@ -63,7 +62,6 @@ public class DatePickerFragment extends DialogFragment
 
         // Do something with the date chosen by the user
         mListener = (DateSetListenerCustom) getActivity();
-        Log.v(LOG_TAG, "Variables: " + year + "," + month + "," + day);
 
         mListener.showDate(year, month+1, day);
         this.dismiss();

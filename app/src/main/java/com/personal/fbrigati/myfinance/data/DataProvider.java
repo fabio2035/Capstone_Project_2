@@ -9,7 +9,6 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.personal.fbrigati.myfinance.Utility;
 
@@ -142,7 +141,6 @@ public class DataProvider extends ContentProvider {
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
 
-        Log.v(LOG_TAG, "uri received: " + uri + ". matched ID: " + sUriMatcher.match(uri));
 
         Cursor retCursor;
         switch (sUriMatcher.match(uri)) {
@@ -165,12 +163,10 @@ public class DataProvider extends ContentProvider {
             }
             case STATEMENT_STATS_TRIMESTER: {
                 retCursor = getStatsPieChartByTrimester(uri, projection, sortOrder);
-                Log.v(LOG_TAG, "Stats trimester data count: " + retCursor.getCount());
                 break;
             }
             case STATEMENT_LINEGRAPH_DATA: {
                 retCursor = getStatsLineGraphByTrimester(uri, projection, sortOrder);
-                Log.v(LOG_TAG, "Stats linegraph trimester data count: " + retCursor.getCount());
                 break;
             }
             // "statement"
@@ -184,8 +180,6 @@ public class DataProvider extends ContentProvider {
                         null,
                         sortOrder
                 );
-                Log.v(LOG_TAG, "selectionArgs: " + selectionArgs[0]);
-                Log.v(LOG_TAG, "selection: " + selection);
                 break;
             }
             case STATEMENT_WIDGET_DATA: {
@@ -229,7 +223,6 @@ public class DataProvider extends ContentProvider {
             }
             // "Currencies"
             case CUREX_WITH_BASE: {
-                Log.v(LOG_TAG, "inside CUREX_WITH_BASE");
                 retCursor = getCurrenciesByBaseCurrency(uri, projection, sortOrder);
                 break;
             }
@@ -245,7 +238,6 @@ public class DataProvider extends ContentProvider {
         //String category = DataContract.BudgetEntry.getBudgetCategory(uri);
         int month = DataContract.StatementEntry.getMonthFromUri(uri);
 
-        Log.v(LOG_TAG, "Inside getStatementByMonth, retrieved month number: " + String.valueOf(month));
 
         return mOpenHelper.getReadableDatabase().rawQuery(
                 "select a._ID, a.date, a.amount, a.category from statement a " +
@@ -257,7 +249,6 @@ public class DataProvider extends ContentProvider {
         int trimestre = DataContract.StatementEntry.getMonthFromUri(uri);
         int year = Utility.getStatsNavYear(getContext());
 
-        Log.v(LOG_TAG, "inside getStatsTrimester trimester: " + trimestre + "; Year: " + year);
 
         switch (trimestre){
             case 1:
@@ -299,8 +290,6 @@ public class DataProvider extends ContentProvider {
         String cat = DataContract.StatementEntry.getCategoryFromUri(uri);
         int year = Utility.getStatsNavYear(getContext());
 
-        Log.v(LOG_TAG, "inside getStatsTrimester trimester: " + trimestre +
-                "; Year: " + year + "; Category: " + cat);
 
         switch (trimestre){
             case 1:
@@ -342,7 +331,6 @@ public class DataProvider extends ContentProvider {
                 }
             case 3:
                 if(cat.trim().equals("All")){
-                    Log.v(LOG_TAG, "inside 'All' categories.. " + cat);
                     return mOpenHelper.getReadableDatabase().rawQuery(
                             "select a.category, a.date, sum(a.amount) from statement a " +
                                     " where substr(a.date,5,2)*1 BETWEEN 7 AND 9 " +
@@ -351,7 +339,6 @@ public class DataProvider extends ContentProvider {
                                     " group by a.date, a.category " +
                                     " order by a.category, a.date ", null);
                 }else{
-                    Log.v(LOG_TAG, "inside specific category.. " + cat );
                 return mOpenHelper.getReadableDatabase().rawQuery(
                         "select a.category, a.date, sum(a.amount) from statement a " +
                                 " where substr(a.date,5,2)*1 BETWEEN 7 AND 9 " +
@@ -524,16 +511,13 @@ public class DataProvider extends ContentProvider {
         final int match = sUriMatcher.match(uri);
         Uri returnUri;
 
-        Log.v(LOG_TAG, "inside provider insert method");
 
         switch(match){
             case STATEMENT:{
                 //normalizeData();
-                Log.v(LOG_TAG, "About to execute insert os statement values..");
                 long _id = db.insert(DataContract.StatementEntry.TABLE_NAME, null, values);
                 if (_id > 0)
                 {
-                    Log.v(LOG_TAG, "Inserted something, returned value: " + _id);
                     returnUri = DataContract.StatementEntry.buildStatementUri(_id);
                 }
                 else
@@ -551,7 +535,6 @@ public class DataProvider extends ContentProvider {
             case BUDGET:{
                 long _id = db.insert(DataContract.BudgetEntry.TABLE_NAME, null, values);
                 if (_id > 0) {
-                    Log.v(LOG_TAG, "inserted Budget item..");
                     returnUri = DataContract.BudgetEntry.buildBudgetUri(_id);
                 }else
                     throw new android.database.SQLException("Failed to insert row into " + uri);

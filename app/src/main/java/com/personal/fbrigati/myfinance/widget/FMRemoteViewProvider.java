@@ -4,12 +4,12 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Binder;
-import android.util.Log;
 import android.widget.AdapterView;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
 import com.personal.fbrigati.myfinance.R;
+import com.personal.fbrigati.myfinance.Utility;
 import com.personal.fbrigati.myfinance.data.DataContract;
 
 import java.util.Calendar;
@@ -45,7 +45,6 @@ public class FMRemoteViewProvider extends RemoteViewsService {
                 Calendar c = Calendar.getInstance();
                 int month = c.get(Calendar.MONTH)+1;
 
-                Log.v(LOG_TAG, "Inside onDataSetChanged.. getting CollectionData cursor");
                 final long identityToken = Binder.clearCallingIdentity();
                 collectionData = getContentResolver().query(
                         DataContract.BudgetEntry.buildBudgetWidgetUri(month),
@@ -86,7 +85,9 @@ public class FMRemoteViewProvider extends RemoteViewsService {
                 Double percentage = spent/goal*100;
 
                 StringBuilder text = new StringBuilder();
-                text.append(spent).append(" in ").append(category);
+                text.append(spent).append(" " + getResources().getString(R.string.in) + " ").append(Utility.getTranslation(getApplicationContext(),
+                        "cat",
+                        category));
 
                 views.setTextViewText(com.personal.fbrigati.myfinance.R.id.widget_amount_spent_category,
                         text.toString());

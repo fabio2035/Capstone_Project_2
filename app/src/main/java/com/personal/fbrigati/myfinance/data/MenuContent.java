@@ -1,11 +1,16 @@
 package com.personal.fbrigati.myfinance.data;
 
+import android.content.res.Resources;
+
+import com.personal.fbrigati.myfinance.R;
 import com.personal.fbrigati.myfinance.ui.StatementFragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static java.security.AccessController.getContext;
 
 
 public class MenuContent {
@@ -20,7 +25,12 @@ public class MenuContent {
      */
     public static final Map<String, MenuItem> ITEM_MAP = new HashMap<String, MenuItem>();
 
-    public static final String[] menu_items = {"Statement", "Budget", "Stats", "Currencies"};
+    public static final String[] menu_items = {Resources.getSystem().getString(R.string.menu_statement),
+                                                Resources.getSystem().getString(R.string.menu_budget),
+                                                Resources.getSystem().getString(R.string.menu_stats),
+                                                Resources.getSystem().getString(R.string.menu_currencies)};
+
+
 
     //Total menu items
     private static final int COUNT = 3;

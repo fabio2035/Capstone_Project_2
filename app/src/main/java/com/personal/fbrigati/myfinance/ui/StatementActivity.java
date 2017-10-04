@@ -10,7 +10,6 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -101,16 +100,14 @@ public class StatementActivity extends AppCompatActivity {
             @Override
             public void onPageSelected(int selectedPosition){
 
-                Log.v(LOG_TAG, "position: " + selectedPosition);
                 /*if(selectedPosition == 0){
                     mPager.setCurrentItem(1);
                 }else*/ if(lastPosition > selectedPosition){
                     //Subtract Month
-                    Log.v(LOG_TAG, "Swiped left, Selected Position:" + selectedPosition + " last Position: " + lastPosition);
+
                     navigateMonth(0);
                 } else if(selectedPosition > lastPosition) {
                     //Add month
-                    Log.v(LOG_TAG, "Swiped right, Selected Position:" + selectedPosition + " last Position: " + lastPosition);
                     navigateMonth(1);
                 }
                 lastPosition = selectedPosition;
@@ -136,7 +133,6 @@ public class StatementActivity extends AppCompatActivity {
         super.onResume();
 
         if (show_instrucions){
-            Log.v(LOG_TAG,"Show instructions is true...");
             //check if instructions should be shown
             if (Utility.getInstructionStat(this, INST_ID)) {
                 DialogFragment instruction = InstructionsDialog.newIstance(
@@ -173,17 +169,13 @@ public class StatementActivity extends AppCompatActivity {
 
         int currentSetMonth = Utility.getNavigationMonth(this);
 
-        Log.v(LOG_TAG, "currentSetMonth " + currentSetMonth);
-
         //move month forward or backwards depending on passed parameter
         if(i==0 && currentSetMonth >= 2){
             //move a month bak
-            Log.v(LOG_TAG, "subtracting month..");
             Utility.setNavigationMonth(this, currentSetMonth-1);
             mPagerAdapter.notifyDataSetChanged();
         }else if(i==1 && currentSetMonth <= 11){
             //move a month bak
-            Log.v(LOG_TAG, "adding month..");
             Utility.setNavigationMonth(this, currentSetMonth+1);
             mPagerAdapter.notifyDataSetChanged();
         }else{
@@ -201,7 +193,6 @@ public class StatementActivity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
-            Log.v(LOG_TAG, "Pager Item position: " + position + "sending Position: " + position+1);
             return StatementFragment.newInstance(position+1);
         }
 

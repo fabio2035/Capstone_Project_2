@@ -2,7 +2,6 @@ package com.personal.fbrigati.myfinance.adapters;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -74,16 +73,13 @@ public class StatementAdapter extends CursorAdapter {
         try {
             Date date = new SimpleDateFormat("dd/MM/yyyy", Locale.US).parse(dateBuild.toString());
             cal.setTime(date);
-            Log.v(LOG_TAG, "raw: " + dateBuild.toString() + " ; date: " + date + " ; formatted:" + cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.US) );
             viewHolder.textDate.setText(Utility.getDayOfWeek(ctx, cal.get(Calendar.DAY_OF_WEEK)) + ", " + dateRaw.substring(6, 8));
         } catch (Exception e) {
             //if there's a parse error..
-            Log.e(LOG_TAG, "error: " + e);
+            //Log.e(LOG_TAG, "error: " + e);
         }
 
         String category = cursor.getString(DataContract.StatementEntry.COL_CATEGORY_KEY);
-
-        Log.v(LOG_TAG, "Category: " + category);
 
         //Load icon resources
         switch (category){

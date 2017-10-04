@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
 
@@ -43,7 +42,6 @@ public class FMWidgetProvider extends AppWidgetProvider {
             rview = new RemoteViews(context.getPackageName(),
                     R.layout.widget_main);
 
-            Log.v(LOG_TAG, "Inside onUpdate, with item number: " + i);
             //Intent to launch main activity
             Intent intent = new Intent(context, ItemListActivity.class);
 
@@ -80,7 +78,6 @@ public class FMWidgetProvider extends AppWidgetProvider {
             rview.setViewVisibility(R.id.widget_month_label, View.INVISIBLE);
             rview.setViewVisibility(R.id.widget_amount_month, View.INVISIBLE);
         }else{
-            Log.v(LOG_TAG, "rendering views visible..");
             rview.setViewVisibility(R.id.top_label, View.VISIBLE);
             rview.setViewVisibility(R.id.widget_today_label, View.VISIBLE);
             rview.setViewVisibility(R.id.widget_amount_day, View.VISIBLE);
@@ -102,7 +99,6 @@ public class FMWidgetProvider extends AppWidgetProvider {
         SQLiteDatabase dbh = db.getReadableDatabase();
 
         //fill view for generalData...
-        Log.v(LOG_TAG, "Inside onDataSetChanged.. getting generalData cursor");
         Cursor generalData = dbh.rawQuery(
                 "SELECT ifnull((SELECT sum(amount) amt FROM statement as a " +
                         "WHERE a.date = strftime('%Y','now') || strftime('%m','now') || strftime('%d','now') " +
@@ -120,7 +116,6 @@ public class FMWidgetProvider extends AppWidgetProvider {
 
         generalData.moveToPosition(0);
 
-        Log.v(LOG_TAG, "number of rows in cursor: " + generalData.getCount());
 
         for(int j=0 ; j<generalData.getCount(); j++) {
             switch (j) {
@@ -149,7 +144,6 @@ public class FMWidgetProvider extends AppWidgetProvider {
         }
         //If total of values is bigger than 0, then user has
         //already registered something, show textViews...
-        Log.v(LOG_TAG, "total is: " + total);
         if (total>0.0){
             return false;
         }else{
@@ -161,9 +155,7 @@ public class FMWidgetProvider extends AppWidgetProvider {
     @Override
     public void onReceive(@NonNull Context context, @NonNull Intent intent) {
         super.onReceive(context, intent);
-        Log.v(LOG_TAG, "Intent caught: " + intent.getAction().toString());
         if (MFSyncJob.ACTION_DATA_UPDATED.equals(intent.getAction())) {
-            Log.v(LOG_TAG, "Inside onReceive.. supposedly updating data...");
             rview = new RemoteViews(context.getPackageName(),
                     R.layout.widget_main);
             showEmptyviews(setGeneralData(context));

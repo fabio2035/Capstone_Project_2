@@ -13,7 +13,6 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -48,6 +47,8 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
         DatePickerFragment.DateSetListenerCustom, TimePickerFragment.TimeSetListenerCustom {
 
     public final static String ID_MESSAGE = "com.personal.fbrigati.myfinance.ui.StatementFragEditTrxDialog.MESSAGE";
+    public final static String ID_CAT_LIST = "com.personal.fbrigati.myfinance.ui.StatementFragEditTrxDialog.CAT_LIS";
+    public final static String ID_CAT_SEL = "com.personal.fbrigati.myfinance.ui.StatementFragEditTrxDialog.CAT_SEL";
     public static final int CATEGORY_LOADER = 2;
     public static final int STATEMENT_LOADER_ID = 3;
 
@@ -55,7 +56,7 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
     public static final String ANONYMOUS = "anonymous";
     final static String LOG_TAG = StatementActEditTrxDialog.class.getSimpleName();
 
-    Map<String, Integer> categoryMap;
+    Map<Integer, String> categoryMap;
     private TextView amountText;
     private TextView descText;
     private Button datePickerBtn;
@@ -64,47 +65,22 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
     private Spinner spinner_trxType;
     private Button save_btn;
     private Button close_btn;
-    private List<String> lables = null;
+    private ArrayList<String> lables = null;
     private ArrayAdapter<String> categoryAdapter;
     private Uri detailUri;
-    private String categorySet;
-    private String mUsername;
-    private FirebaseDatabase mFirebaseDatabase;
-    private DatabaseReference mStatementDatabaseReference;
     private Toolbar toolbarView;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
         setContentView(R.layout.fragment_transaction_edit);
 
-        if (savedInstanceState == null) {
-            detailUri = getIntent().getData();
-            if (detailUri != null) {
-                Log.v(LOG_TAG, "Uri from Intent: " + detailUri);
-                Log.v(LOG_TAG, "Initialising new data loader..");
-                //First load the category items
-                getSupportLoaderManager().initLoader(CATEGORY_LOADER, null, this);
-                getSupportLoaderManager().initLoader(STATEMENT_LOADER_ID, null, this);
-            } else {
-                //if its a new transaction only load category items..
-                getSupportLoaderManager().initLoader(CATEGORY_LOADER, null, this);
-            }
-        }
+        detailUri = getIntent().getData();
 
-        //Initialize cursor
-
-
+        //First time loaded
         lables = new ArrayList<String>();
-        //View rootView = inflater.inflate(R.layout.fragment_transaction_edit, container, false);
-
-        amountText = (TextView) findViewById(R.id.amount_id);
-
-        descText = (TextView) findViewById(R.id.description_id);
-
-        spinner_ctg = (Spinner) findViewById(R.id.category_spinner_id);
 
         spinner_trxType = (Spinner) findViewById(R.id.trxType_spinner_id);
 
@@ -120,7 +96,6 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-
             }
         });
 
@@ -130,6 +105,42 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
         adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
 
         spinner_trxType.setAdapter(adapter);
+
+        amountText = (TextView) findViewById(R.id.amount_id);
+
+        descText = (TextView) findViewById(R.id.description_id);
+
+        spinner_ctg = (Spinner) findViewById(R.id.category_spinner_id);
+
+        // Creating adapter for spinner
+        categoryAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_item, lables);
+
+        // Drop down layout style - list view with radio button
+        categoryAdapter
+                .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        spinner_ctg.setAdapter(categoryAdapter);
+
+
+        if (savedInstanceState != null) {
+            //configuration changed...
+
+            if (savedInstanceState.getStringArrayList(ID_CAT_LIST) != null) lables.addAll(savedInstanceState.getStringArrayList(ID_CAT_LIST));
+            categoryAdapter.notifyDataSetChanged();
+            if (savedInstanceState.getInt(ID_CAT_SEL) != 0) spinner_ctg.setSelection(savedInstanceState.getInt(ID_CAT_SEL));
+
+        }else{
+
+            if (detailUri != null) {
+                //First load the category items
+                getSupportLoaderManager().initLoader(CATEGORY_LOADER, null, this);
+                getSupportLoaderManager().initLoader(STATEMENT_LOADER_ID, null, this);
+            } else {
+                //if its a new transaction only load category items..
+                getSupportLoaderManager().initLoader(CATEGORY_LOADER, null, this);
+            }
+        }
 
         datePickerBtn = (Button) findViewById(R.id.date_picker_btn);
         timePickerBtn = (Button) findViewById(R.id.time_picker_btn);
@@ -175,7 +186,7 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
             }
         });
 
-        categoryMap = new HashMap<String, Integer>();
+        categoryMap = new HashMap<Integer, String>();
 
         if (detailUri == null) {
             setCurrentDateTimeButtons();
@@ -185,11 +196,6 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
 
         toolbarView.setTitle(R.string.toolbar_trxedit_title);
 
-        //Firebase stuff...
-        //initialize object variables
-        //mFirebaseDatabase = FirebaseDatabase.getInstance();
-        //mUsername = ANONYMOUS;
-        //mStatementDatabaseReference = mFirebaseDatabase.getReference().child("statement");
     }
 
 
@@ -211,15 +217,15 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
 
         String dateStr = String.format(Locale.US, "%08d", Integer.parseInt(datePickerBtn.getText().toString().replace("/", "")));
         StringBuilder dateBuild = new StringBuilder().append(dateStr.substring(4)).append(dateStr.substring(2, 4)).append(dateStr.substring(0, 2));
-        Log.v(LOG_TAG, "DateStr: " + dateBuild); //31052017
+
         String timeStr = String.format(Locale.US, "%04d", Integer.parseInt(timePickerBtn.getText().toString().replace(":", "")));
 
         Integer dateInt = Integer.parseInt(dateBuild.toString());
         Integer timeInt = Integer.parseInt(timeStr);
 
-        if (spinner_trxType.getSelectedItem().equals("Debit")){
+        if (spinner_trxType.getSelectedItemPosition() == 0){
             trxType = 6;
-            cv.put(DataContract.StatementEntry.COLUMN_CATEGORY_KEY, spinner_ctg.getSelectedItem().toString());
+            cv.put(DataContract.StatementEntry.COLUMN_CATEGORY_KEY, categoryMap.get(spinner_ctg.getSelectedItemPosition()+1));
         }else{
             trxType = 0;
             cv.put(DataContract.StatementEntry.COLUMN_CATEGORY_KEY, "Credit");
@@ -243,7 +249,7 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
         if (execNum > 0) {
             Toast.makeText(getApplicationContext(), R.string.toast_savetodbsuccess, Toast.LENGTH_LONG).show();
 
-            Log.v(LOG_TAG, "SENDING BROADCAST FOR WIDGET UPDATE!!");
+            //Log.v(LOG_TAG, "SENDING BROADCAST FOR WIDGET UPDATE!!");
             updateWidgets();
 
             /*
@@ -302,24 +308,24 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
         return validate;
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        //save category selection
+        outState.putStringArrayList(ID_CAT_LIST, lables);
+        outState.putInt(ID_CAT_SEL, spinner_ctg.getSelectedItemPosition()+1);
+        //save category list
+
+        super.onSaveInstanceState(outState);
+    }
+
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         switch (id) {
             case StatementFragment.STATEMENT_LOADER:
-                Log.v(LOG_TAG, "statement cursor loader called");
                 //Todo: make account selection
-                //if(statement_uri!=null){
-                //uri = DataContract.StatementEntry.buildStatementUri(statement_uri);
-                /*return new CursorLoader(
-                        getActivity(),
-                        DataContract.StatementEntry.CONTENT_URI,
-                        DataContract.StatementEntry.STATEMENT_COLUMNS,
-                        null,
-                        null,
-                        null); */
+
             case CATEGORY_LOADER: {
-                Log.v(LOG_TAG, "Category loader called");
                 //Todo: make category selection
                 return new CursorLoader(
                         getApplicationContext(),
@@ -330,7 +336,6 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
                         null);
             }
             case STATEMENT_LOADER_ID: {
-                Log.v(LOG_TAG, "Category loader_id called");
                 //Todo: make category selection
                 return new CursorLoader(
                         getApplicationContext(),
@@ -347,36 +352,29 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         //Todo:fill the view elements with data from database
-        Log.v(LOG_TAG, "inside onLoadFinished method..");
+
         switch (loader.getId()) {
-            case CATEGORY_LOADER:
+            case CATEGORY_LOADER: {
 
                 if (data != null && data.moveToFirst() && data.getCount() > 0) {
 
-                    Log.v(LOG_TAG, "data crusor with: " + data.getString(DataContract.CategoryEntry.COL_CATEGORY_USER_KEY));
+                    lables.clear();
 
                     int i = 0;
 
                     do {
-                        Log.v(LOG_TAG, "inserting key: " + data.getString(DataContract.CategoryEntry.COL_CATEGORY_DEFAULT)
-                                + " | value: " + i);
                         i++;
-                        categoryMap.put(data.getString(DataContract.CategoryEntry.COL_CATEGORY_DEFAULT), i);
-                        lables.add(data.getString(DataContract.CategoryEntry.COL_CATEGORY_DEFAULT));
+                        categoryMap.put(i, data.getString(DataContract.CategoryEntry.COL_CATEGORY_DEFAULT));
+                        lables.add(Utility.getTranslation(this, "cat", data.getString(DataContract.CategoryEntry.COL_CATEGORY_DEFAULT)));
                     } while (data.moveToNext());
 
-                    // Creating adapter for spinner
-                    categoryAdapter = new ArrayAdapter<String>(this,
-                            android.R.layout.simple_spinner_item, lables);
+                    categoryAdapter.notifyDataSetChanged();
 
-                    // Drop down layout style - list view with radio button
-                    categoryAdapter
-                            .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-                    spinner_ctg.setAdapter(categoryAdapter);
                 }
+                data.close();
                 break;
-            case STATEMENT_LOADER_ID:
+            }
+            case STATEMENT_LOADER_ID: {
                 if (data != null && data.moveToFirst() && data.getCount() > 0) {
 
                     amountText.setText(String.valueOf(data.getDouble(6)));
@@ -398,12 +396,8 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
                     timePickerBtn.setText(timeBuild.toString());
 
                     //Pick category
-                    for (int j = 0; j < spinner_ctg.getCount(); j++) {
-                        Log.v(LOG_TAG, "Item position: " + spinner_ctg.getItemAtPosition(j).toString());
-                        if (spinner_ctg.getItemAtPosition(j).toString().equals(data.getString(7))) {
-                            spinner_ctg.setSelection(j);
-                        }
-                    }
+                    int j = categoryAdapter.getPosition(Utility.getTranslation(this, "cat", data.getString(7)));
+                    spinner_ctg.setSelection(j);
 
                     //Pick trx type
                     if (data.getInt(8) > 5) {
@@ -414,18 +408,22 @@ public class StatementActEditTrxDialog extends AppCompatActivity implements Load
                         spinner_ctg.setEnabled(false);
                     }
                 }
+                data.close();
+                break;
+            }
         }
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        Log.v(LOG_TAG, "Inside swapcursor...");
+
         switch (loader.getId()) {
             case CATEGORY_LOADER:
                 if (categoryAdapter != null)
-                    categoryAdapter.clear();
+                    categoryAdapter = null;
                 break;
         }
+
     }
 
 

@@ -11,7 +11,6 @@ import android.support.v4.content.Loader;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayout;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.MobileAds;
 import com.personal.fbrigati.myfinance.adapters.StatementAdapter;
 import com.personal.fbrigati.myfinance.data.DataContract;
 
@@ -51,16 +51,11 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
     public final static String ID_MESSAGE = "com.personal.fbrigati.myfinance.ui.StatementFragment.MESSAGE";
     public static final int STATEMENT_LOADER = 0;
     private Cursor mCursor;
-    private int mShortAnimationDuration;
 
     static final String STATEMENT_URI = "URI";
     private boolean onResumeflag = false;
 
     StatementAdapter statementAdapter;
-
-    private Uri statement_uri;
-
-    private AdView mAdView;
 
     Intent intent;
 
@@ -118,8 +113,6 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
         if (arguments != null){
             uMonth = arguments.getInt(ARG_ITEM_ID);
         }
-
-        Log.v(LOG_TAG, "Month received from bundle: " + uMonth);
 
         rootView = inflater.inflate(R.layout.fragment_statement_main_bkp, container, false);
 
@@ -189,14 +182,17 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
         balanceGrid = (GridLayout) rootView.findViewById(R.id.grid_balance);
 
         advertising = (AdView) rootView.findViewById(R.id.ad_view_statement);
-        AdRequest adRequest = new AdRequest.Builder()
-                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)        // All emulators
-                .addTestDevice("53F4B94474E00A7E14FD516F7AD2ACDF")  // My Galaxy Nexus test phone
-                .build();
 
+        AdRequest adRequest = new AdRequest.Builder().build();
         advertising.loadAd(adRequest);
 
-//        advertising = (AdView) rootView.findViewById(R.id.ad_view_statement);
+        //        .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)        // All emulators
+        //        .addTestDevice("53F4B94474E00A7E14FD516F7AD2ACDF")  // My Galaxy Nexus test phone
+        //       .build();
+
+        //advertising.loadAd(adRequest);
+
+        //      advertising = (AdView) rootView.findViewById(R.id.ad_view_statement);
 
         empty_viewLL = (RelativeLayout) rootView.findViewById(R.id.empty_view);
 
@@ -206,7 +202,6 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
 
 
     private void deleteRecord(Long id) {
-        Log.v(LOG_TAG, "id is: " + id);
 
         int i = getActivity().getContentResolver().delete(
                 DataContract.StatementEntry.CONTENT_URI,
@@ -244,7 +239,6 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
 
     private void showTransactionEditDialog(Long id) {
         intent = new Intent(getActivity(), StatementActEditTrxDialog.class);
-        Log.v(LOG_TAG, "Uri for editing Statement entry: " + DataContract.StatementEntry.buildStatementUri(id));
         intent.setData(DataContract.StatementEntry.buildStatementUri(id));
         getActivity().startActivity(intent);
     }
@@ -270,12 +264,10 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
             case STATEMENT_LOADER:
 
                 if (mCursor != null && mCursor.moveToFirst() && mCursor.getCount() > 0) {
-                    Log.v(LOG_TAG, "There is data in cursor.. load data");
                     statementAdapter.swapCursor(mCursor);
                     calculateBalance(mCursor);
                     updateView(1);
                 }else{
-                    Log.v(LOG_TAG, "There is nothing in cursor");
                     updateView(0);
                     String positiveValue = currencyFormatWithPlus.format(0);
                     textBalance.setText(String.valueOf(positiveValue));
@@ -306,7 +298,6 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
         while(data.moveToNext()){
             sum = Double.valueOf(data.getString(DataContract.StatementEntry.COL_AMOUNT));
             trxType = data.getInt(DataContract.StatementEntry.COL_TRANSACTION_CODE);
-            Log.v(LOG_TAG, "Sum: " + sum);
             if (trxType < 5){
                 balance += sum;
             }else{
@@ -330,17 +321,8 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        Log.v(LOG_TAG, "Inside swapcursor...");
         statementAdapter.swapCursor(null);
         mCursor = null;
-        /*
-        switch (loader.getId()){
-            case STATEMENT_LOADER:
-                if(statementAdapter != null)
-                Log.v(LOG_TAG, "its statement loader being reset..");
-                statementAdapter.swapCursor(null);
-                break;
-        } */
     }
 
     private void updateView(int flag) {
@@ -351,15 +333,11 @@ public class StatementFragment extends Fragment implements LoaderManager.LoaderC
             statement_details.setVisibility(View.VISIBLE);
             empty_viewLL.setVisibility(View.GONE);
             balanceGrid.setVisibility(View.VISIBLE);
-            //empty_view.setVisibility(View.GONE);
-            //advertising.setVisibility(View.GONE);
         //No data found to be displayed
         }else{ //if(flag == 0){
             statement_details.setVisibility(View.GONE);
             empty_viewLL.setVisibility(View.VISIBLE);
             balanceGrid.setVisibility(View.GONE);
-            //empty_view.setVisibility(View.VISIBLE);
-            //advertising.setVisibility(View.VISIBLE);
         }
     }
 

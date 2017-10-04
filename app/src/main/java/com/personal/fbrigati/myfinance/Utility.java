@@ -3,10 +3,10 @@ package com.personal.fbrigati.myfinance;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 import com.personal.fbrigati.myfinance.sync.MFSyncJob;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 
@@ -17,6 +17,15 @@ import java.util.HashMap;
 public class Utility {
 
     HashMap<Integer, String> months;
+
+
+    public static final String[] categoriesArray = {"Transportation",
+                                                "Leisure",
+                                                "Food",
+                                                "Education",
+                                                "HealthCare",
+                                                "Groceries",
+                                                "Rent"};
 
     public static String getPreferredCurSymbol(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -220,6 +229,25 @@ public class Utility {
     public static String getDayOfWeek(Context c, int value) {
         String[] dayofweek = c.getResources().getStringArray(R.array.dow);
         return dayofweek[value-1];
+    }
+
+    public static String getTranslation(Context c, String script, String wordRef){
+
+        String translation = "";
+
+        String [] categories = c.getResources().getStringArray(R.array.categories);
+
+        if(wordRef!=null){
+        switch (script){
+            case "cat" : {
+                //Log.v("translation", "wordRef :" + wordRef);
+                translation = categories[Arrays.asList(categoriesArray).indexOf(wordRef)];
+
+            }
+        }
+        }
+
+        return translation;
     }
 
 }

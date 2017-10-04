@@ -1,5 +1,6 @@
 package com.personal.fbrigati.myfinance.ui;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
@@ -10,7 +11,6 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.GridLayout;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -173,7 +173,6 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
 
         if(data.moveToFirst()) {
             while(!data.isLast()) {
-                Log.v(LOG_TAG, "Loading category for seek bar: " + data.getString(0));
                 tempCat = data.getString(0);
                 categories.add(tempCat.trim());
                 while (tempCat.trim().equals(data.getString(0)) && !data.isLast()) {
@@ -250,8 +249,6 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
         final Calendar cal = Calendar.getInstance();
         int month = cal.get(Calendar.MONTH);
 
-        Log.v(LOG_TAG, "Month number is " + month);
-
         if(month >0 && month <=2){
             Utility.setStatsPieTrimester(getActivity(), 1);
             seekBarPieChart.setProgress(0);
@@ -273,7 +270,6 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
         switch (seekBar.getId()){
             case R.id.seekBarpie:
             {
-                Log.v(LOG_TAG, "Pie Data selected: " + seekBar.getProgress());
                 Utility.setStatsPieTrimester(getActivity(), seekBar.getProgress()+1);
                 getLoaderManager().restartLoader(PIECHART_LOADER, null, this);
                 //restart line graph aswell..
@@ -281,14 +277,6 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
                 mlineChart.invalidate();
 
                 break;}
-           /* case R.id.seekBarLine:
-            {
-                Log.v(LOG_TAG, "Line Data selected: " + seekBar.getProgress());
-                Utility.setStatsCategory(getActivity(), catMap.get(seekBar.getProgress()));
-                getLoaderManager().restartLoader(LINECHART_LOADER, null, this);
-                //restart line graph aswell..
-                break;
-            }*/
         }
     }
 
@@ -329,7 +317,6 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
                 textView.setText(categories.get(count).substring(0, 4));
                 catMap.put(count, categories.get(count));
             }
-            Log.v(LOG_TAG, "category label: " + catMap.get(count));
 
             textView.setTextColor(getResources().getColor(R.color.colorPrimary));
             textView.setGravity(Gravity.CENTER_HORIZONTAL);
@@ -425,11 +412,11 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
 
     private void setPieData(Cursor data) {
 
+        Context ctx = getContext();
+
         mpieChart.animateY(1400, Easing.EasingOption.EaseInOutQuad);
 
         ArrayList<PieEntry> entries = new ArrayList<PieEntry>();
-
-        //ArrayList<PieDataSet> dataSets = new ArrayList<PieDataSet>();
 
         Double totalAmount = 0.0;
 
@@ -439,15 +426,14 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
             data.moveToNext();
         }
 
-        //Log.v(LOG_TAG, "Total category amounts: " + totalAmount);
 
         data.moveToFirst();
 
         // NOTE: The order of the entries when being added to the entries array determines their position around the center of
         // the chart.
         for (int i = 0; i < data.getCount() ; i++) {
-            entries.add(new PieEntry((float) (data.getDouble(1) / totalAmount), data.getString(0) ));
-            Log.v(LOG_TAG, "Pie data Category: " + data.getString(0));
+            entries.add(new PieEntry((float) (data.getDouble(1) / totalAmount),
+                    Utility.getTranslation(ctx,"cat",data.getString(0)) ));
             data.moveToNext();
         }
 
@@ -466,7 +452,6 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
         // undo all highlights
         mpieChart.highlightValues(null);
 
-        //mpieChart.notifyDataSetChanged();
         mpieChart.invalidate();
 
         data.close();
@@ -496,20 +481,11 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
 
                 ArrayList<Entry> values = new ArrayList<Entry>();
                 category = data.getString(0);
-                Log.v(LOG_TAG, "cursor position: " + data.getPosition() +
-                                "text category: " + category +
-                                "cursor category: " + data.getString(0));
 
                 //Category loop
                 do{
                     if(!category.equals(data.getString(0))) break;
 
-                    //counter++;
-                    Log.v(LOG_TAG, "cat: " + category +
-                            " ; date: " + String.valueOf(data.getInt(1)) +
-                            " ; value: " + data.getDouble(2) +
-                            " ; data counter: " + i +
-                            " ; Category coutner: " + Catcounter);
                     //For every category group values into datasets
                     float amtRaw = (float) data.getDouble(2);
                     //get date and format
@@ -522,8 +498,6 @@ public class StatsFragment extends Fragment implements LoaderManager.LoaderCallb
                         Date date = new SimpleDateFormat("dd/MM/yyyy", Locale.US).parse(dateBuild.toString());
                         cal.setTime(date);
                         Long timeinmillis = cal.getTimeInMillis();
-                        Log.v(LOG_TAG, "date value: " + date + "; cal set time: "
-                                + "; time in millis cal: " + timeinmillis);
                         values.add(new Entry(timeinmillis, amtRaw));
                     } catch (ParseException e) {
                         //  Log.v(LOG_TAG, "error parsing date..");

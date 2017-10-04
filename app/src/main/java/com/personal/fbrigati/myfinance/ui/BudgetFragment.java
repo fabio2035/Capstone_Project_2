@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -85,8 +84,6 @@ public class BudgetFragment extends Fragment implements LoaderManager.LoaderCall
                 String title = ((TextView) view.findViewById(R.id.budgetTitle)).getText().toString();
                 int month = Utility.getNavigationMonth(getActivity());
                 int year = Utility.getStatsNavYear(getActivity());
-                Log.v(LOG_TAG, "Budget chosen month: " + month);
-                Log.v(LOG_TAG, "Budget chosen year: " + year);
                 ((Callback) getActivity()).changeBudgetGoal(title, month, year, id, false);
                 //editGoal.show(getFragmentManager(), "editMonth");
             }
@@ -117,8 +114,6 @@ public class BudgetFragment extends Fragment implements LoaderManager.LoaderCall
         switch (loader.getId()) {
             case BUDGET_LOADER:
 
-                Log.v(LOG_TAG, "onLoadFinish method called. data with: " + mCursor.getCount());
-
                 if (mCursor != null && mCursor.moveToFirst() && mCursor.getCount() > 0) {
                     updateEmptyView(1);
                     budgetAdapter.swapCursor(mCursor);
@@ -132,7 +127,6 @@ public class BudgetFragment extends Fragment implements LoaderManager.LoaderCall
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        Log.v(LOG_TAG, "Inside swapcursor...");
         budgetAdapter.swapCursor(null);
         mCursor = null;
     }

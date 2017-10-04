@@ -12,6 +12,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.personal.fbrigati.myfinance.R;
+import com.personal.fbrigati.myfinance.Utility;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -94,7 +95,7 @@ public class BudgetAdapter extends CursorAdapter {
 
         viewHolder.iconView.setBackgroundColor(context.getResources().getColor(R.color.colorAccent));
 
-        viewHolder.textTitle.setText(category);
+        viewHolder.textTitle.setText(Utility.getTranslation(context, "cat", category));
 
         viewHolder.textBudgetGoal.setText(String.valueOf(goal));
 
@@ -112,7 +113,6 @@ public class BudgetAdapter extends CursorAdapter {
             viewHolder.progressBar.getProgressDrawable().setColorFilter(context.getResources().getColor(R.color.negative)
                     , PorterDuff.Mode.SRC_IN);
         }
-
 
         viewHolder.textPercentage.setText(percentageFormat.format(percentage/100));
 
