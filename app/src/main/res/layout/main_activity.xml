@@ -1,5 +1,5 @@
 <fragment xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/main_frag_container"
-    android:name="com.personal.fbrigati.myfinance.MainFragment"
+    android:name="com.prod.fbrigati.myfinance.MainFragment"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"/>

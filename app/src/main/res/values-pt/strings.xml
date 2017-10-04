@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name" translatable="false">Money Watch</string>
     <string name="action_settings">COnfigurações</string>
 
     <!-- Empty Menu Items -->
@@ -15,14 +14,12 @@
     <string name="title_StatementActivity_detail">Declaração</string>
 
 
-    <string name="content_authority" translatable="false">com.personal.fbrigati.myfinance</string>
     <string name="empty_statement_list">Registre sua primeira transação!</string>
     <string name="no_items_in_list">Defina seu primeiro orçamento!</string>
     <string name="title_BudgetActivity_detail">Orçamento</string>
     <string name="budget_goal_label">Objectivo</string>
     <string name="budget_spent_label">Quantia de Despesas</string>
     <string name="title_StatsActivity_detail">Estatísticas</string>
-    <string name="sync_account_type" translatable="false">myfinance.exampl.com</string>
     <string name="empty_currencies_list">Não há taxas de câmbio disponíveis, tente outra moeda!</string>
     <string name="title_Currencies_detail">Moedas</string>
     <string name="cur_base_date_label">Data Info.:</string>
@@ -96,24 +93,15 @@
         <item>Renda</item>
     </string-array>
 
-    <string name="pref_cur_key" translatable="false">cur_symbol</string>
-    <string name="pref_cur_default" translatable="false">USD</string>
-
-    <string name="pref_cur_status_key" translatable="false">cur-status</string>
-
     <string name="pref_cur_status_invalid">Ocorreu um erro ao recuperar os dados da currnecie para o item selecionado, tente novamente..</string>
-
-    <string name="pref_month_status" translatable="false">month-status</string>
 
     <string name="trans_amt_edit_hint">Montante</string>
     <string name="trans_desc_edit_hint">Descrição</string>
     <string name="title_trxEdit_detail">Detalhes da transação</string>
-    <string name="date_picker" translatable="false">1/1/1979</string>
     <string name="accessibility_datepicker_btn">Escolha de Data</string>
     <string name="accessibility_timepicker_btn">Escholha de Hora</string>
     <string name="edit_amount">Editar quantidade</string>
     <string name="edit_description">Editar quantidade</string>
-    <string name="time_picker" translatable="false">10:48</string>
 
     <string name="category_spinner_prompt">Escholha a Categoria</string>
     <string name="accessibility_category_spinner">Escolha Categoria de Transação</string>
@@ -131,9 +119,6 @@
     <string name="widget_top_label">Recentemente você gastou:</string>
 
 
-    <!-- AdMob ad unit IDs -->
-    <string name="banner_ad_unit_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
-    <string name="banner_test" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
     <string name="toast_savetodbsuccess">Novos dados salvos com sucesso</string>
     <string name="toast_functionality_notimplemented">Novos dados salvos com sucesso</string>
     <string name="toast_amount_notvalid">Montante não válido, corrija e tente novamente</string>
@@ -151,14 +136,10 @@
     <string name="dialog_delete_record_no">não</string>
     <string name="toast_deleterecord_success">registro eliminado</string>
     <string name="toast_deleterecord_nosuccess">o registro não foi excluído, tente novamente</string>
-    <string name="pref_last_posting_date">postDate</string>
-    <string name="pref_post_seq">postSequence</string>
-    <string name="pref_stats_year_status">stat_year</string>
-    <string name="pref_stats_trimester_status">stats_trimester</string>
+
     <string name="piechartLegedTitle">Despesas por trimestre</string>
     <string name="semester_label">trimestre</string>
     <string name="category_label">categoria</string>
-    <string name="pref_stats_category_status">stats_category</string>
     <string name="toolbar_trxedit_title">Editar transação</string>
     <string name="trans_edit_datetitle_label">Data da transação</string>
     <string name="trans_edit_timetitle_label">Tempo de transação</string>
@@ -168,13 +149,8 @@
     <string name="month_picker_frwd_btn">Botão do avançado do leilão</string>
     <string name="statement_balance_lable">Equilíbrio:</string>
     <string name="dialog_budget_set_year">definir para todo ano</string>
-    <string name="pref_year_status">year-status</string>
     <string name="dialog_instruction_show">não mostre isso novamente</string>
     <string name="OK">OK</string>
-    <string name="pref_instruct_show_statement">instruct-show-statement</string>
-    <string name="pref_instruct_show_budget">instruct-show-budget</string>
-    <string name="pref_instruct_show_stats">instruct-show-stats</string>
-    <string name="pref_instruct_show_currencies">instruct-show-currencies</string>
     <string name="dialog_instruction_title_budget">Configurações de orçamento</string>
     <string name="dialog_instruction_text_budget">estas são as instruções</string>
     <string name="dialog_instruction_title_statement">extrato</string>

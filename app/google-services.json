@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:653700538355:android:a0099d436c351b1e",
         "android_client_info": {
-          "package_name": "com.personal.fbrigati.myfinance"
+          "package_name": "com.prod.fbrigati.myfinance"
         }
       },
       "oauth_client": [
@@ -18,7 +18,7 @@
           "client_id": "653700538355-ssiin8ola3f1f7cm1shl47t03qj4egoq.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.personal.fbrigati.myfinance",
+            "package_name": "com.prod.fbrigati.myfinance",
             "certificate_hash": "3146354102f3819176c2a125e8535c857c86e0e1"
           }
         },

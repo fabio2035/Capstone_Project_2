@@ -16,11 +16,11 @@ android {
     compileSdkVersion 25
     buildToolsVersion "25.0.3"
     defaultConfig {
-        applicationId "com.personal.fbrigati.myfinance"
+        applicationId "com.prod.fbrigati.myfinance"
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 1
-        versionName "1.0"
+        versionCode 3
+        versionName "1.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.config
     }
@@ -53,7 +53,6 @@ dependencies {
     compile 'net.sf.opencsv:opencsv:2.3'
     compile 'com.appeaser.sublimepickerlibrary:sublimepickerlibrary:2.1.1'
     compile 'com.google.firebase:firebase-ads:11.0.0'
-    compile 'com.google.firebase:firebase-database:11.0.0'
     testCompile 'junit:junit:4.12'
 }
 

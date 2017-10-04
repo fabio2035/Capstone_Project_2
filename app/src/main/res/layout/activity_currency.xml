@@ -4,5 +4,5 @@
     android:id="@+id/activity_currency_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.personal.fbrigati.myfinance.ui.StatementActivity">
+    tools:context="com.prod.fbrigati.myfinance.ui.StatementActivity">
 </RelativeLayout>

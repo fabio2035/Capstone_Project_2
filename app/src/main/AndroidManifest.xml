@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.personal.fbrigati.myfinance">
+    package="com.prod.fbrigati.myfinance">
 
     <!-- This permission is necessary in order for MyFinance to perform network access. -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -86,7 +86,7 @@
             android:theme="@android:style/Theme.Translucent" />
 
         <provider
-            android:authorities="com.personal.fbrigati.myfinance"
+            android:authorities="com.prod.fbrigati.myfinance"
             android:name=".data.DataProvider"
             android:exported="false"
             android:syncable="true" />
