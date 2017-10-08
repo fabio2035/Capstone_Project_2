@@ -11,7 +11,7 @@
     <string name="row_amt">Amount</string>
     <string name="row_bal">Balance</string>
     <string name="row_description">Description</string>
-    <string name="title_StatementActivity_detail">Declaração</string>
+    <string name="title_StatementActivity_detail">Extrato</string>
 
 
     <string name="empty_statement_list">Registre sua primeira transação!</string>
@@ -101,7 +101,7 @@
     <string name="accessibility_datepicker_btn">Escolha de Data</string>
     <string name="accessibility_timepicker_btn">Escholha de Hora</string>
     <string name="edit_amount">Editar quantidade</string>
-    <string name="edit_description">Editar quantidade</string>
+    <string name="edit_description">Descrição da transação</string>
 
     <string name="category_spinner_prompt">Escholha a Categoria</string>
     <string name="accessibility_category_spinner">Escolha Categoria de Transação</string>
@@ -120,7 +120,7 @@
 
 
     <string name="toast_savetodbsuccess">Novos dados salvos com sucesso</string>
-    <string name="toast_functionality_notimplemented">Novos dados salvos com sucesso</string>
+    <string name="toast_functionality_notimplemented">Funcionalidade não implementada</string>
     <string name="toast_amount_notvalid">Montante não válido, corrija e tente novamente</string>
     <string name="toast_check_desc_amt">Verifique a descrição e / ou o valor antes de salvar</string>
     <string name="toolbar_statement_title"></string>
