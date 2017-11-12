@@ -1,6 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Money Watch</string>
+
+    <!-- Available Transaction Types -->
+    <string-array name="trx_type">
+        <item>Debito</item>
+        <item>Credito</item>
+    </string-array>
+
+    !-- Months in a year -->
+    <string-array name="months">
+        <item>GENNAIO</item>
+        <item>FEBBRAIO</item>
+        <item>MARZO</item>
+        <item>APRILE</item>
+        <item>MAGGIO</item>
+        <item>GIUGNO</item>
+        <item>LUGLIO</item>
+        <item>AGOSTO</item>
+        <item>SETTEMBRE</item>
+        <item>OTTOBRE</item>
+        <item>NOVEMBRE</item>
+        <item>DICEMBRE</item>
+    </string-array>
+
+    <!-- Days in a week -->
+    <string-array name="dow">
+        <item>Domenica</item>
+        <item>Lunedi</item>
+        <item>Martedi</item>
+        <item>Mercoledi</item>
+        <item>Giovedi</item>
+        <item>Venerdi</item>
+        <item>Sabato</item>
+    </string-array>
+
+    <!-- Months in a year -->
+    <string-array name="trimesters">
+        <item>1o</item>
+        <item>2o</item>
+        <item>3o</item>
+        <item>4o</item>
+    </string-array>
+
+
+    <!-- Categories -->
+    <string-array name="categories">
+        <item>Trasporti</item>
+        <item>Ricreativo</item>
+        <item>Cibo</item>
+        <item>Educazione</item>
+        <item>Salute</item>
+        <item>Drogheria</item>
+        <item>Affitto</item>
+    </string-array>
+
     <string name="OK">OK</string>
     <string name="accessibility_budget_icon">Icona del bilancio</string>
     <string name="accessibility_category_spinner">Scegli la categoria Transazione</string>
@@ -9,6 +62,7 @@
     <string name="accessibility_saveTrans_btn">Salvare i dettagli delle transazioni</string>
     <string name="accessibility_statment_FAB">Aggiungi transazione</string>
     <string name="accessibility_timepicker_btn">Escholha de Hora</string>
+    <string name="toolbar_statement_title"></string>
     <string name="action_settings">impostazioni</string>
     <string name="budget_goal_label">obiettivo</string>
     <string name="budget_spent_label">Importo delle spese</string>
@@ -59,7 +113,7 @@
     <string name="row_description">descrizione</string>
     <string name="row_num">sequenza</string>
     <string name="row_payee">Beneficiario</string>
-    <string name="semester_label">quarto</string>
+    <string name="semester_label">trimestre</string>
     <string name="statement_balance_lable">Bilancio:</string>
     <string name="title_BudgetActivity_detail">Bilancio</string>
     <string name="title_Currencies_detail">Monete</string>

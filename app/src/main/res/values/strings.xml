@@ -36,16 +36,14 @@
     </string-array>
 
     <!-- free version currencies -->
-    <string-array name="cur_symbols">
-        <item>MZN</item>
+    <string-array translatable="false" name="cur_symbols">
         <item>USD</item>
         <item>ZAR</item>
         <item>EUR</item>
-        <item>TZS</item>
-        <item>AOA</item>
-        <item>GHS</item>
+        <item>GBP</item>
+        <item>CNY</item>
+        <item>JPY</item>
         </string-array>
-
 
 
     <!-- Months in a year -->

@@ -12,6 +12,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -107,7 +108,7 @@ public class CurrenciesFragment extends Fragment implements LoaderManager.Loader
 
         toolbarView.setTitle(R.string.toolbar_currencies_title);
 
-        progress_bar = (ProgressBar) rootView.findViewById(R.id.progressBar1);
+        //progress_bar = (ProgressBar) rootView.findViewById(R.id.progressBar1);
 
         final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.cur_symbols, android.R.layout.simple_spinner_item);
@@ -215,6 +216,7 @@ public class CurrenciesFragment extends Fragment implements LoaderManager.Loader
             case CURRENCIES_LOADER:
                 SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(getActivity());
                 String symbol = SP.getString(getContext().getString(R.string.pref_cur_key), getContext().getString(R.string.pref_cur_default));
+                //Log.v(LOG_TAG, "Base symbol used: " + symbol);
                 return new CursorLoader(
                         getActivity(),
                         DataContract.CurrencyExEntry.buildCurrencyUri(symbol),
@@ -235,7 +237,7 @@ public class CurrenciesFragment extends Fragment implements LoaderManager.Loader
 
         switch (loader.getId()) {
             case CURRENCIES_LOADER:
-
+                //Log.v(LOG_TAG, "data in loader: " + data.getCount());
                 if (data != null && data.moveToFirst() && data.getCount() > 0) {
                     currencyAdapter.swapCursor(data);
                     textDate.setText(data.getString(DataContract.CurrencyExEntry.COL_DATE));}
@@ -255,11 +257,11 @@ public class CurrenciesFragment extends Fragment implements LoaderManager.Loader
         if(currencyList.getCount() > 0){
             currencyList.setVisibility(View.VISIBLE);
             empty_view.setVisibility(View.GONE);
-            progress_bar.setVisibility(View.VISIBLE);
+            //progress_bar.setVisibility(View.VISIBLE);
         }else {
             currencyList.setVisibility(View.GONE);
             empty_view.setVisibility(View.VISIBLE);
-            progress_bar.setVisibility(View.GONE);
+            //progress_bar.setVisibility(View.GONE);
         }
     }
 }

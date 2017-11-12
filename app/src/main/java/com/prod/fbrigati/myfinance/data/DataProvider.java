@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.prod.fbrigati.myfinance.Utility;
 
@@ -90,7 +91,7 @@ public class DataProvider extends ContentProvider {
         return mCurrencyQueryBuilder.query(mOpenHelper.getReadableDatabase(),
                 projection,
                 sBaseCurrencySelection,
-                new String[]{"%" + baseCurrency},
+                new String[]{baseCurrency + "%"},
                 null,
                 null,
                 sortOrder
@@ -140,7 +141,7 @@ public class DataProvider extends ContentProvider {
     @Nullable
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-
+        //Log.v(LOG_TAG, "Query ID: " + uri);
 
         Cursor retCursor;
         switch (sUriMatcher.match(uri)) {
@@ -210,6 +211,7 @@ public class DataProvider extends ContentProvider {
             }
             // "Currencies"
             case CUREX: {
+                //Log.v(LOG_TAG, "currency query called");
                 retCursor = mOpenHelper.getReadableDatabase().query(
                         DataContract.CurrencyExEntry.TABLE_NAME,
                         projection,
@@ -223,6 +225,7 @@ public class DataProvider extends ContentProvider {
             }
             // "Currencies"
             case CUREX_WITH_BASE: {
+
                 retCursor = getCurrenciesByBaseCurrency(uri, projection, sortOrder);
                 break;
             }

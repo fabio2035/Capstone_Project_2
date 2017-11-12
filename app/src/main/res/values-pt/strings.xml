@@ -32,18 +32,6 @@
         <item>Credito</item>
     </string-array>
 
-    <!-- free version currencies -->
-    <string-array name="cur_symbols">
-        <item>MZN</item>
-        <item>USD</item>
-        <item>ZAR</item>
-        <item>EUR</item>
-        <item>TZS</item>
-        <item>AOA</item>
-        <item>GHS</item>
-        </string-array>
-
-
 
     <!-- Months in a year -->
     <string-array name="months">

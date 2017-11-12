@@ -2,6 +2,7 @@ package com.prod.fbrigati.myfinance.adapters;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,9 +48,8 @@ public class CurrenciesAdapter extends CursorAdapter {
         ViewHolder viewHolder = (ViewHolder) view.getTag();
         viewHolder.symbol.setText(symbol);
         viewHolder.rate.setText(cursor.getString(DataContract.CurrencyExEntry.COL_RATE));
-
         // bind flag
-        switch(symbol.substring(0,3)){
+        switch(symbol.substring(4,7)){
             case "USD": { viewHolder.flag.setImageResource(R.drawable.flag_us); break;}
             case "ZAR": { viewHolder.flag.setImageResource(R.drawable.flag_rand); break;}
             case "TZS": { viewHolder.flag.setImageResource(R.drawable.flag_tanzania); break;}
@@ -57,6 +57,9 @@ public class CurrenciesAdapter extends CursorAdapter {
             case "EUR": { viewHolder.flag.setImageResource(R.drawable.flag_eu); break;}
             case "GHS": { viewHolder.flag.setImageResource(R.drawable.flag_ghana); break;}
             case "MZN": { viewHolder.flag.setImageResource(R.drawable.flag_mozambique); break;}
+            case "GBP": { viewHolder.flag.setImageResource(R.drawable.flag_uk); break;}
+            case "CNY": { viewHolder.flag.setImageResource(R.drawable.flag_china); break;}
+            case "JPY": { viewHolder.flag.setImageResource(R.drawable.flag_japan); break;}
             default:viewHolder.flag.setImageResource(R.drawable.menu_icon_curex);
         }
 

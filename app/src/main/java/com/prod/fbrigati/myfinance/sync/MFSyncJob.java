@@ -14,11 +14,22 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.ContactsContract;
 import android.support.annotation.IntDef;
+import android.util.Log;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.prod.fbrigati.myfinance.R;
 import com.prod.fbrigati.myfinance.data.DataContract;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -35,6 +46,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Vector;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -90,57 +103,68 @@ public class MFSyncJob extends AbstractThreadedSyncAdapter {
         StringBuilder currencies_group = new StringBuilder();
 
         String[] symbolArray = context.getResources().getStringArray(R.array.cur_symbols);
-        currencies_group.append("(");
+        //currencies_group.append("(");
 
         //Builds the currencies to show on listView
         for(int i=0; i<symbolArray.length; i++){
         if(!symbolArray[i].equals(base_cur))
             {
-            currencies_group.append("\"" +symbolArray[i] + base_cur).append("\"");
+            //currencies_group.append("\"" +symbolArray[i] + base_cur).append("\"");
+            currencies_group.append(symbolArray[i]);
             if(i < symbolArray.length - 1) {
                 currencies_group.append(",");
                 }
             }
         }
-        currencies_group.append(")");
-
+        //currencies_group.append(")");
 
         String source = "store://datatables.org/alltableswithkeys";
-        String joint = yql_query + currencies_group;
-
+        //String joint = yql_query + currencies_group;
+        String joint = currencies_group.toString();
 
         try {
-            final String BASE_URL = "http://query.yahooapis.com/v1/public/yql?";
-            final String QUERY_PARAM_1 = "q";
-            final String QUERY_PARAM_2 = "env";
+            //final String BASE_URL = "http://query.yahooapis.com/v1/public/yql?";
+            final String BASE_URL = "https://api.fixer.io/latest?";
+            final String QUERY_PARAM_1 = "base";
+            final String QUERY_PARAM_2 = "symbols";
 
             Uri builtUri = Uri.parse(BASE_URL).buildUpon()
-                    .appendQueryParameter(QUERY_PARAM_1, joint)
-                    .appendQueryParameter(QUERY_PARAM_2, source)
+                    .appendQueryParameter(QUERY_PARAM_1, base_cur)
+                    .appendQueryParameter(QUERY_PARAM_2, joint)
                     .build();
 
-            URL url = new URL(builtUri.toString());
+            URL url = new URL(builtUri.toString().replace("%2",","));
 
-            // Create the request to Yahoo Fiinance, and open the connection
-            urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setRequestMethod("GET");
-            urlConnection.connect();
+            //Log.v(LOG_TAG, "URL: " + url.toString());
 
-            // Read the input stream into a String
-            InputStream inputStream = urlConnection.getInputStream();
-            StringBuffer buffer = new StringBuffer();
+            RequestQueue queue = Volley.newRequestQueue(context);
 
-            reader = new BufferedReader(new InputStreamReader(inputStream));
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, url.toString(),
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            //Check response
+                            if (!response.isEmpty()) {
+                                try {
+                                    getDataFromBuffer(context, response);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
 
-//            Log.v(LOG_TAG, "Buffered: " + reader.toString());
-            String line;
-            while ((line = reader.readLine()) != null) {
-                buffer.append(line + "\n");
-            }
+                        }
+                    });
 
-            getDataFromBuffer(buffer.toString());
+
+            queue.add(stringRequest);
 
         } catch (IOException e) {
+            //Log.v(LOG_TAG, "error: " + e);
             //other generic errors will have to be thrown visually
             setCurrencyFetchStatus(context, MFSyncJob.CURRENCYFETCH_STATUS_INVALID);
             context.getContentResolver().notifyChange(invalid_currencyFetch_uri, null, false);
@@ -160,45 +184,45 @@ public class MFSyncJob extends AbstractThreadedSyncAdapter {
         spe.apply();
     }
 
-    private void getDataFromBuffer(String buffer) {
+    private static void getDataFromBuffer(Context context, String buffer) throws JSONException  {
 
-        context = getContext();
 
-        try{
-            String symbol;
-            Double rate;
-            String date;
+            final String JO_RATE = "rates";
+            final String JO_BASE = "base";
+            final String JO_DATE = "date";
+
             ArrayList<ContentValues> currCVs = new ArrayList<>();
-        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-        Document doc = dBuilder.parse(new InputSource(new StringReader(buffer)));
-            doc.getDocumentElement().normalize();
-            NodeList nList = doc.getElementsByTagName("rate");
-            for(int i = 0; i < nList.getLength(); i++){
-                Node nNode = nList.item(i);
-                if (nNode.getNodeType() == Node.ELEMENT_NODE)
-                    {
-                    ContentValues currCV = new ContentValues();
 
-                    Element eElement = (Element) nNode;
-                    symbol = eElement.getElementsByTagName("Name").item(0).getTextContent();
-                    currCV.put(DataContract.CurrencyExEntry.COLUMN_SYMBOL, symbol);
-                    rate = Double.parseDouble(eElement.getElementsByTagName("Rate").item(0).getTextContent());
-                    currCV.put(DataContract.CurrencyExEntry.COLUMN_RATE, rate);
-                    date = eElement.getElementsByTagName("Date").item(0).getTextContent();
-                    currCV.put(DataContract.CurrencyExEntry.COLUMN_DATE, date);
+            JSONObject json = new JSONObject(buffer);
+            JSONObject rateList = json.getJSONObject(JO_RATE);
+            //rateList.put(json.get(JO_RATE));
+            //JSONArray rateList = json.getJSONArray(JO_RATE);
+            //Vector<ContentValues> cVVector = new Vector<ContentValues>(rateList.length());
+                Iterator iterator = rateList.keys();
+            String basecur = json.get(JO_BASE).toString();
+            String date = json.get(JO_DATE).toString();
 
-                    currCVs.add(currCV);
-                    }
+                while (iterator.hasNext()){
+
+                    ContentValues rateValues = new ContentValues();
+
+                    String key = (String)iterator.next();
+
+                    rateValues.put(DataContract.CurrencyExEntry.COLUMN_SYMBOL, basecur.trim() + "/" + key.trim());
+                    rateValues.put(DataContract.CurrencyExEntry.COLUMN_RATE, Double.valueOf(rateList.get(key).toString()));
+                    //date was previously in format: mm/dd/yyyy
+                    rateValues.put(DataContract.CurrencyExEntry.COLUMN_DATE, date);
+                    currCVs.add(rateValues);
                 }
 
-            context.getContentResolver()
-                    .bulkInsert(
-                            DataContract.CurrencyExEntry.CONTENT_URI,
-                            currCVs.toArray(new ContentValues[currCVs.size()]));
-    } catch (Exception e){
-            //Log.v(LOG_TAG, "there was an error: " + e.toString());
-        }
+            //Add to database
+            if(currCVs.size() > 0) {
+
+                context.getContentResolver()
+                        .bulkInsert(
+                                DataContract.CurrencyExEntry.CONTENT_URI,
+                                currCVs.toArray(new ContentValues[currCVs.size()]));
+            }
     }
 
 
