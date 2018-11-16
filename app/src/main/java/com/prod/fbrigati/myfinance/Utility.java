@@ -1,14 +1,25 @@
 package com.prod.fbrigati.myfinance;
 
+import android.*;
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 
 import com.prod.fbrigati.myfinance.sync.MFSyncJob;
 
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.UUID;
 
 /**
  * Created by FBrigati on 21/05/2017.
@@ -16,16 +27,68 @@ import java.util.HashMap;
 
 public class Utility {
 
+    private static final Integer LOCATION_REFRESH_TIME = 1000;
+    private static final Integer LOCATION_REFRESH_DISTANCE = 1000;
+
     HashMap<Integer, String> months;
 
 
     public static final String[] categoriesArray = {"Transportation",
-                                                "Leisure",
-                                                "Food",
-                                                "Education",
-                                                "HealthCare",
-                                                "Groceries",
-                                                "Rent"};
+            "Leisure",
+            "Food",
+            "Education",
+            "HealthCare",
+            "Groceries",
+            "Rent"};
+
+    static public void setLocation(Context c) {
+
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
+        String location = sp.getString("location", null);
+
+        if (location != null && !location.isEmpty()) {
+            //we have already a location set, do nothing
+        } else {
+            //we don't have location, we need to set it
+            Activity activity = (Activity) c;
+            LocationManager mLocationManager;
+            mLocationManager = (LocationManager) c.getSystemService(c.LOCATION_SERVICE);
+            Log.d("Utility", "called location utility");
+            if (ActivityCompat.checkSelfPermission(c, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // Request permission to access the location, if it is missing.
+                ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                        0);
+            }
+            //If permission was granted get location..
+            if (ActivityCompat.checkSelfPermission(c, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                Location loc = mLocationManager.getLastKnownLocation(mLocationManager.NETWORK_PROVIDER);
+                SharedPreferences.Editor spe = sp.edit();
+                location = String.valueOf(loc.getLatitude()) + "," + String.valueOf(loc.getLongitude());
+                Log.d("Utility", location);
+                spe.putString("location", location);
+                spe.apply();
+            }
+        }
+    }
+
+    static public void setUUID(Context c){
+        String uUID;
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
+        uUID = sp.getString("UUID", null);
+        if(uUID == null){
+            uUID = UUID.randomUUID().toString();
+            Log.d("UtilUid", "UUID not found, created UUID: " + uUID );
+            SharedPreferences.Editor spe = sp.edit();
+            spe.putString("UUID", uUID);
+            spe.apply();
+        }
+    }
+
+    static public String getUUID(Context c){
+        String uUID;
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
+        return sp.getString("UUID", null);
+    }
 
     public static String getPreferredCurSymbol(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);

@@ -1,9 +1,13 @@
 package com.prod.fbrigati.myfinance;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -12,8 +16,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.prod.fbrigati.myfinance.dummy.MenuContent;
+import com.prod.fbrigati.myfinance.sync.MFSyncJob;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by FBrigati on 30/04/2017.
@@ -29,6 +35,8 @@ public class MainFragment extends Fragment {
         super.onCreate(savedInstanceState);
         // Add this line in order for this fragment to handle menu events.
         setHasOptionsMenu(true);
+
+
     }
 
     @Override

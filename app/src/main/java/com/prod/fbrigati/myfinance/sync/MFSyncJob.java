@@ -24,8 +24,14 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.prod.fbrigati.myfinance.R;
 import com.prod.fbrigati.myfinance.data.DataContract;
+import com.prod.fbrigati.myfinance.elements.Currency;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -60,6 +66,8 @@ public class MFSyncJob extends AbstractThreadedSyncAdapter {
 
     final static String LOG_TAG = MFSyncJob.class.getSimpleName();
 
+    private DatabaseReference mDatabase;
+
     private Context context;
 
     // Interval at which to sync with the weather, in seconds.
@@ -84,7 +92,7 @@ public class MFSyncJob extends AbstractThreadedSyncAdapter {
     public static final int CURRENCYFETCH_STATUS_SERVER_INVALID = 2;
     public static final int CURRENCYFETCH_STATUS_INVALID = 4;
 
-    @Override
+    /*@Override
     public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
 
 
@@ -175,7 +183,41 @@ public class MFSyncJob extends AbstractThreadedSyncAdapter {
             }
             return;
     }
-}
+}*/
+
+    @Override
+    public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult){
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference dbRef = database.getReference("currencies");
+        dbRef.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String prevChildKey) {
+                Currency newCurrency = dataSnapshot.getValue(Currency.class);
+                System.out.println("Date: " + newCurrency.date);
+                System.out.println("Rate: " + newCurrency.rate);
+                //System.out.println("Previous Post ID: " + prevChildKey);
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String prevChildKey) {
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String prevChildKey) {
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+
+
+    }
 
     private void setCurrencyFetchStatus(Context context, @CurrencyFetchStatus int currencyfetchStatusInvalid) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
