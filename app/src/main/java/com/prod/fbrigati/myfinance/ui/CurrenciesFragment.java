@@ -1,5 +1,6 @@
 package com.prod.fbrigati.myfinance.ui;
 
+import android.content.ContentValues;
 import android.content.SharedPreferences;
 import android.database.ContentObserver;
 import android.database.Cursor;
@@ -23,10 +24,17 @@ import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.prod.fbrigati.myfinance.R;
 import com.prod.fbrigati.myfinance.Utility;
 import com.prod.fbrigati.myfinance.adapters.CurrenciesAdapter;
 import com.prod.fbrigati.myfinance.data.DataContract;
+import com.prod.fbrigati.myfinance.elements.Currency;
 import com.prod.fbrigati.myfinance.sync.MFSyncJob;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -116,7 +124,7 @@ public class CurrenciesFragment extends Fragment implements LoaderManager.Loader
         adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
 
         spinner_view.setAdapter(adapter);
-
+        /*
         mObserver = new ContentObserver(new Handler()) {
             @Override
             public void onChange(boolean selfChange) {
@@ -129,7 +137,7 @@ public class CurrenciesFragment extends Fragment implements LoaderManager.Loader
                         restarLoader();
                         currencyList.invalidateViews();
                         //currencyAdapter.notifyDataSetChanged();
-                        updateEmptyView();
+                        updateView();
                         break;}
                     case MFSyncJob.CURRENCYFETCH_STATUS_INVALID:{
                         //Toast.makeText(getActivity(), R.string.pref_cur_status_invalid, Toast.LENGTH_LONG).show();
@@ -137,13 +145,16 @@ public class CurrenciesFragment extends Fragment implements LoaderManager.Loader
                         restarLoader();
                         currencyList.invalidateViews();
                         //currencyAdapter.notifyDataSetChanged();
-                        updateEmptyView();
+                        updateView();
                         break;}
                 }
             }
         };
 
         getActivity().getContentResolver().registerContentObserver(MFSyncJob.invalid_currencyFetch_uri, false, mObserver);
+        */
+        //check for new currency updates..
+        firebaseCurrencyUpdate();
 
         spinner_view.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
@@ -154,7 +165,7 @@ public class CurrenciesFragment extends Fragment implements LoaderManager.Loader
                 prefsEditor.apply();
                 //Log.v(LOG_TAG, "symbol chosen: " + symbol.toString());
                 Utility.setPrefferecSymbol(getActivity(), symbol.toString());
-                MFSyncJob.syncImmediately(getActivity());
+                //MFSyncJob.syncImmediately(getActivity());
                 //restarLoader();
                 //currencyAdapter.notifyDataSetChanged();
             }
@@ -172,6 +183,57 @@ public class CurrenciesFragment extends Fragment implements LoaderManager.Loader
 
     }
 
+    private void firebaseCurrencyUpdate() {
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference dbRef = database.getReference("currencies");
+        Query dateOrdered = dbRef.orderByKey();
+        dateOrdered.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String prevChildKey) {
+                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()){
+                    Currency newCurrency = postSnapshot.getValue(Currency.class);
+                    System.out.println("Date: " + newCurrency.date);
+                    System.out.println("Rate: " + newCurrency.rate);
+                    System.out.println("Symbol: " + newCurrency.symbol);
+
+                    //insert firebase data into local database..
+                    ContentValues rateValues = new ContentValues();
+
+                    //String key = (String)iterator.next();
+                    String symbol = newCurrency.getSymbol().trim().toUpperCase();
+                    if(symbol.length()>=6){
+                        symbol = symbol.replace("_","/");
+                    }
+
+                    rateValues.put(DataContract.CurrencyExEntry.COLUMN_SYMBOL, symbol);
+                    rateValues.put(DataContract.CurrencyExEntry.COLUMN_RATE, newCurrency.getRate());
+                    //date was previously in format: mm/dd/yyyy
+                    rateValues.put(DataContract.CurrencyExEntry.COLUMN_DATE, newCurrency.getDate());
+
+                    getActivity().getContentResolver().insert(DataContract.CurrencyExEntry.CONTENT_URI, rateValues);
+
+                }
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String prevChildKey) {
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String prevChildKey) {
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
+
 
     private void restarLoader() {
         getLoaderManager().restartLoader(CURRENCIES_LOADER, null, this);
@@ -187,7 +249,7 @@ public class CurrenciesFragment extends Fragment implements LoaderManager.Loader
         //get last selected position
         if(SP!=null){
             String selected = SP.getString(getContext().getString(R.string.pref_cur_key), getContext().getString(R.string.pref_cur_default));
-            getActivity().getContentResolver().registerContentObserver(DataContract.CurrencyExEntry.buildCurrencyUri(selected), false, mObserver);
+            //getActivity().getContentResolver().registerContentObserver(DataContract.CurrencyExEntry.buildCurrencyUri(selected), false, mObserver);
 
             String[] symbolArray = getResources().getStringArray(R.array.cur_symbols);
             int pos = Arrays.asList(symbolArray).indexOf(selected.trim());
@@ -199,7 +261,7 @@ public class CurrenciesFragment extends Fragment implements LoaderManager.Loader
 
     @Override
     public void onPause(){
-        getActivity().getContentResolver().unregisterContentObserver(mObserver);
+        //getActivity().getContentResolver().unregisterContentObserver(mObserver);
         super.onPause();
     }
 
@@ -241,7 +303,7 @@ public class CurrenciesFragment extends Fragment implements LoaderManager.Loader
                 if (data != null && data.moveToFirst() && data.getCount() > 0) {
                     currencyAdapter.swapCursor(data);
                     textDate.setText(data.getString(DataContract.CurrencyExEntry.COL_DATE));}
-                updateEmptyView();
+                updateView();
                 break;
         }
 
@@ -253,7 +315,7 @@ public class CurrenciesFragment extends Fragment implements LoaderManager.Loader
                     currencyAdapter.swapCursor(null);
         }
 
-    private void updateEmptyView() {
+    private void updateView() {
         if(currencyList.getCount() > 0){
             currencyList.setVisibility(View.VISIBLE);
             empty_view.setVisibility(View.GONE);

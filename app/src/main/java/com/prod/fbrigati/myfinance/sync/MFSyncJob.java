@@ -29,6 +29,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.prod.fbrigati.myfinance.R;
 import com.prod.fbrigati.myfinance.data.DataContract;
 import com.prod.fbrigati.myfinance.elements.Currency;
@@ -190,13 +191,51 @@ public class MFSyncJob extends AbstractThreadedSyncAdapter {
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference dbRef = database.getReference("currencies");
-        dbRef.addChildEventListener(new ChildEventListener() {
+        Query dateOrdered = dbRef.orderByKey();
+        dateOrdered.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String prevChildKey) {
-                Currency newCurrency = dataSnapshot.getValue(Currency.class);
-                System.out.println("Date: " + newCurrency.date);
-                System.out.println("Rate: " + newCurrency.rate);
-                //System.out.println("Previous Post ID: " + prevChildKey);
+                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()){
+                    Currency newCurrency = postSnapshot.getValue(Currency.class);
+                    System.out.println("Date: " + newCurrency.date);
+                    System.out.println("Rate: " + newCurrency.rate);
+                    System.out.println("Symbol: " + newCurrency.symbol);
+
+                    //insert firebase data into local database..
+                    ContentValues rateValues = new ContentValues();
+
+                    //String key = (String)iterator.next();
+                    String symbol = newCurrency.getSymbol().trim().toUpperCase();
+                    if(symbol.length()>=6){
+                        symbol = symbol.replace("_","/");
+                    }
+
+                    rateValues.put(DataContract.CurrencyExEntry.COLUMN_SYMBOL, symbol);
+                    rateValues.put(DataContract.CurrencyExEntry.COLUMN_RATE, newCurrency.getRate());
+                    //date was previously in format: mm/dd/yyyy
+                    rateValues.put(DataContract.CurrencyExEntry.COLUMN_DATE, newCurrency.getDate());
+
+                    context.getContentResolver().insert(DataContract.CurrencyExEntry.CONTENT_URI, rateValues);
+
+                }
+
+                /*
+                //insert firebase data into local database..
+                ContentValues rateValues = new ContentValues();
+
+                //String key = (String)iterator.next();
+                String symbol = newCurrency.getSymbol().trim().toUpperCase();
+                if(symbol.length()>=6){
+                    symbol = symbol.replace("_","/");
+                }
+
+                rateValues.put(DataContract.CurrencyExEntry.COLUMN_SYMBOL, symbol);
+                rateValues.put(DataContract.CurrencyExEntry.COLUMN_RATE, newCurrency.getRate());
+                //date was previously in format: mm/dd/yyyy
+                rateValues.put(DataContract.CurrencyExEntry.COLUMN_DATE, newCurrency.getDate());
+
+                context.getContentResolver().insert(DataContract.CurrencyExEntry.CONTENT_URI, rateValues); */
+
             }
 
             @Override

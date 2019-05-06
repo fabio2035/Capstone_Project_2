@@ -35,8 +35,6 @@ public class MainFragment extends Fragment {
         super.onCreate(savedInstanceState);
         // Add this line in order for this fragment to handle menu events.
         setHasOptionsMenu(true);
-
-
     }
 
     @Override
@@ -47,6 +45,8 @@ public class MainFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        //MenuInflater inflater = inflater.getMenuInflater();
+        inflater.inflate(R.menu.main, menu);
     }
 
 
